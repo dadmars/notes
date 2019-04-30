@@ -1,32 +1,4 @@
-
-                                                                        
-[Docs] [txt|pdf] [draft-ietf-tcpl...] [Tracker] [Diff1] [Diff2] [Errata]
-                                                                        
-                                                       PROPOSED STANDARD
-                                                            Errata Exist
-
-Network Working Group                                        M. Mathis
-Request for Comments: 2018                                  J. Mahdavi
-Category: Standards Track                                          PSC
-                                                              S. Floyd
-                                                                  LBNL
-                                                            A. Romanow
-                                                      Sun Microsystems
-                                                          October 1996
-
-
-                  TCP Selective Acknowledgment Options
-
-Status of this Memo
-
-   This document specifies an Internet standards track protocol for the
-   Internet community, and requests discussion and suggestions for
-   improvements.  Please refer to the current edition of the "Internet
-   Official Protocol Standards" (STD 1) for the standardization state
-   and status of this protocol.  Distribution of this memo is unlimited.
-
-Abstract
-
+#TCP Selective Acknowledgment Options
    TCP may experience poor performance when multiple packets are lost
    from one window of data.   With the limited information available
    from cumulative acknowledgments, a TCP sender can only learn about a

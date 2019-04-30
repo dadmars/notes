@@ -1,33 +1,4 @@
-
-                                                                        
-[Docs] [txt|pdf] [draft-paxson-tc...] [Tracker] [Diff1] [Diff2] [Errata]
-                                                                        
-Obsoleted by: 6298                                     PROPOSED STANDARD
-                                                            Errata Exist
-
-Network Working Group                                          V. Paxson
-Request for Comments: 2988                                         ACIRI
-Category: Standards Track                                      M. Allman
-                                                            NASA GRC/BBN
-                                                           November 2000
-
-
-                  Computing TCP's Retransmission Timer
-
-Status of this Memo
-
-   This document specifies an Internet standards track protocol for the
-   Internet community, and requests discussion and suggestions for
-   improvements.  Please refer to the current edition of the "Internet
-   Official Protocol Standards" (STD 1) for the standardization state
-   and status of this protocol.  Distribution of this memo is unlimited.
-
-Copyright Notice
-
-   Copyright (C) The Internet Society (2000).  All Rights Reserved.
-
-Abstract
-
+#Computing TCP's Retransmission Timer
    This document defines the standard algorithm that Transmission
    Control Protocol (TCP) senders are required to use to compute and
    manage their retransmission timer.  It expands on the discussion in

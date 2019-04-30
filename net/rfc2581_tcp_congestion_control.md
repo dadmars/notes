@@ -1,9 +1,4 @@
-https://tools.ietf.org/html/rfc2581
-
-                         TCP Congestion Control
-
-Abstract
-
+#TCP Congestion Control
    This document defines TCP's four intertwined congestion control
    algorithms: slow start, congestion avoidance, fast retransmit, and
    fast recovery.  In addition, the document specifies how TCP should

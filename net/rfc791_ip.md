@@ -1,222 +1,45 @@
-https://tools.ietf.org/html/rfc791
+连接在一起的计算机之间进行通信，信息被拆分成一个个数据包。IP协议把数据包从一台机器发送到另一台机器。每台机器都有一个固定长度的地址。不同网络，数据包的大小也不同，IP协议要对数据包进行分片和重组。
 
-1.1.  Motivation
+IP协议只负责尽力发送数据包，但不提供可靠性。对IP协议来说，每一个数据包都是独立的，相互之间没有任何关系。
 
-  The Internet Protocol is designed for use in interconnected systems of
-  packet-switched computer communication networks.  Such a system has
-  been called a "catenet" [1].  The internet protocol provides for
-  transmitting blocks of data called datagrams from sources to
-  destinations, where sources and destinations are hosts identified by
-  fixed length addresses.  The internet protocol also provides for
-  fragmentation and reassembly of long datagrams, if necessary, for
-  transmission through "small packet" networks.
+IP协议被上层协议调用，如TCP。IP协议调用local network协议，将数据包发送到下一个路由器或是目的机器。
 
-1.2.  Scope
+IP协议实现两个基本功能：地址和分片。
 
-  The internet protocol is specifically limited in scope to provide the
-  functions necessary to deliver a package of bits (an internet
-  datagram) from a source to a destination over an interconnected system
-  of networks.  There are no mechanisms to augment end-to-end data
-  reliability, flow control, sequencing, or other services commonly
-  found in host-to-host protocols.  The internet protocol can capitalize
-  on the services of its supporting networks to provide various types
-  and qualities of service.
+地址放在数据包的头部，选择数据包到达目的机器经过的路线，称为路由
+分片和重组的信息也放在数据包头部
 
-1.3.  Interfaces
+IP模块存在于每个机器中，包含主机和路由器。对地址的处理和对分片重组的处理都使用相同的算法。IP模块还要执行路由选择，尤其是在路由器。
 
-  This protocol is called on by host-to-host protocols in an internet
-  environment.  This protocol calls on local network protocols to carry
-  the internet datagram to the next gateway or destination host.
+IP协议实现了4个主要机制： Type of Service, Time to Live, Options, and Header Checksum.
 
-  For example, a TCP module would call on the internet module to take a
-  TCP segment (including the TCP header and user data) as the data
-  portion of an internet datagram.  The TCP module would provide the
-  addresses and other parameters in the internet header to the internet
-  module as arguments of the call.  The internet module would then
-  create an internet datagram and call on the local network interface to
-  transmit the internet datagram.
+* Time to Live 决定数据包的生存时间。它被发送方设定，每经过一个路由器，减1。如果在到达目的机器前变为0，此数据包被丢弃。
+* Options 一般不用。包含： provisions for timestamps, security, and special routing.
+* Header Checksum 用来效验数据正确性，验证不通过，数据包被丢弃。 
+* 错误信息通过ICMP协议发送
 
-  In the ARPANET case, for example, the internet module would call on a
-  local net module which would add the 1822 leader [2] to the internet
-  datagram creating an ARPANET message to transmit to the IMP.  The
-  ARPANET address would be derived from the internet address by the
-  local network interface and would be the address of some host in the
-  ARPANET, that host might be a gateway to other networks.
-
-1.4.  Operation
-
-  The internet protocol implements two basic functions:  addressing and
-  fragmentation.
-
-  The internet modules use the addresses carried in the internet header
-  to transmit internet datagrams toward their destinations.  The
-  selection of a path for transmission is called routing.
-
-  The internet modules use fields in the internet header to fragment and
-  reassemble internet datagrams when necessary for transmission through
-  "small packet" networks.
-
-  The model of operation is that an internet module resides in each host
-  engaged in internet communication and in each gateway that
-  interconnects networks.  These modules share common rules for
-  interpreting address fields and for fragmenting and assembling
-  internet datagrams.  In addition, these modules (especially in
-  gateways) have procedures for making routing decisions and other
-  functions.
-
-  The internet protocol treats each internet datagram as an independent
-  entity unrelated to any other internet datagram.  There are no
-  connections or logical circuits (virtual or otherwise).
-
-  The internet protocol uses four key mechanisms in providing its
-  service:  Type of Service, Time to Live, Options, and Header Checksum.
-
-  The Time to Live is an indication of an upper bound on the lifetime of
-  an internet datagram.  It is set by the sender of the datagram and
-  reduced at the points along the route where it is processed.  If the
-  time to live reaches zero before the internet datagram reaches its
-  destination, the internet datagram is destroyed.  The time to live can
-  be thought of as a self destruct time limit.
-
-  The Options provide for control functions needed or useful in some
-  situations but unnecessary for the most common communications.  The
-  options include provisions for timestamps, security, and special
-  routing.
-
-  The Header Checksum provides a verification that the information used
-  in processing internet datagram has been transmitted correctly.  The
-  data may contain errors.  If the header checksum fails, the internet
-  datagram is discarded at once by the entity which detects the error.
-
-  Errors detected may be reported via the Internet Control Message
-  Protocol (ICMP) [3] which is implemented in the internet protocol
-  module.
-
-                              2.  OVERVIEW
-
-2.2.  Model of Operation
-
-   Application                                                Application
-   Program                                                        Program
-         \                                                                 /
+#IP模块
+   Application                                      Application
+   Program                                            Program
+         \                                              /
        Internet Module      Internet Module      Internet Module
-             \                                  /       \                /
-             LNI-1                      LNI-1      LNI-2         LNI-2
-                \                           /             \          /
-               Local Network 1           Local Network 2
+             \               /       \                /
+             LNI-1        LNI-1      LNI-2         LNI-2
+                \          /             \          /
+              Local Network 1          Local Network 2
 
-2.3.  Function Description
+##地址
+区分三个概念： names, addresses, and routes. A name indicates what we seek.  An address indicates where it is.  A route indicates how to get there.
 
-  In the routing of messages from one internet module to another,
-  datagrams may need to traverse a network whose maximum packet size is
-  smaller than the size of the datagram.  To overcome this difficulty, a
-  fragmentation mechanism is provided in the internet protocol.
+IP层主要处理 addresses. name到 addresses 的转化由上层协议完成。IP层完成IP地址到 local net addresses的转化。  It is the task of lower level (i.e., local net or gateways) procedures to make the mapping from local net addresses to routes.
 
-  Addressing
+IP地址长度为4字节(32 bits). 前面部分为network number，后面部分为local address。一台物理机器可以有多个网卡，每个网卡可以有多个IP地址
 
-    A distinction is made between names, addresses, and routes [4].   A
-    name indicates what we seek.  An address indicates where it is.  A
-    route indicates how to get there.  The internet protocol deals
-    primarily with addresses.  It is the task of higher level (i.e.,
-    host-to-host or application) protocols to make the mapping from
-    names to addresses.   The internet module maps internet addresses to
-    local net addresses.  It is the task of lower level (i.e., local net
-    or gateways) procedures to make the mapping from local net addresses
-    to routes.
+#分片
+一个数据包可以被设置为"don't fragment."，如果此数据包由于大小原因不能到达目的机器，被丢弃
 
-    Addresses are fixed length of four octets (32 bits).  An address
-    begins with a network number, followed by local address (called the
-    "rest" field).  There are three formats or classes of internet
-    addresses:  in class a, the high order bit is zero, the next 7 bits
-    are the network, and the last 24 bits are the local address; in
-    class b, the high order two bits are one-zero, the next 14 bits are
-    the network and the last 16 bits are the local address; in class c,
-    the high order three bits are one-one-zero, the next 21 bits are the
-    network and the last 8 bits are the local address.
-
-    Care must be taken in mapping internet addresses to local net
-    addresses; a single physical host must be able to act as if it were
-    several distinct hosts to the extent of using several distinct
-    internet addresses.  Some hosts will also have several physical
-    interfaces (multi-homing).
-
-    That is, provision must be made for a host to have several physical
-    interfaces to the network with each having several logical internet
-    addresses.
-
-  Fragmentation
-
-    Fragmentation of an internet datagram is necessary when it
-    originates in a local net that allows a large packet size and must
-    traverse a local net that limits packets to a smaller size to reach
-    its destination.
-
-    An internet datagram can be marked "don't fragment."  Any internet
-    datagram so marked is not to be internet fragmented under any
-    circumstances.  If internet datagram marked don't fragment cannot be
-    delivered to its destination without fragmenting it, it is to be
-    discarded instead.
-
-    Fragmentation, transmission and reassembly across a local network
-    which is invisible to the internet protocol module is called
-    intranet fragmentation and may be used [6].
-
-    The internet fragmentation and reassembly procedure needs to be able
-    to break a datagram into an almost arbitrary number of pieces that
-    can be later reassembled.  The receiver of the fragments uses the
-    identification field to ensure that fragments of different datagrams
-    are not mixed.  The fragment offset field tells the receiver the
-    position of a fragment in the original datagram.  The fragment
-    offset and length determine the portion of the original datagram
-    covered by this fragment.  The more-fragments flag indicates (by
-    being reset) the last fragment.  These fields provide sufficient
-    information to reassemble datagrams.
-
-    The identification field is used to distinguish the fragments of one
-    datagram from those of another.  The originating protocol module of
-    an internet datagram sets the identification field to a value that
-    must be unique for that source-destination pair and protocol for the
-    time the datagram will be active in the internet system.  The
-    originating protocol module of a complete datagram sets the
-    more-fragments flag to zero and the fragment offset to zero.
-
-    To fragment a long internet datagram, an internet protocol module
-    (for example, in a gateway), creates two new internet datagrams and
-    copies the contents of the internet header fields from the long
-    datagram into both new internet headers.  The data of the long
-    datagram is divided into two portions on a 8 octet (64 bit) boundary
-    (the second portion might not be an integral multiple of 8 octets,
-    but the first must be).  Call the number of 8 octet blocks in the
-    first portion NFB (for Number of Fragment Blocks).  The first
-    portion of the data is placed in the first new internet datagram,
-    and the total length field is set to the length of the first
-    datagram.  The more-fragments flag is set to one.  The second
-    portion of the data is placed in the second new internet datagram,
-    and the total length field is set to the length of the second
-    datagram.  The more-fragments flag carries the same value as the
-    long datagram.  The fragment offset field of the second new internet
-    datagram is set to the value of that field in the long datagram plus
-    NFB.
-
-    This procedure can be generalized for an n-way split, rather than
-    the two-way split described.
-
-    To assemble the fragments of an internet datagram, an internet
-    protocol module (for example at a destination host) combines
-    internet datagrams that all have the same value for the four fields:
-    identification, source, destination, and protocol.  The combination
-    is done by placing the data portion of each fragment in the relative
-    position indicated by the fragment offset in that fragment's
-    internet header.  The first fragment will have the fragment offset
-    zero, and the last fragment will have the more-fragments flag reset
-    to zero.
-
-2.4.  Gateways
-
-  Gateways implement internet protocol to forward datagrams between
-  networks.  Gateways also implement the Gateway to Gateway Protocol
-  (GGP) [7] to coordinate routing and other internet control
-  information.
+#Gateways
+  Gateways用于在不同的网络之间转发数据包。Gateways also implement the Gateway to Gateway Protocol (GGP) to coordinate routing and other internet control information.
 
   In a gateway the higher level protocols need not be implemented and
   the GGP functions are added to the IP module.
@@ -230,9 +53,7 @@ https://tools.ietf.org/html/rfc791
                  |   Local Net   |   |   Local Net   |
                  +---------------+   +---------------+
 
-                           3.  SPECIFICATION
-
-3.1.  Internet Header Format
+#Internet Header Format
 
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -250,31 +71,18 @@ https://tools.ietf.org/html/rfc791
    |                    Options                    |    Padding    |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-  Note that each tick mark represents one bit position.
-
   Version:  4 bits
 
-    The Version field indicates the format of the internet header.  This
-    document describes version 4.
+    The Version field indicates the format of the internet header.  This document describes version 4.
 
   IHL:  4 bits
 
-    Internet Header Length is the length of the internet header in 32
-    bit words, and thus points to the beginning of the data.  Note that
-    the minimum value for a correct header is 5.
+    IP头部长度，单位：32 bit words., and thus points to the beginning of the data.  Note that the minimum value for a correct header is 5.
 
   Type of Service:  8 bits
 
   Total Length:  16 bits
-
-    Total Length is the length of the datagram, measured in octets,
-    including internet header and data.  This field allows the length of
-    a datagram to be up to 65,535 octets.  Such long datagrams are
-    impractical for most hosts and networks.  All hosts must be prepared
-    to accept datagrams of up to 576 octets (whether they arrive whole
-    or in fragments).  It is recommended that hosts only send datagrams
-    larger than 576 octets if they have assurance that the destination
-    is prepared to accept the larger datagrams.
+    总长度，包含头部和数据，单位：字节。 最大长度为：65,535字节. 所有主机必须接受 576 字节的数据包。
 
     The number 576 is selected to allow a reasonable sized data block to
     be transmitted in addition to the required header information.  For
@@ -310,22 +118,11 @@ https://tools.ietf.org/html/rfc791
 
   Time to Live:  8 bits
 
-    This field indicates the maximum time the datagram is allowed to
-    remain in the internet system.  If this field contains the value
-    zero, then the datagram must be destroyed.  This field is modified
-    in internet header processing.  The time is measured in units of
-    seconds, but since every module that processes a datagram must
-    decrease the TTL by at least one even if it process the datagram in
-    less than a second, the TTL must be thought of only as an upper
-    bound on the time a datagram may exist.  The intention is to cause
-    undeliverable datagrams to be discarded, and to bound the maximum
-    datagram lifetime.
+    This field is modified in internet header processing.  
 
   Protocol:  8 bits
 
-    This field indicates the next level protocol used in the data
-    portion of the internet datagram.  The values for various protocols
-    are specified in "Assigned Numbers" [9].
+    This field indicates the next level protocol used in the data portion of the internet datagram.  
 
   Header Checksum:  16 bits
 
@@ -339,18 +136,8 @@ https://tools.ietf.org/html/rfc791
       complement sum of all 16 bit words in the header.  For purposes of
       computing the checksum, the value of the checksum field is zero.
 
-    This is a simple to compute checksum and experimental evidence
-    indicates it is adequate, but it is provisional and may be replaced
-    by a CRC procedure, depending on further experience.
-
   Source Address:  32 bits
-
-    The source address.  See section 3.2.
-
   Destination Address:  32 bits
-
-    The destination address.  See section 3.2.
-
   Options:  variable
 
     The options may appear or not in datagrams.  They must be
@@ -732,7 +519,7 @@ https://tools.ietf.org/html/rfc791
     The internet header padding is used to ensure that the internet
     header ends on a 32 bit boundary.  The padding is zero.
 
-3.2.  Discussion
+#Discussion
   Addressing
 
     To provide for flexibility in assigning address to networks and

@@ -1,61 +1,3 @@
-Status of this Memo
-
-   This memo provides information for the Internet community.  It does
-   not specify an Internet standard.  Distribution of this memo is
-   unlimited.
-
-
-IESG Note:
-
-   Note that this memo is an individual effort of the author.  This
-   document reflects a current informal practice in the internet.  There
-   is an effort underway within the IETF Mobile-IP Working Group to
-   provide an appropriate proposed standard to address this issue.
-
-
-Abstract
-
-   This document discusses implementation techniques for using IP
-   Protocol/Payload number 4 Encapsulation for tunneling with IP
-   Security and other protocols.
-
-
-Table of Contents
-
-     1.     Introduction ..........................................    2
-
-     2.     Encapsulation .........................................    3
-
-     3.     Tunnel Management .....................................    5
-        3.1       Tunnel MTU Discovery ............................    5
-        3.2       Congestion ......................................    6
-        3.3       Routing Failures ................................    6
-        3.4       Other ICMP Messages .............................    6
-
-     SECURITY CONSIDERATIONS ......................................    7
-     REFERENCES ...................................................    7
-     ACKNOWLEDGEMENTS .............................................    8
-     AUTHOR'S ADDRESS .............................................    8
-
-
-
-
-
-Simpson                      Informational                      [Page 1]
-
- 
-RFC 1853                     IP Tunnelling                  October 1995
-
-
-1.  Introduction
-
-   The IP in IP encapsulation Protocol/Payload number 4 [RFC-1700] has
-   long been used to bridge portions of the Internet which have disjoint
-   capabilities or policies.  This document describes implementation
-   techniques used for many years by the Amateur Packet Radio network
-   for joining a large mobile network, and also by early implementations
-   of IP Security protocols.
-
    Use of IP in IP encapsulation differs from later tunneling techniques
    (for example, protocol numbers 98 [RFC-1241], 94 [IDM91a], 53
    [swIPe], and 47 [RFC-1701]) in that it does not insert its own
@@ -65,44 +7,6 @@ RFC 1853                     IP Tunnelling                  October 1995
 
    This information applies principally to encapsulation of IP version
    4.  Other IP versions will be described in separate documents.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Simpson                      Informational                      [Page 2]
-
- 
-RFC 1853                     IP Tunnelling                  October 1995
-
 
 2.  Encapsulation
 
@@ -153,14 +57,6 @@ RFC 1853                     IP Tunnelling                  October 1995
                     ignored (set to zero).
 
 
-
-
-Simpson                      Informational                      [Page 3]
-
- 
-RFC 1853                     IP Tunnelling                  October 1995
-
-
                     This unofficial flag has seen experimental use, and
                     while it remains in the inner IP header, does not
                     affect the tunnel.
@@ -203,20 +99,6 @@ RFC 1853                     IP Tunnelling                  October 1995
                     options for the tunnel.  It is not expected that
                     there be a one-to-one mapping of such options to the
                     options or security headers selected for the tunnel.
-
-
-
-
-
-
-
-
-
-Simpson                      Informational                      [Page 4]
-
- 
-RFC 1853                     IP Tunnelling                  October 1995
-
 
 3.  Tunnel Management
 
@@ -263,18 +145,6 @@ RFC 1853                     IP Tunnelling                  October 1995
    encapsulator.  To support originating hosts which use this
    capability, all implementations MUST support Path MTU Discovery
    [RFC-1191, RFC-1435] within their tunnels.
-
-
-
-
-
-
-Simpson                      Informational                      [Page 5]
-
- 
-RFC 1853                     IP Tunnelling                  October 1995
-
-
    As a benefit of Tunnel MTU Discovery, any fragmentation which occurs
    because of the size of the encapsulation header is done only once
    after encapsulation.  This prevents more than one fragmentation of a
@@ -311,101 +181,8 @@ RFC 1853                     IP Tunnelling                  October 1995
    misconfiguration of the encapsulator, and MUST NOT be reported to the
    originator.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Simpson                      Informational                      [Page 6]
-
- 
-RFC 1853                     IP Tunnelling                  October 1995
-
-
 Security Considerations
 
    Security issues are briefly discussed in this memo.  The use of
    tunneling may obviate some older IP security options (labelling), but
    will better support newer IP Security headers.
-
-
-References
-
-   [IDM91a] Ioannidis, J., Duchamp, D., Maguire, G., "IP-based
-            protocols for mobile internetworking", Proceedings of
-            SIGCOMM '91, ACM, September 1991.
-
-   [RFC-791]
-            Postel, J., "Internet Protocol", STD 5, RFC 791,
-            USC/Information Sciences Institute, September 1981.
-
-   [RFC-792]
-            Postel, J., "Internet Control Message Protocol", STD 5,
-            RFC 792, USC/Information Sciences Institute, September
-            1981.
-
-   [RFC-1191]
-            Mogul, J., and S. Deering, "Path MTU Discovery", RFC 1191,
-            DECWRL, Stanford University, November 1990.
-
-   [RFC-1241]
-            Mills, D., and R. Woodburn, "A Scheme for an Internet
-            Encapsulation Protocol: Version 1", UDEL, July 1991.
-
-   [RFC-1435]
-            Knowles, S., "IESG Advice from Experience with Path MTU
-            Discovery", RFC 1435, FTP Software, March 1993.
-
-   [RFC-1700]
-            Reynolds, J., and J. Postel, "Assigned Numbers", STD 2, RFC
-            1700, USC/Information Sciences Institute, October 1994.
-
-   [RFC-1701]
-            Hanks, S., Li, T., Farinacci, D., and P. Traina, "Generic
-            Routing Encapsulation (GRE)", RFC 1701, October 1994.
-
-   [swIPe]  Ioannidis, J., and Blaze, M., "The Architecture and
-            Implementation of Network-Layer Security Under Unix", Fourth
-            Usenix Security Symposium Proceedings, October 1993.
-
-
-
-
-
-
-Simpson                      Informational                      [Page 7]
-
- 
-RFC 1853                     IP Tunnelling                  October 1995
-
-
-Acknowledgements
-
-   These implementation details of IP Tunneling are derived in large
-   part from independent work in 1990 by Phil Karn and the TCP-Group
-   hams using KA9Q NOS.
-
-   Special thanks to John Ioannidis (then of Columbia University) for
-   inspiration and experimentation which began this most recent round of
-   IP Mobility and IP Security development.  Some of this text was
-   derived from [IDM91a] and [swIPe].
-
-   The chaining of headers was also described in "Simple Internet
-   Protocol", by Steve Deering (Xerox PARC).
-
-   The overall organization and some of this text was derived from
-   [RFC-1241], by David Mills (U Delaware) and Robert Woodburn (SAIC).
-
-   Some of the text on tunnel soft state was derived from "IP Address
-   Encapsulation (IPAE)", by Robert E. Gilligan, Erik Nordmark, and Bob
-   Hinden (all of Sun Microsystems).

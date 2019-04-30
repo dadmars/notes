@@ -1,9 +1,4 @@
-https://tools.ietf.org/html/rfc879
-
-                      The TCP Maximum Segment Size Related Topics
-
-1.  Introduction
-
+#The TCP Maximum Segment Size Related Topics
    This memo discusses the TCP Maximum Segment Size and its relation to
    the IP Maximum Datagram Size.  
 
