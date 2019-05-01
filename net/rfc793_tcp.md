@@ -1,10 +1,10 @@
-#TCP要解决的问题：
-  基本的数据传输 Basic Data Transfer
-  可靠性 Reliability
-  流量控制 Flow Control
-  多路复用 Multiplexing
-  连接 Connections
-  优先级和安全 Precedence and Security
+# TCP要解决的问题
+* 基本的数据传输 Basic Data Transfer
+* 可靠性 Reliability
+* 流量控制 Flow Control
+* 多路复用 Multiplexing
+* 连接 Connections
+* 优先级和安全 Precedence and Security
 
 #Basic Data Transfer:
 TCP可以在两个主机之间传输连续的字节流，并且可以同时双向传输。一般TCP可自行决定何时阻塞，何时传输数据。
