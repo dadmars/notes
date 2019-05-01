@@ -1,57 +1,65 @@
-#TCP要解决的问题：
-  基本的数据传输 Basic Data Transfer
-  可靠性 Reliability
-  流量控制 Flow Control
-  多路复用 Multiplexing
-  连接 Connections
-  优先级和安全 Precedence and Security
+# TCP要解决的问题
 
-#Basic Data Transfer:
+* 基本的数据传输 Basic Data Transfer
+* 可靠性 Reliability
+* 流量控制 Flow Control
+* 多路复用 Multiplexing
+* 连接 Connections
+* 优先级和安全 Precedence and Security
+
+# Basic Data Transfer:
+
 TCP可以在两个主机之间传输连续的字节流，并且可以同时双向传输。一般TCP可自行决定何时阻塞，何时传输数据。
 
-如果用户要确保提交的数据都被传输，可调用 push 功能。 A push causes the TCPs to promptly forward and deliver data up to that point to the receiver. The exact push point might not be visible to the receiving user and the push function does not supply a record boundary marker.
+如果用户要确保提交的数据都被传输，可调用 push 功能。 push 操作使所有数据被发送，并提交给应用程序。push 操作对接收方是不可见的，所以不能被用作数据边界。
 
-#Reliability:
+# Reliability:
+
 数据包有可能损坏，丢失，重复，乱序。TCP必须能够从这些情况中恢复。
 
-数据包中的每一个字节都被编号 sequence number，发送的每一个字节都要得到对方的确认acknowledgment (ACK)。如果在一定时间内没有得到确认，重传数据。
+数据包中的每一个字节都被编号 sequence number，发送的每一个字节都要得到对方的确认 acknowledgment (ACK)。如果在一定时间内没有得到确认，重传数据。
 
-数据接收方通过sequence numbers确定数据包在字节流中的位置，并丢弃重复的数据 。数据包通过 checksum 来判断 数据的正确性。
+接收方通过 sequence numbers 确定数据包在字节流中的位置，判断数据是否重复。通过 checksum 来判断数据的正确性。
 
-#Flow Control:
-接收方在发送ACK的同时，会发送一个 "window"，通知发送方最多还能接收多少数据。
+# Flow Control:
 
-#Multiplexing:
-    A pair of sockets uniquely identifies each connection.
+接收方在发送ACK的同时，发送一个 "window"，通知发送方最多还能接收多少数据。
 
-#Connections:
+# Multiplexing:
+
+一个连接由一对 sockets 唯一标识。
+
+# Connections:
+
 要实现可靠性和流量控制，数据流要初始化一些状态，如 sockets, sequence numbers, window sizes。所有这些状态的集合称为连接。
 
 两个进程进行通信，必须建立连接（初始化这些状态）。当通信结束，必须关闭连接来释放这些资源。
 
-#Precedence and Security:
-    The users of TCP may indicate the security and precedence of their
-    communication.  Provision is made for default values to be used when
-    these features are not needed.
+# Precedence and Security:
 
-#Reliable Communication
-一个数据包的第一个字节的 sequence number 称为此数据包的 segment sequence number
+The users of TCP may indicate the security and precedence of their communication.  Provision is made for default values to be used when these features are not needed.
 
-一个数据包被发送时，复制一份到重传队列，并开启计时器。 when the acknowledgment for that data is received, the segment is deleted from the queue.  If the acknowledgment is not received before the timer runs out, the segment is retransmitted.
+# Reliable Communication
+
+数据包第一个字节的 sequence number 称为此数据包的 segment sequence number
+
+数据包被发送时，复制一份到重传队列，并开启计时器。 接收到 ACK 后，从重传队列中删除。如果计时器超时 ACK 还没收到，重传数据。
 
 发送方接收到一个ACK，不能保证数据被提交到了对方用户。只表示接收方做出了一个响应。
 
-#Connection Establishment and Clearing
-调用 OPEN，建立一个连接。连接的信息保存在 Transmission Control Block (TCB)。建立连接时同时决定此连接 actively pursued, or to be passively waited for.
+# Connection Establishment and Clearing
 
-passive OPEN 说明此进程是服务端。
+调用 OPEN，建立一个连接。连接的信息保存在 Transmission Control Block (TCB)。建立连接时同时决定是主动打开还是被动打开。 
+
+被动 OPEN 说明此进程是服务端。
 
 当一个 TCB entry 处于等待状态时，一个包含 SYN 的数据包到达，则开始建立连接。当双方的 sequence numbers 同步完成后，此连接建立完成。
 
 关闭连接也要发生数据包的交换，此时数据包包含 FIN
 
-#Data Communication
-数据放在用户的 buffer 中，如果此数据包含 PUSH，此 buffer 立即返回。 If data arrives that fills the user's buffer before a PUSH is seen, the data is passed to the user in buffer size units.
+# Data Communication
+
+数据放在用户的 buffer 中，如果数据包含 PUSH，buffer 立即返回。 如果 buffer 中的数据不包含 PUSH，buffer 満了之后返回给应用程序。
 
   TCP also provides a means to communicate to the receiver of data that
   at some point further along in the data stream than the receiver is
@@ -60,7 +68,8 @@ passive OPEN 说明此进程是服务端。
   urgent data, but the general notion is that the receiving process will
   take action to process the urgent data quickly.
 
-#Precedence and Security
+# Precedence and Security
+
   The TCP makes use of the internet protocol type of service field and
   security option to provide precedence and security on a per connection
   basis to TCP users.  
@@ -72,31 +81,24 @@ passive OPEN 说明此进程是服务端。
   them to specify the desired security level, compartment, and
   precedence of connections.
 
-#Header Format
-  Source Port:  16 bits
-  Destination Port:  16 bits
+# Header Format
 
-  Sequence Number:  32 bits
+* Source Port:  16 bits
+* Destination Port:  16 bits
+* Sequence Number:  32 bits
 
-    The sequence number of the first data octet in this segment (except
-    when SYN is present). If SYN is present the sequence number is the
-    initial sequence number (ISN) and the first data octet is ISN+1.
+  If SYN is present the sequence number is the initial sequence number (ISN) and the first data octet is ISN+1.
 
-  Acknowledgment Number:  32 bits
+* Acknowledgment Number:  32 bits
 
-    If the ACK control bit is set this field contains the value of the
-    next sequence number the sender of the segment is expecting to
-    receive.  Once a connection is established this is always sent.
+  If the ACK control bit is set this field contains the value of the next sequence number the sender of the segment is expecting to receive.  Once a connection is established this is always sent.
 
-  Data Offset:  4 bits
+* Data Offset:  4 bits
 
-    The number of 32 bit words in the TCP Header.  This indicates where
-    the data begins.  The TCP header (even one including options) is an
-    integral number of 32 bits long.
+  The number of 32 bit words in the TCP Header.  This indicates where the data begins.  The TCP header (even one including options) is an integral number of 32 bits long.
 
-  Reserved:  6 bits
-
-  Control Bits:  6 bits (from left to right):
+* Reserved:  6 bits
+* Control Bits:  6 bits (from left to right):
 
     URG:  Urgent Pointer field significant
     ACK:  Acknowledgment field significant
@@ -105,162 +107,126 @@ passive OPEN 说明此进程是服务端。
     SYN:  Synchronize sequence numbers
     FIN:  No more data from sender
 
-  Window:  16 bits
+* Window:  16 bits
 
-    The number of data octets beginning with the one indicated in the
-    acknowledgment field which the sender of this segment is willing to
-    accept.
+  接收方可以接收的数据大小。
 
-  Checksum:  16 bits
+* Checksum:  16 bits
 
-    The checksum also covers a 96 bit pseudo header conceptually
-    prefixed to the TCP header.  This pseudo header contains the Source
-    Address, the Destination Address, the Protocol, and TCP length.
-    This gives the TCP protection against misrouted segments.  This
-    information is carried in the Internet Protocol and is transferred
-    across the TCP/Network interface in the arguments or results of
-    calls by the TCP on the IP.
+  checksum 包含在 TCP 头部之前的 96 bit pseudo header。 pseudo header 包含 Source Address, the Destination Address, the Protocol, and TCP length。This gives the TCP protection against misrouted segments.
 
-                     +--------+--------+--------+--------+
-                     |           Source Address          |
-                     +--------+--------+--------+--------+
-                     |         Destination Address       |
-                     +--------+--------+--------+--------+
-                     |  zero  |  PTCL  |    TCP Length   |
-                     +--------+--------+--------+--------+
+      +--------+--------+--------+--------+
+      |           Source Address          |
+      +--------+--------+--------+--------+
+      |         Destination Address       |
+      +--------+--------+--------+--------+
+      |  zero  |  PTCL  |    TCP Length   |
+      +--------+--------+--------+--------+
 
-      The TCP Length is the TCP header length plus the data length in
-      octets, and it does not count the 12 octets of the pseudo
-      header.
+  TCP Length is the TCP header length plus the data length in octets, and it does not count the 12 octets of the pseudo header.
 
-  Urgent Pointer:  16 bits
+* Urgent Pointer:  16 bits
 
-    This field communicates the current value of the urgent pointer as a
-    positive offset from the sequence number in this segment.  The
-    urgent pointer points to the sequence number of the octet following
-    the urgent data.  This field is only be interpreted in segments with
-    the URG control bit set.
+  This field communicates the current value of the urgent pointer as a positive offset from the sequence number in this segment.  The urgent pointer points to the sequence number of the octet following the urgent data.  This field is only be interpreted in segments with the URG control bit set.
 
-  Options:  variable
+* Options:  variable
 
-    Options may occupy space at the end of the TCP header and are a
-    multiple of 8 bits in length.  All options are included in the
-    checksum.  An option may begin on any octet boundary.  There are two
-    cases for the format of an option:
+  Options may occupy space at the end of the TCP header and are a multiple of 8 bits in length.  All options are included in the checksum.  An option may begin on any octet boundary.  There are two cases for the format of an option:
 
-      Case 1:  A single octet of option-kind.
+  1. A single octet of option-kind.
+  2. An octet of option-kind, an octet of option-length, and the actual option-data octets.
 
-      Case 2:  An octet of option-kind, an octet of option-length, and
-               the actual option-data octets.
+  The option-length counts the two octets of option-kind and option-length as well as the option-data octets.
 
-    The option-length counts the two octets of option-kind and
-    option-length as well as the option-data octets.
+  Kind | Length | Meaning
+  -----|:------:|--------:
+   0   |   -    | End of option list.
+   1   |   -    | No-Operation.
+   2   |   4    | Maximum Segment Size.
 
-    Note that the list of options may be shorter than the data offset
-    field might imply.  The content of the header beyond the
-    End-of-Option option must be header padding (i.e., zero).
+  * End of Option List
 
-    A TCP must implement all options.
-    Currently defined options include (kind indicated in octal):
+    +--------+
+    |00000000|
+    +--------+
 
-      Kind     Length    Meaning
-      ----     ------    -------
-       0         -       End of option list.
-       1         -       No-Operation.
-       2         4       Maximum Segment Size.
+    Kind=0
 
-    Specific Option Definitions
+    This might not coincide with the end of the TCP header according to the Data Offset field.  This is used at the end of all options, not the end of each option, and need only be used if the end of the options would not otherwise coincide with the end of the TCP header.
 
-      End of Option List
+  * No-Operation
 
-        +--------+
-        |00000000|
-        +--------+
-         Kind=0
+    +--------+
+    |00000001|
+    +--------+
 
-        This option code indicates the end of the option list.  This
-        might not coincide with the end of the TCP header according to
-        the Data Offset field.  This is used at the end of all options,
-        not the end of each option, and need only be used if the end of
-        the options would not otherwise coincide with the end of the TCP
-        header.
+    Kind=1
 
-      No-Operation
+    This option code may be used between options, for example, to align the beginning of a subsequent option on a word boundary. There is no guarantee that senders will use this option, so receivers must be prepared to process options even if they do not begin on a word boundary.
 
-        +--------+
-        |00000001|
-        +--------+
-         Kind=1
+  * Maximum Segment Size
 
-        This option code may be used between options, for example, to
-        align the beginning of a subsequent option on a word boundary.
-        There is no guarantee that senders will use this option, so
-        receivers must be prepared to process options even if they do
-        not begin on a word boundary.
+    +--------+--------+---------+--------+
+    |00000010|00000100|   max seg size   |
+    +--------+--------+---------+--------+
 
-      Maximum Segment Size
+    Kind=2   Length=4
 
-        +--------+--------+---------+--------+
-        |00000010|00000100|   max seg size   |
-        +--------+--------+---------+--------+
-         Kind=2   Length=4
+    Maximum Segment Size Option Data:  16 bits
 
-        Maximum Segment Size Option Data:  16 bits
+    If this option is present, then it communicates the maximum receive segment size at the TCP which sends this segment. This field must only be sent in the initial connection request (i.e., in segments with the SYN control bit set).  If this option is not used, any segment size is allowed.
 
-          If this option is present, then it communicates the maximum
-          receive segment size at the TCP which sends this segment.
-          This field must only be sent in the initial connection request
-          (i.e., in segments with the SYN control bit set).  If this
-          option is not used, any segment size is allowed.
-
-  Padding:  variable
+  * Padding:  variable
     确保 TCP header ends and data begins on a 32 bit boundary.  
 
-#Terminology
+# TCB
+
 TCB 中存储着如下信息：
-  the local and remote socket numbers
-  the security and precedence of the connection
-  pointers to the user's send and receive buffers
-  pointers to the retransmit queue and to the current segment.
-  和 send and receive sequence numbers 相关的一些变量：
 
-    Send Sequence Variables
+* 双方的 socket numbers
+* the security and precedence of the connection
+* 应用程序的发送，接收 buffer pointers
+* 重传队列的指针，当前数据包的指针
 
-      SND.UNA - 已发送，还没确认
-      SND.NXT - send next
-      SND.WND - send window
-      SND.UP  - send urgent pointer
-      SND.WL1 - segment sequence number used for last window update
-      SND.WL2 - segment acknowledgment number used for last window update
-      ISS     - initial send sequence number
+send and receive sequence numbers 相关的变量：
 
-    Receive Sequence Variables
+* Send Sequence Variables
 
-      RCV.NXT - receive next
-      RCV.WND - receive window
-      RCV.UP  - receive urgent pointer
-      IRS     - initial receive sequence number
+  * SND.UNA - 已发送，还没确认
+  * SND.NXT - send next
+  * SND.WND - send window
+  * SND.UP  - send urgent pointer
+  * SND.WL1 - segment sequence number used for last window update
+  * SND.WL2 - segment acknowledgment number used for last window update
+  * ISS     - initial send sequence number
 
-  Send Sequence Space
+* Receive Sequence Variables
 
-                   1         2          3          4
-              ----------|----------|----------|----------
-                     SND.UNA    SND.NXT    SND.UNA
-                                          +SND.WND
+  * RCV.NXT - receive next
+  * RCV.WND - receive window
+  * RCV.UP  - receive urgent pointer
+  * IRS     - initial receive sequence number
+
+* Send Sequence Space
+
+           1         2          3          4
+      ----------|----------|----------|----------
+             SND.UNA    SND.NXT    SND.UNA
+                                   +SND.WND
 
         1 - 已确认的 sequence numbers
         2 - 已发送，还没确认
         3 - sequence numbers allowed for new data transmission
         4 - future sequence numbers which are not yet allowed
 
-  The send window is the portion of the sequence space labeled 3
+    The send window is the portion of the sequence space labeled 3
 
-  Receive Sequence Space
+* Receive Sequence Space
 
-                       1          2          3
-                   ----------|----------|----------
-                          RCV.NXT    RCV.NXT
-                                    +RCV.WND
+          1          2          3
+      ----------|----------|----------
+             RCV.NXT    RCV.NXT
+                       +RCV.WND
 
         1 - old sequence numbers which have been acknowledged
         2 - sequence numbers allowed for new reception
@@ -268,44 +234,38 @@ TCB 中存储着如下信息：
 
   The receive window is the portion of the sequence space labeled 2 
 
-    Current Segment Variables
+* Current Segment Variables
 
-      SEG.SEQ - segment sequence number
-      SEG.ACK - segment acknowledgment number
-      SEG.LEN - segment length
-      SEG.WND - segment window
-      SEG.UP  - segment urgent pointer
-      SEG.PRC - segment precedence value
+  * SEG.SEQ - segment sequence number
+  * SEG.ACK - segment acknowledgment number
+  * SEG.LEN - segment length
+  * SEG.WND - segment window
+  * SEG.UP  - segment urgent pointer
+  * SEG.PRC - segment 优先级
 
-  一个连接在整个生命周期内有不同的状态：
+# 连接在生命周期内的状态
 
-    LISTEN - 等待连接
-    SYN-SENT - 发送了连接请求，等待对方的连接请求
-    SYN-RECEIVED - 接收到了连接请求，向对方发送连接请求并等待ACK
-    ESTABLISHED - 连接正式建立
-    FIN-WAIT-1 - 发送关闭请求，等待ACK。或等待关闭请求
-    FIN-WAIT-2 - 等待关闭请求
-    CLOSE-WAIT - 等待本地应用程序的关闭请求
-    CLOSING - 等待关闭请求ACK
-    LAST-ACK - 发送关闭请求，等待ACK
-    TIME-WAIT - 等待足够时间，确保对方接收到了关闭请求
-    CLOSED - 无连接，此时没有 TCB，当然就不存在连接。
+* LISTEN        - 等待连接
+* SYN-SENT      - 发送了连接请求，等待对方的连接请求
+* SYN-RECEIVED  - 接收到了连接请求，向对方发送连接请求并等待ACK
+* ESTABLISHED   - 连接正式建立
+* FIN-WAIT-1    - 发送关闭请求，等待ACK。或等待关闭请求
+* FIN-WAIT-2    - 等待关闭请求
+* CLOSE-WAIT    - 等待本地应用程序的关闭请求
+* CLOSING       - 等待关闭请求ACK
+* LAST-ACK      - 发送关闭请求，等待ACK
+* TIME-WAIT     - 等待足够时间，确保对方接收到了关闭请求
+* CLOSED        - 无连接，此时没有 TCB，当然就不存在连接。
 
-  The events are the user calls, OPEN, SEND, RECEIVE, CLOSE, ABORT, and STATUS;
-  the incoming segments, containing the SYN, ACK, RST and FIN flags; and timeouts.
+The events are the user calls, OPEN, SEND, RECEIVE, CLOSE, ABORT, and STATUS; the incoming segments, containing the SYN, ACK, RST and FIN flags; and timeouts.
 
-#Sequence Numbers
-一个 ACK 为 X 说明 all octets up to but not including X have been received.
-    (a)  Determining that an acknowledgment refers to some sequence
-         number sent but not yet acknowledged.
+# Sequence Numbers
 
-    (b)  Determining that all sequence numbers occupied by a segment
-         have been acknowledged (e.g., to remove the segment from a
-         retransmission queue).
+一个 ACK 为 X 说明 all octets up to but not including X have been received. ACK 用于如下方面：
 
-    (c)  Determining that an incoming segment contains sequence numbers
-         which are expected (i.e., that the segment "overlaps" the
-         receive window).
+1. Determining that an acknowledgment refers to some sequence number sent but not yet acknowledged.
+2. Determining that all sequence numbers occupied by a segment have been acknowledged (e.g., to remove the segment from a retransmission queue).
+c. Determining that an incoming segment contains sequence numbers which are expected (i.e., that the segment "overlaps" the receive window).
 
   In response to sending data the TCP will receive acknowledgments.  The
   following comparisons are needed to process the acknowledgments.
