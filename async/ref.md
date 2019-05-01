@@ -3,3 +3,4 @@
 [async-io-on-linux](https://jvns.ca/blog/2017/06/03/async-io-on-linux--select--poll--and-epoll/)
 [epoll-surveys-review](https://www.stealthsecrets.com/epoll-surveys-review-is-it-a-scam-or-legit/)
 [linux-io-multiplexing](https://devarea.com/linux-io-multiplexing-select-vs-poll-vs-epoll/#.XMPRdUMRXCI)
+[5笔](https://www.52wubi.com/wbbmcx/search.php)

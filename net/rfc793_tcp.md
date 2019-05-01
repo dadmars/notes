@@ -1,4 +1,5 @@
 # TCP要解决的问题
+
 * 基本的数据传输 Basic Data Transfer
 * 可靠性 Reliability
 * 流量控制 Flow Control
@@ -6,13 +7,13 @@
 * 连接 Connections
 * 优先级和安全 Precedence and Security
 
-# Basic Data Transfer:
+# Basic Data Transfer
 
 TCP可以在两个主机之间传输连续的字节流，并且可以同时双向传输。一般TCP可自行决定何时阻塞，何时传输数据。
 
 如果用户要确保提交的数据都被传输，可调用 push 功能。 push 操作使所有数据被发送，并提交给应用程序。push 操作对接收方是不可见的，所以不能被用作数据边界。
 
-# Reliability:
+# Reliability
 
 数据包有可能损坏，丢失，重复，乱序。TCP必须能够从这些情况中恢复。
 
@@ -20,23 +21,25 @@ TCP可以在两个主机之间传输连续的字节流，并且可以同时双�
 
 接收方通过 sequence numbers 确定数据包在字节流中的位置，判断数据是否重复。通过 checksum 来判断数据的正确性。
 
-# Flow Control:
+# Flow Control
 
 接收方在发送ACK的同时，发送一个 "window"，通知发送方最多还能接收多少数据。
 
-# Multiplexing:
+# Multiplexing
 
 一个连接由一对 sockets 唯一标识。
 
-# Connections:
+# Connections
 
 要实现可靠性和流量控制，数据流要初始化一些状态，如 sockets, sequence numbers, window sizes。所有这些状态的集合称为连接。
 
 两个进程进行通信，必须建立连接（初始化这些状态）。当通信结束，必须关闭连接来释放这些资源。
 
-# Precedence and Security:
+# Precedence and Security
 
 The users of TCP may indicate the security and precedence of their communication.  Provision is made for default values to be used when these features are not needed.
+
+连接的安全不低于通信的双方端口。
 
 # Reliable Communication
 
@@ -48,7 +51,7 @@ The users of TCP may indicate the security and precedence of their communication
 
 # Connection Establishment and Clearing
 
-调用 OPEN，建立一个连接。连接的信息保存在 Transmission Control Block (TCB)。建立连接时同时决定是主动打开还是被动打开。 
+调用 OPEN，建立一个连接。连接的信息保存在 Transmission Control Block (TCB)。建立连接时同时决定是主动打开还是被动打开。
 
 被动 OPEN 说明此进程是服务端。
 
@@ -59,26 +62,6 @@ The users of TCP may indicate the security and precedence of their communication
 # Data Communication
 
 数据放在用户的 buffer 中，如果数据包含 PUSH，buffer 立即返回。 如果 buffer 中的数据不包含 PUSH，buffer 満了之后返回给应用程序。
-
-  TCP also provides a means to communicate to the receiver of data that
-  at some point further along in the data stream than the receiver is
-  currently reading there is urgent data.  TCP does not attempt to
-  define what the user specifically does upon being notified of pending
-  urgent data, but the general notion is that the receiving process will
-  take action to process the urgent data quickly.
-
-# Precedence and Security
-
-  The TCP makes use of the internet protocol type of service field and
-  security option to provide precedence and security on a per connection
-  basis to TCP users.  
-
-  TCP modules which operate in a multilevel secure environment must
-  properly mark outgoing segments with the security, compartment, and
-  precedence.  Such TCP modules must also provide to their users or
-  higher level protocols such as Telnet or THP an interface to allow
-  them to specify the desired security level, compartment, and
-  precedence of connections.
 
 # Header Format
 
@@ -173,7 +156,7 @@ The users of TCP may indicate the security and precedence of their communication
 
     Maximum Segment Size Option Data:  16 bits
 
-    If this option is present, then it communicates the maximum receive segment size at the TCP which sends this segment. This field must only be sent in the initial connection request (i.e., in segments with the SYN control bit set).  If this option is not used, any segment size is allowed.
+    If this option is present, then it communicates the maximum receive segment size at the TCP which sends this segment. 此字段只能在建立连接时发送(i.e., in segments with the SYN control bit set).  If this option is not used, any segment size is allowed.
 
   * Padding:  variable
     确保 TCP header ends and data begins on a 32 bit boundary.  
@@ -231,7 +214,7 @@ send and receive sequence numbers 相关的变量：
         2 - sequence numbers allowed for new reception
         3 - future sequence numbers which are not yet allowed
 
-  The receive window is the portion of the sequence space labeled 2 
+  The receive window is the portion of the sequence space labeled 2
 
 * Current Segment Variables
 
@@ -338,7 +321,8 @@ c. Determining that an incoming segment contains sequence numbers which are expe
   ACKs.  However, even when the receive window is zero, a TCP must
   process the RST and URG fields of all incoming segments.
 
-#The SYN and FIN
+## The SYN and FIN
+
 只用在建立连接和关闭连接中。SYN is considered to occur before the first actual data
   octet of the segment in which it occurs, while the FIN is considered
   to occur after the last actual data octet in a segment in which it
@@ -346,7 +330,8 @@ c. Determining that an incoming segment contains sequence numbers which are expe
   space occupying controls.  When a SYN is present then SEG.SEQ is the
   sequence number of the SYN.
 
-#Initial Sequence Number Selection
+## Initial Sequence Number Selection
+
 一个连接建立时，双方必须同步ISN。 通过交换数据包来达到此目的，此时的数据包设定了 SYN 标志，数据包包含有ISN。  As a shorthand, segments carrying the SYN bit are also called "SYNs".
 
 同步过程为双方都要发送自己的 ISN 给对方并收到ACK。
@@ -358,43 +343,45 @@ c. Determining that an incoming segment contains sequence numbers which are expe
 
 2 和 3 可以合并，所以称为3次握手。
 
-#The TCP Quiet Time Concept
+# The TCP Quiet Time Concept
+
 发送的所有字节与 sequence number 有一一对应关系。sequence number 每隔 2**32 循环一次。在源主机，一个数据包建立并进入发送队列时，TCP 都要消耗相应的 sequence number space。
 
 为防止重复，sequence space 非常大。数据包在网络的最大生存时间不超过几十秒。100 megabits/sec, 循环一次时间为 5.4 minutes
 
 如果主机崩溃，同时发送的数据还在路上，如果重新恢复，发送的sequence number可能重复，为了让在路上的数据包失效，主机要延迟 MSL 秒后才能发送数据。此时的 MSL 为 2 分钟。
 
-#Establishing a connection
+# Establishing a connection
+
       TCP A                                                TCP B
 
-  1.  CLOSED                                                LISTEN
+  1   CLOSED                                                LISTEN
 
-  2.  SYN-SENT    --> <SEQ=100><CTL=SYN>               --> SYN-RECEIVED
+  2   SYN-SENT    --> <SEQ=100><CTL=SYN>               --> SYN-RECEIVED
 
-  3.  ESTABLISHED <-- <SEQ=300><ACK=101><CTL=SYN,ACK>  <-- SYN-RECEIVED
+  3   ESTABLISHED <-- <SEQ=300><ACK=101><CTL=SYN,ACK>  <-- SYN-RECEIVED
 
-  4.  ESTABLISHED --> <SEQ=101><ACK=301><CTL=ACK>       --> ESTABLISHED
+  4   ESTABLISHED --> <SEQ=101><ACK=301><CTL=ACK>       --> ESTABLISHED
 
-  5.  ESTABLISHED --> <SEQ=101><ACK=301><CTL=ACK><DATA> --> ESTABLISHED
+  5   ESTABLISHED --> <SEQ=101><ACK=301><CTL=ACK><DATA> --> ESTABLISHED
 
   At line 4, TCP A 发送一个包含ACK的空数据包; in line 5, TCP A sends some data. 两者的 sequence number 是一样的。因为 ACK 不占用 sequence number 空间.
 
       TCP A                                               TCP B
 
-  1.  CLOSED                                              CLOSED
+  1  CLOSED                                              CLOSED
 
-  2.  SYN-SENT     --> <SEQ=100><CTL=SYN>              ...
+  2  SYN-SENT     --> <SEQ=100><CTL=SYN>              ...
 
-  3.  SYN-RECEIVED <-- <SEQ=300><CTL=SYN>              <-- SYN-SENT
+  3  SYN-RECEIVED <-- <SEQ=300><CTL=SYN>              <-- SYN-SENT
 
-  4.               ... <SEQ=100><CTL=SYN>              --> SYN-RECEIVED
+  4               ... <SEQ=100><CTL=SYN>              --> SYN-RECEIVED
 
-  5.  SYN-RECEIVED --> <SEQ=100><ACK=301><CTL=SYN,ACK> ...
+  5  SYN-RECEIVED --> <SEQ=100><ACK=301><CTL=SYN,ACK> ...
 
-  6.  ESTABLISHED  <-- <SEQ=300><ACK=101><CTL=SYN,ACK> <-- SYN-RECEIVED
+  6  ESTABLISHED  <-- <SEQ=300><ACK=101><CTL=SYN,ACK> <-- SYN-RECEIVED
 
-  7.               ... <SEQ=101><ACK=301><CTL=ACK>     --> ESTABLISHED
+  7               ... <SEQ=101><ACK=301><CTL=ACK>     --> ESTABLISHED
 
   The principle reason for the three-way handshake is to prevent old
   duplicate connection initiations from causing confusion.  To deal with
@@ -403,26 +390,25 @@ c. Determining that an incoming segment contains sequence numbers which are expe
   SYN-RECEIVED), it returns to LISTEN on receiving an acceptable reset.
   If the TCP is in one of the synchronized states (ESTABLISHED,
   FIN-WAIT-1, FIN-WAIT-2, CLOSE-WAIT, CLOSING, LAST-ACK, TIME-WAIT), it
-  aborts the connection and informs its user. 
+  aborts the connection and informs its user.
 
       TCP A                                                TCP B
 
-  1.  CLOSED                                               LISTEN
+  1  CLOSED                                               LISTEN
 
-  2.  SYN-SENT    --> <SEQ=100><CTL=SYN>               ...
+  2  SYN-SENT    --> <SEQ=100><CTL=SYN>               ...
 
-  3.  (duplicate) ... <SEQ=90><CTL=SYN>               --> SYN-RECEIVED
+  3  (duplicate) ... <SEQ=90><CTL=SYN>               --> SYN-RECEIVED
 
-  4.  SYN-SENT    <-- <SEQ=300><ACK=91><CTL=SYN,ACK>  <-- SYN-RECEIVED
+  4  SYN-SENT    <-- <SEQ=300><ACK=91><CTL=SYN,ACK>  <-- SYN-RECEIVED
 
-  5.  SYN-SENT    --> <SEQ=91><CTL=RST>               --> LISTEN
+  5  SYN-SENT    --> <SEQ=91><CTL=RST>               --> LISTEN
 
+  6              ... <SEQ=100><CTL=SYN>               --> SYN-RECEIVED
 
-  6.              ... <SEQ=100><CTL=SYN>               --> SYN-RECEIVED
+  7  SYN-SENT    <-- <SEQ=400><ACK=101><CTL=SYN,ACK>  <-- SYN-RECEIVED
 
-  7.  SYN-SENT    <-- <SEQ=400><ACK=101><CTL=SYN,ACK>  <-- SYN-RECEIVED
-
-  8.  ESTABLISHED --> <SEQ=101><ACK=401><CTL=ACK>      --> ESTABLISHED
+  8  ESTABLISHED --> <SEQ=101><ACK=401><CTL=ACK>      --> ESTABLISHED
 
  TCP A detects that the ACK field is incorrect and returns a
   RST (reset) with its SEQ field selected to make the segment
@@ -432,24 +418,25 @@ c. Determining that an incoming segment contains sequence numbers which are expe
   before the RST, a more complex exchange might have occurred with RST's
   sent in both directions.
 
-#Half-Open Connections and Other Anomalies
+# Half-Open Connections and Other Anomalies
+
 对方的连接关闭，向对方发送数据，得到 RST
 
       TCP A                                           TCP B
 
-  1.  (CRASH)                               (send 300,receive 100)
+  1  (CRASH)                               (send 300,receive 100)
 
-  2.  CLOSED                                           ESTABLISHED
+  2  CLOSED                                           ESTABLISHED
 
-  3.  SYN-SENT --> <SEQ=400><CTL=SYN>              --> (??)
+  3  SYN-SENT --> <SEQ=400><CTL=SYN>              --> (??)
 
-  4.  (!!)     <-- <SEQ=300><ACK=100><CTL=ACK>     <-- ESTABLISHED
+  4  (!!)     <-- <SEQ=300><ACK=100><CTL=ACK>     <-- ESTABLISHED
 
-  5.  SYN-SENT --> <SEQ=100><CTL=RST>              --> (Abort!!)
+  5  SYN-SENT --> <SEQ=100><CTL=RST>              --> (Abort!!)
 
-  6.  SYN-SENT                                         CLOSED
+  6  SYN-SENT                                         CLOSED
 
-  7.  SYN-SENT --> <SEQ=400><CTL=SYN>              -->
+  7  SYN-SENT --> <SEQ=400><CTL=SYN>              -->
 
   When the SYN arrives at line 3, TCP B, being in a synchronized state,
   and the incoming segment outside the window, responds with an
@@ -462,11 +449,11 @@ c. Determining that an incoming segment contains sequence numbers which are expe
 
         TCP A                                              TCP B
 
-  1.  (CRASH)                                   (send 300,receive 100)
+  1  (CRASH)                                   (send 300,receive 100)
 
-  2.  (??)    <-- <SEQ=300><ACK=100><DATA=10><CTL=ACK> <-- ESTABLISHED
+  2  (??)    <-- <SEQ=300><ACK=100><DATA=10><CTL=ACK> <-- ESTABLISHED
 
-  3.          --> <SEQ=100><CTL=RST>                   --> (ABORT!!)
+  3          --> <SEQ=100><CTL=RST>                   --> (ABORT!!)
 
   An old duplicate arriving at TCP B (line 2) stirs B
   into action.  A SYN-ACK is returned (line 3) and causes TCP A to
@@ -475,17 +462,17 @@ c. Determining that an incoming segment contains sequence numbers which are expe
 
       TCP A                                         TCP B
 
-  1.  LISTEN                                        LISTEN
+  1  LISTEN                                        LISTEN
 
-  2.       ... <SEQ=Z><CTL=SYN>                -->  SYN-RECEIVED
+  2       ... <SEQ=Z><CTL=SYN>                -->  SYN-RECEIVED
 
-  3.  (??) <-- <SEQ=X><ACK=Z+1><CTL=SYN,ACK>   <--  SYN-RECEIVED
+  3  (??) <-- <SEQ=X><ACK=Z+1><CTL=SYN,ACK>   <--  SYN-RECEIVED
 
-  4.       --> <SEQ=Z+1><CTL=RST>              -->  (return to LISTEN!)
+  4       --> <SEQ=Z+1><CTL=RST>              -->  (return to LISTEN!)
 
-  5.  LISTEN                                        LISTEN
+  5  LISTEN                                        LISTEN
 
-#Reset Generation
+# Reset Generation
 
   As a general rule, reset (RST) must be sent whenever a segment arrives
   which apparently is not intended for the current connection.  A reset
@@ -544,16 +531,19 @@ c. Determining that an incoming segment contains sequence numbers which are expe
     connection goes to the CLOSED state.  The reset takes its sequence
     number from the ACK field of the incoming segment.
 
-#Reset Processing
+# Reset Processing
+
 如果当前状态不是 SYN-SENT, 通过检查 SEQ-fields 验证 RST。 sequence number 必须在 window 范围。
 如果当前状态是 SYN-SENT (a RST received in response to an initial SYN), the RST is acceptable if the ACK field acknowledges the SYN.
 
 当接收到 RST ，首先进行验证，然后改变状态。 当前为 LISTEN 时，忽略它。如果当前是 SYN-RECEIVED 并且前一状态是 LISTEN ，回到 LISTEN 状态，否则终止连接，设为 CLOSED 状态. 其它情况都终止连接，通知应用程序，设为 CLOSED 状态
 
-#Closing a Connection
+# Closing a Connection
+
 发送方关闭连接后，还可能接收数据。发送方在关闭连接时，会将buffer中的所有数据都进行发送。
 
-##Local user initiates the close
+## Local user initiates the close
+
 FIN 数据加入发送队列。数据被发送后，进入 FIN-WAIT-1 状态, 此时可以接收数据。在接收到ACK之前，所有的数据，包含FIN，都可以被重传。
 
 对方回应FIN，并且发送自己的FIN过来
@@ -562,10 +552,12 @@ FIN 数据加入发送队列。数据被发送后，进入 FIN-WAIT-1 状态, �
 
 Note that a TCP receiving a FIN will ACK but not send its own FIN until its user has CLOSED the connection also.
 
-##TCP receives a FIN from the network
+## TCP receives a FIN from the network
+
 接收到一个 FIN，发送一个ACK到对方，并通知应用程序连接要关闭了。应用程序回应一个 CLOSE，将buffer中数据发送完后，发送 FIN 到对方，然后等待对方的 ACK。当收到后，删除连接。如果没收到，超时后，终止连接并通知程序。
 
-##both users close simultaneously
+## both users close simultaneously
+
     A simultaneous CLOSE by users at both ends of a connection causes
     FIN segments to be exchanged.  When all segments preceding the FINs
     have been processed and acknowledged, each TCP can ACK the FIN it
@@ -574,52 +566,48 @@ Note that a TCP receiving a FIN will ACK but not send its own FIN until its user
 
       TCP A                                                TCP B
 
-  1.  ESTABLISHED                                          ESTABLISHED
+  1  ESTABLISHED                                          ESTABLISHED
 
-  2.  (Close)
+  2  (Close)
       FIN-WAIT-1  --> <SEQ=100><ACK=300><CTL=FIN,ACK>  --> CLOSE-WAIT
 
-  3.  FIN-WAIT-2  <-- <SEQ=300><ACK=101><CTL=ACK>      <-- CLOSE-WAIT
+  3  FIN-WAIT-2  <-- <SEQ=300><ACK=101><CTL=ACK>      <-- CLOSE-WAIT
 
-  4.                                                       (Close)
+  4                                                       (Close)
       TIME-WAIT   <-- <SEQ=300><ACK=101><CTL=FIN,ACK>  <-- LAST-ACK
 
-  5.  TIME-WAIT   --> <SEQ=101><ACK=301><CTL=ACK>      --> CLOSED
+  5  TIME-WAIT   --> <SEQ=101><ACK=301><CTL=ACK>      --> CLOSED
 
-  6.  (2 MSL)
+  6  (2 MSL)
       CLOSED
 
                          Normal Close Sequence
 
       TCP A                                                TCP B
 
-  1.  ESTABLISHED                                          ESTABLISHED
+  1  ESTABLISHED                                          ESTABLISHED
 
-  2.  (Close)                                              (Close)
+  2  (Close)                                              (Close)
       FIN-WAIT-1  --> <SEQ=100><ACK=300><CTL=FIN,ACK>  ... FIN-WAIT-1
                   <-- <SEQ=300><ACK=100><CTL=FIN,ACK>  <--
                   ... <SEQ=100><ACK=300><CTL=FIN,ACK>  -->
 
-  3.  CLOSING     --> <SEQ=101><ACK=301><CTL=ACK>      ... CLOSING
+  3  CLOSING     --> <SEQ=101><ACK=301><CTL=ACK>      ... CLOSING
                   <-- <SEQ=301><ACK=101><CTL=ACK>      <--
                   ... <SEQ=101><ACK=301><CTL=ACK>      -->
 
-  4.  TIME-WAIT                                            TIME-WAIT
+  4  TIME-WAIT                                            TIME-WAIT
       (2 MSL)                                              (2 MSL)
       CLOSED                                               CLOSED
 
-                      Simultaneous Close Sequence
-
-#Precedence and Security
-连接的安全不低于通信的双方端口。
-
-#Data Communication
 The CLOSE user call implies a push function, as does the FIN control flag in an incoming segment.
 
-#Retransmission Timeout
+# Retransmission Timeout
+
 重传时间必须动态决定。
 
-#Managing the Window
+# Managing the Window
+
 window 表示接收方接收数据 buffer 的大小
 
 如果发送方的发送窗口为0,发送方也必须能从程序接收并发送一个字节的数据。
