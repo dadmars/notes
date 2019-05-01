@@ -1,8 +1,4 @@
 # TCP要解决的问题
-<<<<<<< HEAD
-
-=======
->>>>>>> 35ba8fabeaf4e9dda9502c69529c71f03e5f5138
 * 基本的数据传输 Basic Data Transfer
 * 可靠性 Reliability
 * 流量控制 Flow Control
@@ -10,12 +6,8 @@
 * 连接 Connections
 * 优先级和安全 Precedence and Security
 
-<<<<<<< HEAD
 # Basic Data Transfer:
 
-=======
-#Basic Data Transfer:
->>>>>>> 35ba8fabeaf4e9dda9502c69529c71f03e5f5138
 TCP可以在两个主机之间传输连续的字节流，并且可以同时双向传输。一般TCP可自行决定何时阻塞，何时传输数据。
 
 如果用户要确保提交的数据都被传输，可调用 push 功能。 push 操作使所有数据被发送，并提交给应用程序。push 操作对接收方是不可见的，所以不能被用作数据边界。
