@@ -245,81 +245,43 @@ The events are the user calls, OPEN, SEND, RECEIVE, CLOSE, ABORT, and STATUS; th
 
 一个 ACK 为 X 说明 all octets up to but not including X have been received. ACK 用于如下方面：
 
-1. Determining that an acknowledgment refers to some sequence number sent but not yet acknowledged.
-2. Determining that all sequence numbers occupied by a segment have been acknowledged (e.g., to remove the segment from a retransmission queue).
-c. Determining that an incoming segment contains sequence numbers which are expected (i.e., that the segment "overlaps" the receive window).
+1. 确认已发送，未确认的 sequence number
+2. 确认所有已确认的 sequence numbers (如： 从重传队列中删除)
+3. 确认接收的数据包的 sequence numbers 是正确的(如： 防止重复).
 
-  In response to sending data the TCP will receive acknowledgments.  The
-  following comparisons are needed to process the acknowledgments.
+TCP 接收 ACK 时，用到下面变量：
 
-    SND.UNA = oldest unacknowledged sequence number
+* SND.UNA = 最后的未确认 sequence number
+* SND.NXT = 下一个被发送的 sequence number
+* SEG.ACK = 从对方接收的 ACK (对方希望接收的下一个 sequence number)
+* SEG.SEQ = 数据包的第一个 sequence number
+* SEG.LEN = 数据包的长度 (counting SYN and FIN) SEG.SEQ + SEG.LEN-1 = 数据包最后的 sequence number
 
-    SND.NXT = next sequence number to be sent
+SND.UNA < SEG.ACK =< SND.NXT
 
-    SEG.ACK = acknowledgment from the receiving TCP (next sequence
-              number expected by the receiving TCP)
+TCP 接收数据包时，用到下面变量：
 
-    SEG.SEQ = first sequence number of a segment
+* RCV.NXT = 希望的 sequence number, 同时也是接收 window 的下边界
+* RCV.NXT + RCV.WND - 1 = 接收 window 的上边界
+* SEG.SEQ = 数据包的第一个 sequence number
+* SEG.SEQ + SEG.LEN - 1 = 数据包的最后一个 sequence number
 
-    SEG.LEN = the number of octets occupied by the data in the segment
-              (counting SYN and FIN)
+接收的数据包必须要在接收 window 之内：
 
-    SEG.SEQ+SEG.LEN-1 = last sequence number of a segment
+```C
+     RCV.NXT =< SEG.SEQ < RCV.NXT+RCV.WND
+  || RCV.NXT =< SEG.SEQ+SEG.LEN-1 < RCV.NXT+RCV.WND
+```
 
-  A new acknowledgment (called an "acceptable ack"), is one for which
-  the inequality below holds:
+还要考虑 0 window 和 0 长度的数据包：
 
-    SND.UNA < SEG.ACK =< SND.NXT
+数据包长度 | 接收 Window |  判断条件
+----------|:----------:|-----
+   0      |     0      | SEG.SEQ = RCV.NXT
+   0      |    >0      | RCV.NXT =< SEG.SEQ < RCV.NXT+RCV.WND
+  >0      |     0      | not acceptable
 
-  When data is received the following comparisons are needed:
-
-    RCV.NXT = next sequence number expected on an incoming segments, and
-        is the left or lower edge of the receive window
-
-    RCV.NXT+RCV.WND-1 = last sequence number expected on an incoming
-        segment, and is the right or upper edge of the receive window
-
-    SEG.SEQ = first sequence number occupied by the incoming segment
-
-    SEG.SEQ+SEG.LEN-1 = last sequence number occupied by the incoming
-        segment
-
-  A segment is judged to occupy a portion of valid receive sequence
-  space if
-
-    RCV.NXT =< SEG.SEQ < RCV.NXT+RCV.WND
-
-  or
-
-    RCV.NXT =< SEG.SEQ+SEG.LEN-1 < RCV.NXT+RCV.WND
-
-  The first part of this test checks to see if the beginning of the
-  segment falls in the window, the second part of the test checks to see
-  if the end of the segment falls in the window; if the segment passes
-  either part of the test it contains data in the window.
-
-  Actually, it is a little more complicated than this.  Due to zero
-  windows and zero length segments, we have four cases for the
-  acceptability of an incoming segment:
-
-    Segment Receive  Test
-    Length  Window
-    ------- -------  -------------------------------------------
-
-       0       0     SEG.SEQ = RCV.NXT
-
-       0      >0     RCV.NXT =< SEG.SEQ < RCV.NXT+RCV.WND
-
-      >0       0     not acceptable
-
-      >0      >0     RCV.NXT =< SEG.SEQ < RCV.NXT+RCV.WND
-                  or RCV.NXT =< SEG.SEQ+SEG.LEN-1 < RCV.NXT+RCV.WND
-
-  Note that when the receive window is zero no segments should be
-  acceptable except ACK segments.  Thus, it is be possible for a TCP to
-  maintain a zero receive window while transmitting data and receiving
-  ACKs.  However, even when the receive window is zero, a TCP must
-  process the RST and URG fields of all incoming segments.
+当接收 window 为 0, ACK，RST，URG 还是能接收的。
 
 ## The SYN and FIN
 
@@ -383,14 +345,7 @@ c. Determining that an incoming segment contains sequence numbers which are expe
 
   7               ... <SEQ=101><ACK=301><CTL=ACK>     --> ESTABLISHED
 
-  The principle reason for the three-way handshake is to prevent old
-  duplicate connection initiations from causing confusion.  To deal with
-  this, a special control message, reset, has been devised.  If the
-  receiving TCP is in a  non-synchronized state (i.e., SYN-SENT,
-  SYN-RECEIVED), it returns to LISTEN on receiving an acceptable reset.
-  If the TCP is in one of the synchronized states (ESTABLISHED,
-  FIN-WAIT-1, FIN-WAIT-2, CLOSE-WAIT, CLOSING, LAST-ACK, TIME-WAIT), it
-  aborts the connection and informs its user.
+三次握手的好处在于可以避免重复初始化连接。To deal with this, a special control message, reset, has been devised. 当接收到 reset 后，接收方在 non-synchronized 状态 (i.e., SYN-SENT, SYN-RECEIVED), 返回到 LISTEN 状态。接收方在 synchronized 状态 (ESTABLISHED, FIN-WAIT-1, FIN-WAIT-2, CLOSE-WAIT, CLOSING, LAST-ACK, TIME-WAIT), 终止连接并通知应用程序。
 
       TCP A                                                TCP B
 
@@ -474,62 +429,19 @@ c. Determining that an incoming segment contains sequence numbers which are expe
 
 # Reset Generation
 
-  As a general rule, reset (RST) must be sent whenever a segment arrives
-  which apparently is not intended for the current connection.  A reset
-  must not be sent if it is not clear that this is the case.
+接收到的数据包明显不属于此连接时，才发送 RST。
 
-  There are three groups of states:
+1. 接收到一个数据包（非 RST ），此数据包对应的连接不存在(CLOSED)， 会向对方发送 reset. In particular, SYNs addressed to a non-existent connection are rejected by this means.
 
-    1.  If the connection does not exist (CLOSED) then a reset is sent
-    in response to any incoming segment except another reset.  In
-    particular, SYNs addressed to a non-existent connection are rejected
-    by this means.
+    如果接收到的数据包是 ACK , reset takes its sequence number from the ACK field of the segment, 否则，reset 的 sequence number 为 0 并且 the ACK field is set to the sum of the sequence number and segment length of the incoming segment. The connection remains in the CLOSED state.
 
-    If the incoming segment has an ACK field, the reset takes its
-    sequence number from the ACK field of the segment, otherwise the
-    reset has sequence number zero and the ACK field is set to the sum
-    of the sequence number and segment length of the incoming segment.
-    The connection remains in the CLOSED state.
+2. 连接在 non-synchronized 状态 (LISTEN, SYN-SENT, SYN-RECEIVED), 接收的数据包ACK，但响应的数据还没有被发送(数据包包含了不能被接受的 ACK), 或数据包的安全等级不匹配，a reset is sent.
 
-    2.  If the connection is in any non-synchronized state (LISTEN,
-    SYN-SENT, SYN-RECEIVED), and the incoming segment acknowledges
-    something not yet sent (the segment carries an unacceptable ACK), or
-    if an incoming segment has a security level or compartment which
-    does not exactly match the level and compartment requested for the
-    connection, a reset is sent.
+    如果接收到的数据包是 the reset takes its sequence number from the ACK field of the segment, otherwise the reset has sequence number zero and the ACK field is set to the sum of the sequence number and segment length of the incoming segment. The connection remains in the same state.
 
-    If our SYN has not been acknowledged and the precedence level of the
-    incoming segment is higher than the precedence level requested then
-    either raise the local precedence level (if allowed by the user and
-    the system) or send a reset; or if the precedence level of the
-    incoming segment is lower than the precedence level requested then
-    continue as if the precedence matched exactly (if the remote TCP
-    cannot raise the precedence level to match ours this will be
-    detected in the next segment it sends, and the connection will be
-    terminated then).  If our SYN has been acknowledged (perhaps in this
-    incoming segment) the precedence level of the incoming segment must
-    match the local precedence level exactly, if it does not a reset
-    must be sent.
+3. 连接在 synchronized 状态 (ESTABLISHED, FIN-WAIT-1, FIN-WAIT-2, CLOSE-WAIT, CLOSING, LAST-ACK, TIME-WAIT), 所有无效数据包 (out of window sequence number or unacceptible acknowledgment number) must elicit only an empty acknowledgment segment containing the current send-sequence number and an acknowledgment indicating the next sequence number expected to be received, and the connection remains in the same state.
 
-    If the incoming segment has an ACK field, the reset takes its
-    sequence number from the ACK field of the segment, otherwise the
-    reset has sequence number zero and the ACK field is set to the sum
-    of the sequence number and segment length of the incoming segment.
-    The connection remains in the same state.
-
-    3.  If the connection is in a synchronized state (ESTABLISHED,
-    FIN-WAIT-1, FIN-WAIT-2, CLOSE-WAIT, CLOSING, LAST-ACK, TIME-WAIT),
-    any unacceptable segment (out of window sequence number or
-    unacceptible acknowledgment number) must elicit only an empty
-    acknowledgment segment containing the current send-sequence number
-    and an acknowledgment indicating the next sequence number expected
-    to be received, and the connection remains in the same state.
-
-    If an incoming segment has a security level, or compartment, or
-    precedence which does not exactly match the level, and compartment,
-    and precedence requested for the connection,a reset is sent and
-    connection goes to the CLOSED state.  The reset takes its sequence
-    number from the ACK field of the incoming segment.
+    If an incoming segment has a security level, or compartment, or precedence which does not exactly match the level, and compartment, and precedence requested for the connection,a reset is sent and connection goes to the CLOSED state.  The reset takes its sequence number from the ACK field of the incoming segment.
 
 # Reset Processing
 
@@ -616,41 +528,16 @@ window 表示接收方接收数据 buffer 的大小
 
 如果接收方的窗口为0,有数据到达时，也要回应一个ACK 和当前窗口（大小为0）。
 
-    Window Management Suggestions
+## Window Management Suggestions
 
-      Allocating a very small window causes data to be transmitted in
-      many small segments when better performance is achieved using
-      fewer large segments.
+window 太小，数据会被拆分到大量的小数据包内发送。如果要提升性能，选择稍大一点的数据包。
 
-      One suggestion for avoiding small windows is for the receiver to
-      defer updating a window until the additional allocation is at
-      least X percent of the maximum allocation possible for the
-      connection (where X might be 20 to 40).
+接收方可以在剩余空间达到连接最大空间的20%到40%之间时，再更新 window 大小，这样可以避免小 window 的出现。
 
-      Another suggestion is for the sender to avoid sending small
-      segments by waiting until the window is large enough before
-      sending data.  If the user signals a push function then the
-      data must be sent even if it is a small segment.
+发送方可以等 window 足够大时再发送数据。除非遇到 push。
 
-      Note that the acknowledgments should not be delayed or unnecessary
-      retransmissions will result.  One strategy would be to send an
-      acknowledgment when a small segment arrives (with out updating the
-      window information), and then to send another acknowledgment with
-      new window information when the window is larger.
+ACK 不能延迟发送，不然会重传数据。One strategy would be to send an acknowledgment when a small segment arrives (with out updating the window information), and then to send another acknowledgment with new window information when the window is larger.
 
-      The segment sent to probe a zero window may also begin a break up
-      of transmitted data into smaller and smaller segments.  If a
-      segment containing a single data octet sent to probe a zero window
-      is accepted, it consumes one octet of the window now available.
-      If the sending TCP simply sends as much as it can whenever the
-      window is non zero, the transmitted data will be broken into
-      alternating big and small segments.  As time goes on, occasional
-      pauses in the receiver making window allocation available will
-      result in breaking the big segments into a small and not quite so
-      big pair. And after a while the data transmission will be in
-      mostly small segments.
+发送数据包去探测 zero window 也会使数据包越来越小。If a segment containing a single data octet sent to probe a zero window is accepted, it consumes one octet of the window now available. If the sending TCP simply sends as much as it can whenever the window is non zero, the transmitted data will be broken into alternating big and small segments.  As time goes on, occasional pauses in the receiver making window allocation available will result in breaking the big segments into a small and not quite so big pair. And after a while the data transmission will be in mostly small segments.
 
-      The suggestion here is that the TCP implementations need to
-      actively attempt to combine small window allocations into larger
-      windows, since the mechanisms for managing the window tend to lead
-      to many small windows in the simplest minded implementations.
+The suggestion here is that the TCP implementations need to actively attempt to combine small window allocations into larger windows, since the mechanisms for managing the window tend to lead to many small windows in the simplest minded implementations.
