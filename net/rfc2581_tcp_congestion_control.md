@@ -9,31 +9,23 @@
 
 # Definitions
 
-* SENDER MAXIMUM SEGMENT SIZE (SMSS):  The SMSS is the size of the largest segment that the sender can transmit.  This value can be based on the maximum transmission unit of the network, the path MTU discovery algorithm, RMSS (see next item), or other factors.  The size does not include the TCP/IP headers and options.
-
-* RECEIVER MAXIMUM SEGMENT SIZE (RMSS):  The RMSS is the size of the largest segment the receiver is willing to accept.  This is the value specified in the MSS option sent by the receiver during connection startup.  Or, if the MSS option is not used, 536 bytes.  The size does not include the TCP/IP headers and options.
-
-* FULL-SIZED SEGMENT: A segment that contains the maximum number of data bytes permitted (i.e., a segment containing SMSS bytes of data).
-
-* RECEIVER WINDOW (rwnd) The most recently advertised receiver window.
-
-* CONGESTION WINDOW (cwnd):  A TCP state variable that limits the amount of data a TCP can send.  At any given time, a TCP MUST NOT send data with a sequence number higher than the sum of the highest acknowledged sequence number and the minimum of cwnd and rwnd.
-
-* INITIAL WINDOW (IW):  The initial window is the size of the sender's congestion window after the three-way handshake is completed.
-
-* LOSS WINDOW (LW):  The loss window is the size of the congestion window after a TCP sender detects loss using its retransmission timer.
-
-* RESTART WINDOW (RW):  The restart window is the size of the congestion window after a TCP restarts transmission after an idle period 
-
-* FLIGHT SIZE:  The amount of data that has been sent but not yet acknowledged.
+* SENDER MAXIMUM SEGMENT SIZE (SMSS):  发送方能发送的最大数据包的大小，这个大小不包含TCP/IP头部和选项。这个值可能由下面的值决定： maximum transmission unit of the network, the path MTU discovery algorithm, RMSS, or other factors.  
+* RECEIVER MAXIMUM SEGMENT SIZE (RMSS): 接收方能接收的最大数据包的大小，这个大小不包含TCP/IP头部和选项。这个值在建立连接时由接收方回应中的 MSS 决定。如果不指定 MSS, 536 bytes.
+* FULL-SIZED SEGMENT: 数据包，包含最大长度的数据(如： 数据包包含 SMSS bytes 的数据).
+* RECEIVER WINDOW (rwnd) 最近的 advertised receiver window.
+* CONGESTION WINDOW (cwnd):  限制 TCP 能发送的数据总量。在任何时候，如果数据包的 sequence number 大于已确认过的最大 sequence number 加上 min( cwnd, rwnd) 之和，则不能被发送。
+* INITIAL WINDOW (IW):  三次握手后，发送方 congestion window 的初始值。
+* LOSS WINDOW (LW):  发送方通过 retransmission timer 探测到数据丢失后 congestion window 的大小
+* RESTART WINDOW (RW):  TCP 在空闲阶段结束后重新开始传输时 congestion window 的大小
+* FLIGHT SIZE:  已发送，未确认的所有数据
 
 # Slow Start and Congestion Avoidance
 
-The slow start and congestion avoidance algorithms MUST be used by a TCP sender to control the amount of outstanding data being injected into the network.  The congestion window (cwnd) is a sender-side limit on the amount of data the sender can transmit into the network before receiving an acknowledgment (ACK), while the receiver's advertised window (rwnd) is a receiver-side limit on the amount of outstanding data.  The minimum of cwnd and rwnd governs data transmission.
+发送方使用 slow start 和 congestion avoidance 算法控制网络中数据的总量。congestion window (cwnd) 为发送方在接收到 ACK 前能发送到网络上的最大数据量。advertised window (rwnd) 为接收方能接收的数据总量。 cwnd 和 rwnd 的最小值控制着数据的传输
 
-Another state variable, the slow start threshold (ssthresh), is used to determine whether the slow start or congestion avoidance algorithm is used to control data transmission, as discussed below.
+slow start threshold (ssthresh) 决定使用 slow start 或 congestion avoidance 算法。
 
-Beginning transmission into a network with unknown conditions requires TCP to slowly probe the network to determine the available capacity, in order to avoid congesting the network with an inappropriately large burst of data.  The slow start algorithm is used for this purpose at the beginning of a transfer, or after repairing loss detected by the retransmission timer.
+如果一开始就发送大量数据到网络，很容易造成拥塞。所以要求 TCP 逐步探测网络情况。slow start 算法用于在开始传输时解决这个问题。或通过 retransmission timer 修复数据丢失后
 
 IW, the initial value of cwnd, MUST be less than or equal to 2*SMSS bytes and MUST NOT be more than 2 segments.
 
@@ -41,103 +33,62 @@ We note that a non-standard, experimental TCP extension allows that a TCP MAY us
 
       IW = min (4*SMSS, max (2*SMSS, 4380 bytes))           (1)
 
-With this extension, a TCP sender MAY use a 3 or 4 segment initial window, provided the combined size of the segments does not exceed 4380 bytes.  We do NOT allow this change as part of the standard defined by this document.  However, we include discussion of (1) in the remainder of this document as a guideline for those experimenting with the change, rather than conforming to the present standards for TCP congestion control.
+With this extension, a TCP sender MAY use a 3 or 4 segment initial window, provided the combined size of the segments does not exceed 4380 bytes. 
 
-The initial value of ssthresh MAY be arbitrarily high (for example, some implementations use the size of the advertised window), but it may be reduced in response to congestion.  The slow start algorithm is used when cwnd < ssthresh, while the congestion avoidance algorithm is used when cwnd > ssthresh.  When cwnd and ssthresh are equal the sender may use either slow start or congestion avoidance.
+The initial value of ssthresh MAY be arbitrarily high (for example, some implementations use the size of the advertised window), but it may be reduced in response to congestion. cwnd < ssthresh 时使用 slow start 算法, cwnd > ssthresh 时使用 congestion avoidance 算法。cwnd == ssthresh 两种算法都可能使用。
 
-During slow start, a TCP increments cwnd by at most SMSS bytes for each ACK received that acknowledges new data.  Slow start ends when cwnd exceeds ssthresh (or, optionally, when it reaches it, as noted above) or when congestion is observed.
+在 slow start 过程中, 在每个 ACK 到达后，cwnd 最多增加 SMSS 字节。当 cwnd 超过 ssthresh 或当检测到拥塞后， slow start 结束
 
-During congestion avoidance, cwnd is incremented by 1 full-sized segment per round-trip time (RTT).  Congestion avoidance continues until congestion is detected.  One formula commonly used to update cwnd during congestion avoidance is given in equation 2:
+在 congestion avoidance 过程中, 在每个 RTT 周期，cwnd 增加一个 full-sized segment，一直到检测到拥塞后. 下面是一个公式：
 
       cwnd += SMSS*SMSS/cwnd                     (2)
 
-This adjustment is executed on every incoming non-duplicate ACK. Equation (2) provides an acceptable approximation to the underlying principle of increasing cwnd by 1 full-sized segment per RTT.  (Note that for a connection in which the receiver acknowledges every data segment, (2) proves slightly more aggressive than 1 segment per RTT, and for a receiver acknowledging every-other packet, (2) is less aggressive.)
+在每个非重复 ACK 到来后进行计算。(2) 提供了一个近似的计算。
 
-Implementation Note: Since integer arithmetic is usually used in TCP implementations, the formula given in equation 2 can fail to increase cwnd when the congestion window is very large (larger than SMSS*SMSS).  If the above formula yields 0, the result SHOULD be rounded up to 1 byte.
+Note: 如果(2)中 cwnd 太大，计算结果为0, 应设为1.
 
-Implementation Note: older implementations have an additional additive constant on the right-hand side of equation (2).  This is incorrect and can actually lead to diminished performance [PAD+98].
-
-Another acceptable way to increase cwnd during congestion avoidance is to count the number of bytes that have been acknowledged by ACKs for new data.  (A drawback of this implementation is that it requires maintaining an additional state variable.)  When the number of bytes acknowledged reaches cwnd, then cwnd can be incremented by up to SMSS bytes.  Note that during congestion avoidance, cwnd MUST NOT be increased by more than the larger of either 1 full-sized segment per RTT, or the value computed using equation 2.
-
-Implementation Note: some implementations maintain cwnd in units of bytes, while others in units of full-sized segments.  The latter will find equation (2) difficult to use, and may prefer to use the counting approach discussed in the previous paragraph.
-
-When a TCP sender detects segment loss using the retransmission timer, the value of ssthresh MUST be set to no more than the value given in equation 3:
+发送方使用 retransmission timer 检测到数据包丢失时，ssthresh 的值不能大于下面公式计算出的值：
 
       ssthresh = max (FlightSize / 2, 2*SMSS)            (3)
 
-As discussed above, FlightSize is the amount of outstanding data in the network.
+FlightSize 为在网络中还没有被确认的数据总量
 
-Implementation Note: an easy mistake to make is to simply use cwnd, rather than FlightSize, which in some implementations may incidentally increase well beyond rwnd.
-
-Furthermore, upon a timeout cwnd MUST be set to no more than the loss window, LW, which equals 1 full-sized segment (regardless of the value of IW).  Therefore, after retransmitting the dropped segment the TCP sender uses the slow start algorithm to increase the window from 1 full-sized segment to the new value of ssthresh, at which point congestion avoidance again takes over.
+Furthermore, upon a timeout cwnd 必须设为小于 loss window, LW, 它的值为一个 full-sized segment (与IW 的值无关).  在重传丢失的数据包后，发送方开始 slow start 算法增加 window，使其从一个 full-sized segment 到 ssthresh, 然后在此时，congestion avoidance 算法开始运行
 
 # Fast Retransmit/Fast Recovery
 
-A TCP receiver SHOULD send an immediate duplicate ACK when an out- of-order segment arrives.  The purpose of this ACK is to inform the sender that a segment was received out-of-order and which sequence number is expected.  From the sender's perspective, duplicate ACKs can be caused by a number of network problems.  First, they can be caused by dropped segments.  In this case, all segments after the dropped segment will trigger duplicate ACKs.  Second, duplicate ACKs can be caused by the re-ordering of data segments by the network (not a rare event along some network paths [Pax97]).  Finally, duplicate ACKs can be caused by replication of ACK or data segments by the network.  In addition, a TCP receiver SHOULD send an immediate ACK when the incoming segment fills in all or part of a gap in the sequence space.  This will generate more timely information for a sender recovering from a loss through a retransmission timeout, a fast retransmit, or an experimental loss recovery algorithm, such as NewReno [FH98].
+当 out-of-order 数据到达时，接收方必须马上发送 immediate duplicate ACK. 对发送方，重复 ACK 的产生有多种原因：
 
-The TCP sender SHOULD use the "fast retransmit" algorithm to detect and repair loss, based on incoming duplicate ACKs.  The fast retransmit algorithm uses the arrival of 3 duplicate ACKs (4 identical ACKs without the arrival of any other intervening packets) as an indication that a segment has been lost.  After receiving 3 duplicate ACKs, TCP performs a retransmission of what appears to be the missing segment, without waiting for the retransmission timer to expire.
+1. 丢失数据。此时，在丢失数据之后的所有数据，都会触发 duplicate ACKs.  
+2. 数据 re-ordering (not a rare event along some network paths).
+3. 数据重复
 
-After the fast retransmit algorithm sends what appears to be the missing segment, the "fast recovery" algorithm governs the transmission of new data until a non-duplicate ACK arrives.  The reason for not performing slow start is that the receipt of the duplicate ACKs not only indicates that a segment has been lost, but also that segments are most likely leaving the network (although a massive segment duplication by the network can invalidate this conclusion).  In other words, since the receiver can only generate a duplicate ACK when a segment has arrived, that segment has left the network and is in the receiver's buffer, so we know it is no longer consuming network resources.  Furthermore, since the ACK "clock" [Jac88] is preserved, the TCP sender can continue to transmit new segments (although transmission must continue using a reduced cwnd).
+发送方使用 fast retransmit 算法探测和修复数据丢失。此算法基于重复 ACK。如果收到3个重复 ACK，则表明此数据段丢失。在收到 3 个重复 ACK 后，开始重传，而不必等待 retransmission timer 超时
 
-The fast retransmit and fast recovery algorithms are usually implemented together as follows.
+在使用 fast retransmit 算法发送丢失数据后，使用 fast recovery 算法控制传输，直到非重复 ACK 到达。这里不使用 slow start 的原因是，重复 ACK 可能是数据丢失，也可能是数据离开网络(although a massive segment duplication by the network can invalidate this conclusion)，而保存在接收方的buffer中。  而且，since the ACK "clock" is preserved, the TCP sender can continue to transmit new segments (although transmission must continue using a reduced cwnd).
 
-1. When the third duplicate ACK is received, set ssthresh to no more than the value given in equation 3.
-2. Retransmit the lost segment and set cwnd to ssthresh plus 3*SMSS. This artificially "inflates" the congestion window by the number of segments (three) that have left the network and which the receiver has buffered.
-3. For each additional duplicate ACK received, increment cwnd by SMSS.  This artificially inflates the congestion window in order to reflect the additional segment that has left the network.
-4. Transmit a segment, if allowed by the new value of cwnd and the receiver's advertised window.
-5. When the next ACK arrives that acknowledges new data, set cwnd to ssthresh (the value set in step 1).  This is termed "deflating" the window.
-
-       This ACK should be the acknowledgment elicited by the
-       retransmission from step 1, one RTT after the retransmission
-       (though it may arrive sooner in the presence of significant out-
-       of-order delivery of data segments at the receiver).
-       Additionally, this ACK should acknowledge all the intermediate
-       segments sent between the lost segment and the receipt of the
-       third duplicate ACK, if none of these were lost.
-
-   Note: This algorithm is known to generally not recover very
-   efficiently from multiple losses in a single flight of packets
-   [FF96].  One proposed set of modifications to address this problem
-   can be found in [FH98].
+1. When the third duplicate ACK is received, set ssthresh to no more than the value given in equation (3).
+2. 重传丢失的数据包，cwnd = ssthresh + 3*SMSS 增加 congestion window
+3. For each additional duplicate ACK received, increment cwnd by SMSS.  增加 congestion window
+4. 被 cwnd 的新值和接收方的 advertised window允许，则传输数据包
+5. When the next ACK arrives that acknowledges new data, set cwnd to ssthresh (the value set in step 1).  
 
 # Additional Considerations
 
 ## Re-starting Idle Connections
 
-A known problem with the TCP congestion control algorithms described above is that they allow a potentially inappropriate burst of traffic to be transmitted after TCP has been idle for a relatively long period of time.  After an idle period, TCP cannot use the ACK clock to strobe new segments into the network, as all the ACKs have drained from the network.  Therefore, as specified above, TCP can potentially send a cwnd-size line-rate burst into the network after an idle period.
+在TCP经过长时间空闲后开始传输，congestion control algorithms 可能会发送大量数据造成网络阻塞。在空闲过后，TCP 不能使用 ACK clock 控制发送新数据，因为所有的 ACK 都被 drained，所以 TCP 可能发送 cwnd-size line-rate burst into the network
 
-[Jac88] recommends that a TCP use slow start to restart transmission after a relatively long idle period.  Slow start serves to restart the ACK clock, just as it does at the beginning of a transfer.  This mechanism has been widely deployed in the following manner.  When TCP has not received a segment for more than one retransmission timeout, cwnd is reduced to the value of the restart window (RW) before transmission begins.
+在TCP经过长时间空闲后开始传输，可以使用 slow start。Slow start 重新开始 ACK clock。TCP 超过1个retransmission timeout 后没接收到数据, cwnd is reduced to the value of the restart window (RW) before transmission begins.
 
-For the purposes of this standard, we define RW = IW.
+we define RW = IW. non-standard extension defines RW = min(IW, cwnd)
 
-We note that the non-standard experimental extension to TCP defined in [AFP98] defines RW = min(IW, cwnd), with the definition of IW adjusted per equation (1) above.
-
-Using the last time a segment was received to determine whether or not to decrease cwnd fails to deflate cwnd in the common case of persistent HTTP connections [HTH98].  In this case, a WWW server receives a request before transmitting data to the WWW browser.  The reception of the request makes the test for an idle connection fail, and allows the TCP to begin transmission with a possibly inappropriately large cwnd.
-
-Therefore, a TCP SHOULD set cwnd to no more than RW before beginning transmission if the TCP has not sent data in an interval exceeding the retransmission timeout.
-
-## Generating Acknowledgments
-
- The delayed ACK algorithm specified in [Bra89] SHOULD be used by a TCP receiver.  When used, a TCP receiver MUST NOT excessively delay acknowledgments.  Specifically, an ACK SHOULD be generated for at least every second full-sized segment, and MUST be generated within 500 ms of the arrival of the first unacknowledged packet.
-
-The requirement that an ACK "SHOULD" be generated for at least every second full-sized segment is listed in [Bra89] in one place as a SHOULD and another as a MUST.  Here we unambiguously state it is a SHOULD.  We also emphasize that this is a SHOULD, meaning that an implementor should indeed only deviate from this requirement after careful consideration of the implications.  See the discussion of "Stretch ACK violation" in [PAD+98] and the references therein for a discussion of the possible performance problems with generating ACKs less frequently than every second full-sized segment.
-
-In some cases, the sender and receiver may not agree on what constitutes a full-sized segment.  An implementation is deemed to comply with this requirement if it sends at least one acknowledgment every time it receives 2*RMSS bytes of new data from the sender, where RMSS is the Maximum Segment Size specified by the receiver to the sender (or the default value of 536 bytes, per [Bra89], if the receiver does not specify an MSS option during connection establishment).  The sender may be forced to use a segment size less than RMSS due to the maximum transmission unit (MTU), the path MTU discovery algorithm or other factors.  For instance, consider the case when the receiver announces an RMSS of X bytes but the sender ends up using a segment size of Y bytes (Y < X) due to path MTU discovery (or the sender's MTU size).  The receiver will generate stretch ACKs if it waits for 2*X bytes to arrive before an ACK is sent.  Clearly this will take more than 2 segments of size Y bytes. Therefore, while a specific algorithm is not defined, it is desirable for receivers to attempt to prevent this situation, for example by acknowledging at least every second segment, regardless of size. Finally, we repeat that an ACK MUST NOT be delayed for more than 500 ms waiting on a second full-sized segment to arrive.
-
-Out-of-order data segments SHOULD be acknowledged immediately, in order to accelerate loss recovery.  To trigger the fast retransmit algorithm, the receiver SHOULD send an immediate duplicate ACK when it receives a data segment above a gap in the sequence space.  To provide feedback to senders recovering from losses, the receiver SHOULD send an immediate ACK when it receives a data segment that fills in all or part of a gap in the sequence space.
-
-A TCP receiver MUST NOT generate more than one ACK for every incoming segment, other than to update the offered window as the receiving application consumes new data [page 42, Pos81][Cla82].
+HTTP 长连接使用接收到数据的最后时间来决定是否减少 cwnd 的值。
 
 ## Loss Recovery Mechanisms
 
-A number of loss recovery algorithms that augment fast retransmit and fast recovery have been suggested by TCP researchers.  While some of these algorithms are based on the TCP selective acknowledgment (SACK) option [MMFR96], such as [FF96,MM96a,MM96b], others do not require SACKs [Hoe96,FF96,FH98].  The non-SACK algorithms use "partial acknowledgments" (ACKs which cover new data, but not all the data outstanding when loss was detected) to trigger retransmissions. While this document does not standardize any of the specific algorithms that may improve fast retransmit/fast recovery, these enhanced algorithms are implicitly allowed, as long as they follow the general principles of the basic four algorithms outlined above.
-
-Therefore, when the first loss in a window of data is detected, ssthresh MUST be set to no more than the value given by equation (3). Second, until all lost segments in the window of data in question are repaired, the number of segments transmitted in each RTT MUST be no more than half the number of outstanding segments when the loss was detected.  Finally, after all loss in the given window of segments has been successfully retransmitted, cwnd MUST be set to no more than ssthresh and congestion avoidance MUST be used to further increase cwnd.  Loss in two successive windows of data, or the loss of a retransmission, should be taken as two indications of congestion and, therefore, cwnd (and ssthresh) MUST be lowered twice in this case.
-
-The algorithms outlined in [Hoe96,FF96,MM96a,MM6b] follow the principles of the basic four congestion control algorithms outlined in this document.
+当 window 内的第一个数据丢失被探测到，ssthresh 的值不能超过(3)计算出的值。当数据丢失被探测到，在每个 RTT 内发送的数据包总数，不能超过 outstanding segments(已发送，未确认) 数量的一半.  在所有的丢失数据成功重传之后，cwnd 的值必须小于 ssthresh，而且必须使用 congestion avoidance 来增加 cwnd. 在两个连续的 window 内都发生数据丢失，或在重传时发生丢失，会发生两次 congestion ，这种情况 cwnd (and ssthresh) 会两次变小。
 
 # Security Considerations
 
-This document requires a TCP to diminish its sending rate in the presence of retransmission timeouts and the arrival of duplicate acknowledgments.  An attacker can therefore impair the performance of a TCP connection by either causing data packets or their acknowledgments to be lost, or by forging excessive duplicate acknowledgments.  Causing two congestion control events back-to-back will often cut ssthresh to its minimum value of 2*SMSS, causing the connection to immediately enter the slower-performing congestion avoidance phase.
-
-The Internet to a considerable degree relies on the correct implementation of these algorithms in order to preserve network stability and avoid congestion collapse.  An attacker could cause TCP endpoints to respond more aggressively in the face of congestion by forging excessive duplicate acknowledgments or excessive acknowledgments for new data.  Conceivably, such an attack could drive a portion of the network into congestion collapse.
+当 retransmission timeouts 或接收到重复 ACK 时，TCP 会降低发送频率. 攻击者要降低连接的性能，只要使数据包或 ACK 丢失，或伪造过高的重复 ACK。 Causing two congestion control events back-to-back will often cut ssthresh to its minimum value of 2*SMSS, 导致连接马上进入到低性能的 congestion avoidance 阶段.

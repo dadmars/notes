@@ -1,25 +1,10 @@
-   Use of IP in IP encapsulation differs from later tunneling techniques
-   (for example, protocol numbers 98 [RFC-1241], 94 [IDM91a], 53
-   [swIPe], and 47 [RFC-1701]) in that it does not insert its own
-   special glue header between IP headers.  Instead, the original
-   unadorned IP Header is retained, and simply wrapped in another
-   standard IP header.
+# IP in IP Encapsulation
 
-   This information applies principally to encapsulation of IP version
-   4.  Other IP versions will be described in separate documents.
+The encapsulation technique is fairly simple.  An outer IP header is added before the original IP header.  Between them are any other headers for the path, such as security headers specific to the tunnel configuration.
 
-2.  Encapsulation
+The outer IP header Source and Destination identify the "endpoints" of the tunnel.  The inner IP header Source and Destination identify the original sender and recipient of the datagram.
 
-   The encapsulation technique is fairly simple.  An outer IP header is
-   added before the original IP header.  Between them are any other
-   headers for the path, such as security headers specific to the tunnel
-   configuration.
-
-   The outer IP header Source and Destination identify the "endpoints"
-   of the tunnel.  The inner IP header Source and Destination identify
-   the original sender and recipient of the datagram.
-
-   Each header chains to the next using IP Protocol values [RFC-1700].
+Each header chains to the next using IP Protocol values [RFC-1700].
 
                                           +---------------------------+
                                           |      Outer IP Header      |
@@ -32,8 +17,6 @@
       |         IP Payload        |       |         IP Payload        |
       |                           |       |                           |
       +---------------------------+       +---------------------------+
-
-   The format of IP headers is described in [RFC-791].
 
    Type Of Service  copied from the inner IP header.  Optionally,
                     another TOS may be used between cooperating peers.
@@ -100,89 +83,32 @@
                     there be a one-to-one mapping of such options to the
                     options or security headers selected for the tunnel.
 
-3.  Tunnel Management
+# Tunnel Management
 
-   It is possible that one of the routers along the tunnel interior
-   might encounter an error while processing the datagram, causing it to
-   return an ICMP [RFC-792] error message to the encapsulator at the IP
-   Source of the tunnel.  Unfortunately, ICMP only requires IP routers
-   to return 8 bytes (64 bits) of the datagram beyond the IP header.
-   This is not enough to include the entire encapsulated header.  Thus,
-   it is not generally possible for an encapsulating router to
-   immediately reflect an ICMP message from the interior of a tunnel
-   back to the originating host.
+It is possible that one of the routers along the tunnel interior might encounter an error while processing the datagram, causing it to return an ICMP [RFC-792] error message to the encapsulator at the IP Source of the tunnel.  Unfortunately, ICMP only requires IP routers to return 8 bytes (64 bits) of the datagram beyond the IP header. This is not enough to include the entire encapsulated header.  Thus, it is not generally possible for an encapsulating router to immediately reflect an ICMP message from the interior of a tunnel back to the originating host.
 
-   However, by carefully maintaining "soft state" about its tunnels, the
-   encapsulator can return accurate ICMP messages in most cases.  The
-   router SHOULD maintain at least the following soft state information
-   about each tunnel:
+However, by carefully maintaining "soft state" about its tunnels, the encapsulator can return accurate ICMP messages in most cases.  The router SHOULD maintain at least the following soft state information about each tunnel:
 
-    - Reachability of the end of the tunnel.
-    - Congestion of the tunnel.
-    - MTU of the tunnel.
+- Reachability of the end of the tunnel.
+- Congestion of the tunnel.
+- MTU of the tunnel.
 
-   The router uses the ICMP messages it receives from the interior of a
-   tunnel to update the soft state information for that tunnel.  When
-   subsequent datagrams arrive that would transit the tunnel, the router
-   checks the soft state for the tunnel.  If the datagram would violate
-   the state of the tunnel (such as the MTU is greater than the tunnel
-   MTU when Don't Fragment is set), the router sends an appropriate ICMP
-   error message back to the originator, but also forwards the datagram
-   into the tunnel.  Forwarding the datagram despite returning the error
-   message ensures that changes in tunnel state will be learned.
+The router uses the ICMP messages it receives from the interior of a tunnel to update the soft state information for that tunnel.  When subsequent datagrams arrive that would transit the tunnel, the router checks the soft state for the tunnel.  If the datagram would violate the state of the tunnel (such as the MTU is greater than the tunnel MTU when Don't Fragment is set), the router sends an appropriate ICMP error message back to the originator, but also forwards the datagram into the tunnel.  Forwarding the datagram despite returning the error message ensures that changes in tunnel state will be learned.
 
-   Using this technique, the ICMP error messages from encapsulating
-   routers will not always match one-to-one with errors encountered
-   within the tunnel, but they will accurately reflect the state of the
-   network.
+Using this technique, the ICMP error messages from encapsulating routers will not always match one-to-one with errors encountered within the tunnel, but they will accurately reflect the state of the network.
 
+## Tunnel MTU Discovery
 
-3.1.  Tunnel MTU Discovery
+When the Don't Fragment bit is set by the originator and copied into the outer IP header, the proper MTU of the tunnel will be learned from ICMP (Type 3 Code 4) "Datagram Too Big" errors reported to the encapsulator.  To support originating hosts which use this capability, all implementations MUST support Path MTU Discovery [RFC-1191, RFC-1435] within their tunnels.
 
-   When the Don't Fragment bit is set by the originator and copied into
-   the outer IP header, the proper MTU of the tunnel will be learned
-   from ICMP (Type 3 Code 4) "Datagram Too Big" errors reported to the
-   encapsulator.  To support originating hosts which use this
-   capability, all implementations MUST support Path MTU Discovery
-   [RFC-1191, RFC-1435] within their tunnels.
-   As a benefit of Tunnel MTU Discovery, any fragmentation which occurs
-   because of the size of the encapsulation header is done only once
-   after encapsulation.  This prevents more than one fragmentation of a
-   single datagram, which improves processing efficiency of the path
-   routers and tunnel decapsulator.
+As a benefit of Tunnel MTU Discovery, any fragmentation which occurs because of the size of the encapsulation header is done only once after encapsulation.  This prevents more than one fragmentation of a single datagram, which improves processing efficiency of the path routers and tunnel decapsulator.
 
+## Routing Failures
 
-3.2.  Congestion
+Because the TTL is reset each time that a datagram is encapsulated, routing loops within a tunnel are particularly dangerous when they arrive again at the encapsulator.  If the IP Source matches any of its interfaces, an implementation MUST NOT further encapsulate. Instead, the datagram is forwarded normally.
 
-   Tunnel soft state will collect indications of congestion, such as an
-   ICMP (Type 4) Source Quench in datagrams from the decapsulator
-   (tunnel peer).  When forwarding another datagram into the tunnel,
-   it is appropriate to send Source Quench messages to the originator.
+ICMP (Type 11) Time Exceeded messages report routing loops within the tunnel itself.  ICMP (Type 3) Destination Unreachable messages report delivery failures to the decapsulator.  This soft state MUST be reported to the originator as (Type 3 Code 0) Network Unreachable.
 
+## Other ICMP Messages
 
-3.3.  Routing Failures
-
-   Because the TTL is reset each time that a datagram is encapsulated,
-   routing loops within a tunnel are particularly dangerous when they
-   arrive again at the encapsulator.  If the IP Source matches any of
-   its interfaces, an implementation MUST NOT further encapsulate.
-   Instead, the datagram is forwarded normally.
-
-   ICMP (Type 11) Time Exceeded messages report routing loops within the
-   tunnel itself.  ICMP (Type 3) Destination Unreachable messages report
-   delivery failures to the decapsulator.  This soft state MUST be
-   reported to the originator as (Type 3 Code 0) Network Unreachable.
-
-
-3.4.  Other ICMP Messages
-
-   Most ICMP error messages are not relevant to the use of the tunnel.
-   In particular, parameter problems are likely to be a result of
-   misconfiguration of the encapsulator, and MUST NOT be reported to the
-   originator.
-
-Security Considerations
-
-   Security issues are briefly discussed in this memo.  The use of
-   tunneling may obviate some older IP security options (labelling), but
-   will better support newer IP Security headers.
+Most ICMP error messages are not relevant to the use of the tunnel. In particular, parameter problems are likely to be a result of misconfiguration of the encapsulator, and MUST NOT be reported to the originator.

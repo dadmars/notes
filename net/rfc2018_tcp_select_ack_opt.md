@@ -1,108 +1,20 @@
-#TCP Selective Acknowledgment Options
-   TCP may experience poor performance when multiple packets are lost
-   from one window of data.   With the limited information available
-   from cumulative acknowledgments, a TCP sender can only learn about a
-   single lost packet per round trip time.  An aggressive sender could
-   choose to retransmit packets early, but such retransmitted segments
-   may have already been successfully received.
+# TCP Selective Acknowledgment Options
 
-   A Selective Acknowledgment (SACK) mechanism, combined with a
-   selective repeat retransmission policy, can help to overcome these
-   limitations.  The receiving TCP sends back SACK packets to the sender
-   informing the sender of data that has been received. The sender can
-   then retransmit only the missing data segments.
+TCP may experience poor performance when multiple packets are lost from one window of data.   With the limited information available from cumulative acknowledgments, a TCP sender can only learn about a single lost packet per round trip time.  An aggressive sender could choose to retransmit packets early, but such retransmitted segments may have already been successfully received.
 
-   This memo proposes an implementation of SACK and discusses its
-   performance and related issues.
+A Selective Acknowledgment (SACK) mechanism, combined with a selective repeat retransmission policy, can help to overcome these limitations.  The receiving TCP sends back SACK packets to the sender informing the sender of data that has been received. The sender can then retransmit only the missing data segments.
 
-Acknowledgements
+Multiple packet losses from a window of data can have a catastrophic effect on TCP throughput. TCP [Postel81] uses a cumulative acknowledgment scheme in which received segments that are not at the left edge of the receive window are not acknowledged.  This forces the sender to either wait a roundtrip time to find out about each lost packet, or to unnecessarily retransmit segments which have been correctly received [Fall95].  With the cumulative acknowledgment scheme, multiple dropped segments generally cause TCP to lose its ACK-based clock, reducing overall throughput.
 
-   Much of the text in this document is taken directly from RFC1072 "TCP
-   Extensions for Long-Delay Paths" by Bob Braden and Van Jacobson.  The
-   authors would like to thank Kevin Fall (LBNL), Christian Huitema
-   (INRIA), Van Jacobson (LBNL), Greg Miller (MITRE), Greg Minshall
-   (Ipsilon), Lixia Zhang (XEROX PARC and UCLA), Dave Borman (BSDI),
-   Allison Mankin (ISI) and others for their review and constructive
-   comments.
+Selective Acknowledgment (SACK) is a strategy which corrects this behavior in the face of multiple dropped segments.  With selective acknowledgments, the data receiver can inform the sender about all segments that have arrived successfully, so the sender need retransmit only the segments that have actually been lost.
 
+The selective acknowledgment extension uses two TCP options. The first is an enabling option, "SACK-permitted", which may be sent in a SYN segment to indicate that the SACK option can be used once the connection is established.  The other is the SACK option itself, which may be sent over an established connection once permission has been given by SACK-permitted.
 
+The SACK option is to be included in a segment sent from a TCP that is receiving data to the TCP that is sending that data; we will refer to these TCP's as the data receiver and the data sender, respectively.  We will consider a particular simplex data flow; any data flowing in the reverse direction over the same connection can be treated independently.
 
+# Sack-Permitted Option
 
-Mathis, et. al.             Standards Track                     [Page 1]
-
- 
-RFC 2018         TCP Selective Acknowledgement Options      October 1996
-
-
-1.  Introduction
-
-   Multiple packet losses from a window of data can have a catastrophic
-   effect on TCP throughput. TCP [Postel81] uses a cumulative
-   acknowledgment scheme in which received segments that are not at the
-   left edge of the receive window are not acknowledged.  This forces
-   the sender to either wait a roundtrip time to find out about each
-   lost packet, or to unnecessarily retransmit segments which have been
-   correctly received [Fall95].  With the cumulative acknowledgment
-   scheme, multiple dropped segments generally cause TCP to lose its
-   ACK-based clock, reducing overall throughput.
-
-   Selective Acknowledgment (SACK) is a strategy which corrects this
-   behavior in the face of multiple dropped segments.  With selective
-   acknowledgments, the data receiver can inform the sender about all
-   segments that have arrived successfully, so the sender need
-   retransmit only the segments that have actually been lost.
-
-   Several transport protocols, including NETBLT [Clark87], XTP
-   [Strayer92], RDP [Velten84], NADIR [Huitema81], and VMTP [Cheriton88]
-   have used selective acknowledgment.  There is some empirical evidence
-   in favor of selective acknowledgments -- simple experiments with RDP
-   have shown that disabling the selective acknowledgment facility
-   greatly increases the number of retransmitted segments over a lossy,
-   high-delay Internet path [Partridge87]. A recent simulation study by
-   Kevin Fall and Sally Floyd [Fall95], demonstrates the strength of TCP
-   with SACK over the non-SACK Tahoe and Reno TCP implementations.
-
-   RFC1072 [VJ88] describes one possible implementation of SACK options
-   for TCP.  Unfortunately, it has never been deployed in the Internet,
-   as there was disagreement about how SACK options should be used in
-   conjunction with the TCP window shift option (initially described
-   RFC1072 and revised in [Jacobson92]).
-
-   We propose slight modifications to the SACK options as proposed in
-   RFC1072.  Specifically, sending a selective acknowledgment for the
-   most recently received data reduces the need for long SACK options
-   [Keshav94, Mathis95].  In addition, the SACK option now carries full
-   32 bit sequence numbers.  These two modifications represent the only
-   changes to the proposal in RFC1072.  They make SACK easier to
-   implement and address concerns about robustness.
-
-   The selective acknowledgment extension uses two TCP options. The
-   first is an enabling option, "SACK-permitted", which may be sent in a
-   SYN segment to indicate that the SACK option can be used once the
-   connection is established.  The other is the SACK option itself,
-   which may be sent over an established connection once permission has
-   been given by SACK-permitted.
-
-
-
-Mathis, et. al.             Standards Track                     [Page 2]
-
- 
-RFC 2018         TCP Selective Acknowledgement Options      October 1996
-
-
-   The SACK option is to be included in a segment sent from a TCP that
-   is receiving data to the TCP that is sending that data; we will refer
-   to these TCP's as the data receiver and the data sender,
-   respectively.  We will consider a particular simplex data flow; any
-   data flowing in the reverse direction over the same connection can be
-   treated independently.
-
-2.  Sack-Permitted Option
-
-   This two-byte option may be sent in a SYN by a TCP that has been
-   extended to receive (and presumably process) the SACK option once the
-   connection has opened.  It MUST NOT be sent on non-SYN segments.
+This two-byte option may be sent in a SYN by a TCP that has been extended to receive (and presumably process) the SACK option once the connection has opened.  It MUST NOT be sent on non-SYN segments.
 
        TCP Sack-Permitted Option:
 
@@ -112,11 +24,9 @@ RFC 2018         TCP Selective Acknowledgement Options      October 1996
        | Kind=4  | Length=2|
        +---------+---------+
 
-3.  Sack Option Format
+# Sack Option Format
 
-   The SACK option is to be used to convey extended acknowledgment
-   information from the receiver to the sender over an established TCP
-   connection.
+The SACK option is to be used to convey extended acknowledgment information from the receiver to the sender over an established TCP connection.
 
        TCP SACK Option:
 
@@ -140,72 +50,25 @@ RFC 2018         TCP Selective Acknowledgement Options      October 1996
        |      Right Edge of nth Block      |
        +--------+--------+--------+--------+
 
+The SACK option is to be sent by a data receiver to inform the data sender of non-contiguous blocks of data that have been received and queued.  The data receiver awaits the receipt of data (perhaps by means of retransmissions) to fill the gaps in sequence space between received blocks.  When missing segments are received, the data receiver acknowledges the data normally by advancing the left window edge in the Acknowledgement Number Field of the TCP header.  The SACK option does not change the meaning of the Acknowledgement Number field.
 
+This option contains a list of some of the blocks of contiguous sequence space occupied by data that has been received and queued within the window.
 
-Mathis, et. al.             Standards Track                     [Page 3]
+Each contiguous block of data queued at the data receiver is defined in the SACK option by two 32-bit unsigned integers in network byte order:
 
- 
-RFC 2018         TCP Selective Acknowledgement Options      October 1996
+* Left Edge of Block
+  This is the first sequence number of this block.
 
+* Right Edge of Block
+  This is the sequence number immediately following the last sequence number of this block.
 
-   The SACK option is to be sent by a data receiver to inform the data
-   sender of non-contiguous blocks of data that have been received and
-   queued.  The data receiver awaits the receipt of data (perhaps by
-   means of retransmissions) to fill the gaps in sequence space between
-   received blocks.  When missing segments are received, the data
-   receiver acknowledges the data normally by advancing the left window
-   edge in the Acknowledgement Number Field of the TCP header.  The SACK
-   option does not change the meaning of the Acknowledgement Number
-   field.
+Each block represents received bytes of data that are contiguous and isolated; that is, the bytes just below the block, (Left Edge of Block - 1), and just above the block, (Right Edge of Block), have not been received.
 
-   This option contains a list of some of the blocks of contiguous
-   sequence space occupied by data that has been received and queued
-   within the window.
+A SACK option that specifies n blocks will have a length of 8*n+2 bytes, so the 40 bytes available for TCP options can specify a maximum of 4 blocks.  It is expected that SACK will often be used in conjunction with the Timestamp option used for RTTM [Jacobson92], which takes an additional 10 bytes (plus two bytes of padding); thus a maximum of 3 SACK blocks will be allowed in this case.
 
-   Each contiguous block of data queued at the data receiver is defined
-   in the SACK option by two 32-bit unsigned integers in network byte
-   order:
+The SACK option is advisory, in that, while it notifies the data sender that the data receiver has received the indicated segments, the data receiver is permitted to later discard data which have been reported in a SACK option.  A discussion appears below in Section 8 of the consequences of advisory SACK, in particular that the data receiver may renege, or drop already SACKed data.
 
-   *    Left Edge of Block
-
-        This is the first sequence number of this block.
-
-   *    Right Edge of Block
-
-        This is the sequence number immediately following the last
-        sequence number of this block.
-
-   Each block represents received bytes of data that are contiguous and
-   isolated; that is, the bytes just below the block, (Left Edge of
-   Block - 1), and just above the block, (Right Edge of Block), have not
-   been received.
-
-   A SACK option that specifies n blocks will have a length of 8*n+2
-   bytes, so the 40 bytes available for TCP options can specify a
-   maximum of 4 blocks.  It is expected that SACK will often be used in
-   conjunction with the Timestamp option used for RTTM [Jacobson92],
-   which takes an additional 10 bytes (plus two bytes of padding); thus
-   a maximum of 3 SACK blocks will be allowed in this case.
-
-   The SACK option is advisory, in that, while it notifies the data
-   sender that the data receiver has received the indicated segments,
-   the data receiver is permitted to later discard data which have been
-   reported in a SACK option.  A discussion appears below in Section 8
-   of the consequences of advisory SACK, in particular that the data
-   receiver may renege, or drop already SACKed data.
-
-
-
-
-
-
-Mathis, et. al.             Standards Track                     [Page 4]
-
- 
-RFC 2018         TCP Selective Acknowledgement Options      October 1996
-
-
-4.  Generating Sack Options: Data Receiver Behavior
+# Generating Sack Options: Data Receiver Behavior
 
    If the data receiver has received a SACK-Permitted option on the SYN
    for this connection, the data receiver MAY elect to generate SACK
@@ -252,16 +115,6 @@ RFC 2018         TCP Selective Acknowledgement Options      October 1996
       following SACK blocks in the SACK option may be listed in
       arbitrary order.
 
-
-
-
-
-Mathis, et. al.             Standards Track                     [Page 5]
-
- 
-RFC 2018         TCP Selective Acknowledgement Options      October 1996
-
-
    It is very important that the SACK option always reports the block
    containing the most recently received segment, because this provides
    the sender with the most up-to-date information about the state of
@@ -306,19 +159,6 @@ RFC 2018         TCP Selective Acknowledgement Options      October 1996
    SACKed bit is on for that segment.  A segment will not be dequeued
    and its buffer freed until the left window edge is advanced over it.
 
-
-
-
-
-
-
-
-Mathis, et. al.             Standards Track                     [Page 6]
-
- 
-RFC 2018         TCP Selective Acknowledgement Options      October 1996
-
-
 5.1  Congestion Control Issues
 
    This document does not attempt to specify in detail the congestion
@@ -356,25 +196,6 @@ RFC 2018         TCP Selective Acknowledgement Options      October 1996
    containing the one altered block in the receiver's queue.  The data
    sender is thus able to construct a precise replica of the receiver's
    queue by taking the union of all the first SACK blocks.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Mathis, et. al.             Standards Track                     [Page 7]
-
- 
-RFC 2018         TCP Selective Acknowledgement Options      October 1996
-
 
    Since the return path is not lossless, the SACK option is defined to
    include more than one SACK block in a single packet.  The redundant
@@ -414,24 +235,6 @@ RFC 2018         TCP Selective Acknowledgement Options      October 1996
 
       The data receiver will return a normal TCP ACK segment
       acknowledging sequence number 7000, with no SACK option.
-
-
-
-
-
-
-
-
-
-
-
-
-
-Mathis, et. al.             Standards Track                     [Page 8]
-
- 
-RFC 2018         TCP Selective Acknowledgement Options      October 1996
-
 
       Case 2:  The first segment is dropped but the remaining 7 are
       received.
@@ -473,22 +276,6 @@ RFC 2018         TCP Selective Acknowledgement Options      October 1996
           7500       (lost)
           8000       5500    8000   8500   7000   7500   6000   6500
           8500       (lost)
-
-
-
-
-
-
-
-
-
-
-
-Mathis, et. al.             Standards Track                     [Page 9]
-
- 
-RFC 2018         TCP Selective Acknowledgement Options      October 1996
-
 
       Suppose at this point, the 4th packet is received out of order.
       (This could either be because the data was badly misordered in the
@@ -536,97 +323,3 @@ RFC 2018         TCP Selective Acknowledgement Options      October 1996
    Since the data receiver may later discard data reported in a SACK
    option, the sender MUST NOT discard data before it is acknowledged by
    the Acknowledgment Number field in the TCP header.
-
-
-
-
-
-Mathis, et. al.             Standards Track                    [Page 10]
-
- 
-RFC 2018         TCP Selective Acknowledgement Options      October 1996
-
-
-9.  Security Considerations
-
-   This document neither strengthens nor weakens TCP's current security
-   properties.
-
-10. References
-
-   [Cheriton88]  Cheriton, D., "VMTP: Versatile Message Transaction
-   Protocol", RFC 1045, Stanford University, February 1988.
-
-   [Clark87] Clark, D., Lambert, M., and L. Zhang, "NETBLT: A Bulk Data
-   Transfer Protocol", RFC 998, MIT, March 1987.
-
-   [Fall95]  Fall, K. and Floyd, S., "Comparisons of Tahoe, Reno, and
-   Sack TCP", ftp://ftp.ee.lbl.gov/papers/sacks.ps.Z, December 1995.
-
-   [Floyd96]  Floyd, S.,  "Issues of TCP with SACK",
-   ftp://ftp.ee.lbl.gov/papers/issues_sa.ps.Z, January 1996.
-
-   [Huitema81] Huitema, C., and Valet, I., An Experiment on High Speed
-   File Transfer using Satellite Links, 7th Data Communication
-   Symposium, Mexico, October 1981.
-
-   [Jacobson88] Jacobson, V., "Congestion Avoidance and Control",
-   Proceedings of SIGCOMM '88, Stanford, CA., August 1988.
-
-   [Jacobson88}, Jacobson, V. and R. Braden, "TCP Extensions for Long-
-   Delay Paths", RFC 1072, October 1988.
-
-   [Jacobson92] Jacobson, V., Braden, R., and D. Borman, "TCP Extensions
-   for High Performance", RFC 1323, May 1992.
-
-   [Keshav94]  Keshav, presentation to the Internet End-to-End Research
-   Group, November 1994.
-
-   [Mathis95]  Mathis, M., and Mahdavi, J., TCP Forward Acknowledgment
-   Option, presentation to the Internet End-to-End Research Group, June
-   1995.
-
-   [Partridge87]  Partridge, C., "Private Communication", February 1987.
-
-   [Postel81]  Postel, J., "Transmission Control Protocol - DARPA
-   Internet Program Protocol Specification", RFC 793, DARPA, September
-   1981.
-
-   [Stevens94] Stevens, W., TCP/IP Illustrated, Volume 1: The Protocols,
-   Addison-Wesley, 1994.
-
-
-
-
-Mathis, et. al.             Standards Track                    [Page 11]
-
- 
-RFC 2018         TCP Selective Acknowledgement Options      October 1996
-
-
-   [Strayer92] Strayer, T., Dempsey, B., and Weaver, A., XTP -- the
-   xpress transfer protocol. Addison-Wesley Publishing Company, 1992.
-
-   [Velten84] Velten, D., Hinden, R., and J. Sax, "Reliable Data
-   Protocol", RFC 908, BBN, July 1984.
-
-11. Authors' Addresses
-
-    Matt Mathis and Jamshid Mahdavi
-    Pittsburgh Supercomputing Center
-    4400 Fifth Ave
-    Pittsburgh, PA 15213
-    mathis@psc.edu
-    mahdavi@psc.edu
-
-    Sally Floyd
-    Lawrence Berkeley National Laboratory
-    One Cyclotron Road
-    Berkeley, CA 94720
-    floyd@ee.lbl.gov
-
-    Allyn Romanow
-    Sun Microsystems, Inc.
-    2550 Garcia Ave., MPK17-202
-    Mountain View, CA 94043
-    allyn@eng.sun.com
