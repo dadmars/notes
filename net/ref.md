@@ -1,1 +1,0 @@
-[c10k](http://www.kegel.com/c10k.html)
