@@ -313,94 +313,68 @@ TCP 接收数据包时，用到下面变量：
 
 如果主机崩溃，同时发送的数据还在路上，如果重新恢复，发送的sequence number可能重复，为了让在路上的数据包失效，主机要延迟 MSL 秒后才能发送数据。此时的 MSL 为 2 分钟。
 
-# Establishing a connection
+# 建立连接
 
-      TCP A                                                TCP B
+## 情况1
 
-  1   CLOSED                                                LISTEN
+ . | TCP A       |                                           | TCP B
+---|:------------|:-----------------------------------------:|-----
+1  | CLOSED      |                                           | LISTEN
+2  | SYN-SENT    | --> <SEQ=100><CTL=SYN>                --> | SYN-RECEIVED
+3  | ESTABLISHED | <-- <SEQ=300><ACK=101><CTL=SYN,ACK>   <-- | SYN-RECEIVED
+4  | ESTABLISHED | --> <SEQ=101><ACK=301><CTL=ACK>       --> | ESTABLISHED
+5  | ESTABLISHED | --> <SEQ=101><ACK=301><CTL=ACK><DATA> --> | ESTABLISHED
 
-  2   SYN-SENT    --> <SEQ=100><CTL=SYN>               --> SYN-RECEIVED
+第 4 行，TCP A 发送一个包含ACK的空数据包; 第 5 行, TCP A 发送了一些数据。两者的 sequence number 是一样的。因为 ACK 不占用 sequence number 空间.
 
-  3   ESTABLISHED <-- <SEQ=300><ACK=101><CTL=SYN,ACK>  <-- SYN-RECEIVED
+## 情况2
 
-  4   ESTABLISHED --> <SEQ=101><ACK=301><CTL=ACK>       --> ESTABLISHED
+ . | TCP A        |                                         | TCP B
+---|:-------------|:---------------------------------------:|-----
+1  | CLOSED       |                                         | CLOSED
+2  | SYN-SENT     | --> <SEQ=100><CTL=SYN>                  | ...
+3  | SYN-RECEIVED | <-- <SEQ=300><CTL=SYN>              <-- | SYN-SENT
+4  | ...          |     <SEQ=100><CTL=SYN>              --> | SYN-RECEIVED
+5  | SYN-RECEIVED | --> <SEQ=100><ACK=301><CTL=SYN,ACK>     | ...
+6  | ESTABLISHED  | <-- <SEQ=300><ACK=101><CTL=SYN,ACK> <-- | SYN-RECEIVED
+7  | ...          |     <SEQ=101><ACK=301><CTL=ACK>     --> | ESTABLISHED
 
-  5   ESTABLISHED --> <SEQ=101><ACK=301><CTL=ACK><DATA> --> ESTABLISHED
+## 情况3
 
-  At line 4, TCP A 发送一个包含ACK的空数据包; in line 5, TCP A sends some data. 两者的 sequence number 是一样的。因为 ACK 不占用 sequence number 空间.
+三次握手的好处在于可以避免重复初始化连接。为解决重复初始化的问题，定义了一个控件信息: reset。当接收到 reset 后，接收方在 non-synchronized 状态 (SYN-SENT, SYN-RECEIVED), 返回到 LISTEN 状态。接收方在 synchronized 状态 (ESTABLISHED, FIN-WAIT-1, FIN-WAIT-2, CLOSE-WAIT, CLOSING, LAST-ACK, TIME-WAIT), 终止连接并通知应用程序。
 
-      TCP A                                               TCP B
+ . | TCP A        |                                         | TCP B
+---|:-------------|:---------------------------------------:|-----
+1  | CLOSED       |                                         | LISTEN
+2  | SYN-SENT     | --> <SEQ=100><CTL=SYN>                  | ...
+3  | (duplicate)  |     <SEQ=90><CTL=SYN>               --> | SYN-RECEIVED
+4  | SYN-SENT     | <-- <SEQ=300><ACK=91><CTL=SYN,ACK>  <-- | SYN-RECEIVED
+5  | SYN-SENT     | --> <SEQ=91><CTL=RST>               --> | LISTEN
+6  | ...          |     <SEQ=100><CTL=SYN>              --> | SYN-RECEIVED
+7  | SYN-SENT     | <-- <SEQ=400><ACK=101><CTL=SYN,ACK> <-- | SYN-RECEIVED
+8  | ESTABLISHED  | --> <SEQ=101><ACK=401><CTL=ACK>     --> | ESTABLISHED
 
-  1  CLOSED                                              CLOSED
+TCP A 发现 ACK 不正确，发送 RST ，其中的 SEQ 值表明此包是可信赖的包。TCP B, 接收到 RST, 返回 LISTEN 状态。行 6，如果 SYN 在 RST 之前到达，RST 会在双方向传递，这会导致更复杂的数据交换。
 
-  2  SYN-SENT     --> <SEQ=100><CTL=SYN>              ...
+# Half-Open 连接和其它异常
 
-  3  SYN-RECEIVED <-- <SEQ=300><CTL=SYN>              <-- SYN-SENT
-
-  4               ... <SEQ=100><CTL=SYN>              --> SYN-RECEIVED
-
-  5  SYN-RECEIVED --> <SEQ=100><ACK=301><CTL=SYN,ACK> ...
-
-  6  ESTABLISHED  <-- <SEQ=300><ACK=101><CTL=SYN,ACK> <-- SYN-RECEIVED
-
-  7               ... <SEQ=101><ACK=301><CTL=ACK>     --> ESTABLISHED
-
-三次握手的好处在于可以避免重复初始化连接。To deal with this, a special control message, reset, has been devised. 当接收到 reset 后，接收方在 non-synchronized 状态 (i.e., SYN-SENT, SYN-RECEIVED), 返回到 LISTEN 状态。接收方在 synchronized 状态 (ESTABLISHED, FIN-WAIT-1, FIN-WAIT-2, CLOSE-WAIT, CLOSING, LAST-ACK, TIME-WAIT), 终止连接并通知应用程序。
-
-      TCP A                                                TCP B
-
-  1  CLOSED                                               LISTEN
-
-  2  SYN-SENT    --> <SEQ=100><CTL=SYN>               ...
-
-  3  (duplicate) ... <SEQ=90><CTL=SYN>               --> SYN-RECEIVED
-
-  4  SYN-SENT    <-- <SEQ=300><ACK=91><CTL=SYN,ACK>  <-- SYN-RECEIVED
-
-  5  SYN-SENT    --> <SEQ=91><CTL=RST>               --> LISTEN
-
-  6              ... <SEQ=100><CTL=SYN>               --> SYN-RECEIVED
-
-  7  SYN-SENT    <-- <SEQ=400><ACK=101><CTL=SYN,ACK>  <-- SYN-RECEIVED
-
-  8  ESTABLISHED --> <SEQ=101><ACK=401><CTL=ACK>      --> ESTABLISHED
-
- TCP A detects that the ACK field is incorrect and returns a
-  RST (reset) with its SEQ field selected to make the segment
-  believable.  TCP B, on receiving the RST, returns to the LISTEN state.
-  When the original SYN (pun intended) finally arrives at line 6, the
-  synchronization proceeds normally.  If the SYN at line 6 had arrived
-  before the RST, a more complex exchange might have occurred with RST's
-  sent in both directions.
-
-# Half-Open Connections and Other Anomalies
+## 情况1
 
 对方的连接关闭，向对方发送数据，得到 RST
 
-      TCP A                                           TCP B
+ . | TCP A    |                                     | TCP B
+---|:---------|:-----------------------------------:|-----
+1  | (CRASH)  |                                     | (send 300,receive 100)
+2  | CLOSED   |                                     | ESTABLISHED
+3  | SYN-SENT | --> <SEQ=400><CTL=SYN>          --> | (??)
+4  | (!!)     | <-- <SEQ=300><ACK=100><CTL=ACK> <-- | ESTABLISHED
+5  | SYN-SENT | --> <SEQ=100><CTL=RST>          --> | (Abort!!)
+6  | SYN-SENT |                                     | CLOSED
+7  | SYN-SENT | --> <SEQ=400><CTL=SYN>          --> |
 
-  1  (CRASH)                               (send 300,receive 100)
+When the SYN arrives at line 3, TCP B, being in a synchronized state, and the incoming segment outside the window, responds with an acknowledgment indicating what sequence it next expects to hear (ACK 100).  TCP A sees that this segment does not acknowledge anything it sent and, being unsynchronized, sends a reset (RST) because it has detected a half-open connection.  TCP B aborts at line 5.  TCP A will continue to try to establish the connection; the problem is now reduced to the basic 3-way handshake of figure 7.
 
-  2  CLOSED                                           ESTABLISHED
-
-  3  SYN-SENT --> <SEQ=400><CTL=SYN>              --> (??)
-
-  4  (!!)     <-- <SEQ=300><ACK=100><CTL=ACK>     <-- ESTABLISHED
-
-  5  SYN-SENT --> <SEQ=100><CTL=RST>              --> (Abort!!)
-
-  6  SYN-SENT                                         CLOSED
-
-  7  SYN-SENT --> <SEQ=400><CTL=SYN>              -->
-
-  When the SYN arrives at line 3, TCP B, being in a synchronized state,
-  and the incoming segment outside the window, responds with an
-  acknowledgment indicating what sequence it next expects to hear (ACK
-  100).  TCP A sees that this segment does not acknowledge anything it
-  sent and, being unsynchronized, sends a reset (RST) because it has
-  detected a half-open connection.  TCP B aborts at line 5.  TCP A will
-  continue to try to establish the connection; the problem is now
-  reduced to the basic 3-way handshake of figure 7.
+## 情况2
 
         TCP A                                              TCP B
 

@@ -1,3 +1,117 @@
+# 运行脚本
+
+```bash
+mysql> source xxx
+```
+
+# 主从同步配置
+
+## 主服务器配置
+
+### 修改配置文件
+
+```bash
+cd /etc/mysql/mysql.conf.d
+cp mysqld.cnf mysqld.cnf_bk
+vim mysqld.cnf
+```
+
+找到
+
+```bash
+[mysqld]
+```
+
+添加
+
+```bash
+bind-address = 65.55.55.2
+server-id = 1
+log_bin = /var/log/mysql/mysql-bin.log
+binlog_do_db = include_database_name
+binlog_ignore_db = include_database_name
+```
+
+* bind-address : 机器的 IP 地址
+* server-id : 服务器唯一标识；
+* log_bin : 启动MySQL二进制日志；
+* binlog_do_db : 指定记录二进制日志的数据库；
+* binlog_ignore_db : 指定不记录二进制日志的数据库。
+
+### 查看log_bin是否生效
+
+```bash
+mysql> show variables like 'log_bin';
+```
+
+### 创建从服务器用到的账户和权限
+
+```bash
+mysql> grant replication slave on *.* to 'rep'@'192.168.119.137' identified by 'xxx';
+mysql> grant replication slave on *.* to 'masterbackup' @' 192.168.119.137' identified by 'masterbackup';
+```
+
+### 重启服务
+
+```bash
+/etc/init.d/mysql restart
+```
+
+或
+
+```bash
+systemctl restart mysql
+```
+
+### 查看状态
+
+```bash
+mysql> show master status;
+mysql> show master logs;
+```
+
+## 从服务器配置
+
+### 修改配置文件
+
+```bash
+cd /etc/mysql/mysql.conf.d
+cp mysqld.cnf mysqld.cnf_bk
+vim mysqld.cnf
+```
+
+### 授权数据库远程连接
+
+```bash
+mysql> grant all privileges on *.* to root@"%" identified by "xxx" with grant option;
+mysql> CHANGE MASTER TO
+    -> MASTER_HOST='192.168.119.95',
+    -> MASTER_PORT=3306,
+    -> MASTER_USER='masuserxxx',
+    -> MASTER_PASSWORD='maxxxx',
+    -> MASTER_LOG_FILE='mysql-bin.000007',
+    -> MASTER_LOG_POS=107;
+```
+
+* master_host: 主服务器的IP地址:
+* master_port: 主服务器的端口
+* master_log_file: 对应show master status显示的File列：mysql-bin.000007
+* master_log_pos: 对应Position列：107
+
+### 启动slave数据同步
+
+```bash
+mysql> start slave;
+```
+
+### 查看Slave信息
+
+```bash
+mysql> show slave status;
+```
+
+Slave_IO_Running和Slave_SQL_Running都为yes才表示同步成功。
+
 # 修改数据库文件位置
 
 ## 复制原数据
