@@ -8,6 +8,22 @@ t.join("-");  // "a-b-c"
 t.join();     // "a,b,c"
 ```
 
+## 截取字符串
+
+```c
+const t = "abcd";
+t.slice(1,2);
+t.slice(0,-2);
+t.slice(2);
+```
+
+## 替换
+
+```c
+const t = "abcd";
+t.replace("a", "d");
+```
+
 # 对象
 
 ## 得到keys

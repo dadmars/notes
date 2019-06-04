@@ -17,3 +17,7 @@ netstat -r -n
 ## 扫描服务
 
 nmap -v
+
+## 无线网卡配置
+
+iwconfig
