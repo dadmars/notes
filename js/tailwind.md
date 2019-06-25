@@ -109,8 +109,6 @@ class|Properties
 
 ## Z-Index
 
-Utilities for controlling the stack order of an element.
-
 class|Properties
 ---|---:
 .z-0 |z-index: 0;
@@ -264,8 +262,6 @@ class|Properties
 
 ### Font Weight
 
-Utilities for controlling the font weight of an element.
-
 class|Properties
 ---|---:
 .font-hairline |font-weight: 100;
@@ -288,8 +284,6 @@ class|Properties
 .not-italic |font-style: normal;
 
 ### Font Size
-
-Utilities for controlling the font size of an element.
 
 class|Properties
 ---|---:
@@ -1075,8 +1069,6 @@ class|Properties
 .w-screen |width: 100vw;
 
 ## Min-Width
-
-Utilities for setting the minimum width of an element
 
 class|Properties
 ---|---:

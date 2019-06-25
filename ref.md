@@ -21,5 +21,29 @@
 
 # react
 
+[react](https://reactjs.org/docs/codebase-overview.html)
+[serve](https://www.npmjs.com/package/serve)
+[serve-handler](https://github.com/zeit/serve-handler#options)
+[router](https://reacttraining.com/react-router/web/guides/quick-start)
 [react + d3](http://recharts.org/en-US/guide)
 [tailwind](https://tailwindcss.com/)
+[bootstrap](https://react-bootstrap.github.io/getting-started/introduction)
+[ant](https://ant.design/docs/react/introduce)
+[colors](https://www.materialpalette.com/colors)
+[sortable-tree](https://github.com/frontend-collective/react-sortable-tree#getting-started)
+[d3-tree](http://bl.ocks.org/robschmuecker/7880033)
+[csv](https://www.npmjs.com/package/react-csv)
+[xlsx](https://www.npmjs.com/package/xlsx)
+
+# docker
+
+[docker](https://docs.docker.com/get-started/)
+[docker logging](https://docs.docker.com/config/containers/logging/)
+[docker fluentd](https://docs.docker.com/config/containers/logging/fluentd/)
+
+# python
+
+[webservice soap](https://python-zeep.readthedocs.io/en/master/)
+[flask](http://flask.pocoo.org/)
+[tornado](http://www.tornadoweb.org/en/stable/httpserver.html#tornado.httpserver.HTTPServer)
+
