@@ -21,3 +21,20 @@ nmap -v
 ## 无线网卡配置
 
 iwconfig
+
+# 键盘映射
+
+## 查看按键值
+
+xev
+
+## 进行键盘映射
+
+xmodmap -e "keycode 128 = F3"
+
+### 配置文件
+
+~/.Xmodmap
+
+keycode 128 = F3
+keycode 123 = Insert

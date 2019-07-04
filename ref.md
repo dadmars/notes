@@ -34,6 +34,7 @@
 [d3-tree](http://bl.ocks.org/robschmuecker/7880033)
 [csv](https://www.npmjs.com/package/react-csv)
 [xlsx](https://www.npmjs.com/package/xlsx)
+[video](https://video-react.js.org/components/player/)
 
 # docker
 
