@@ -404,3 +404,7 @@ mysql> use mysql;
 mysql> update db set Host='%' where Db='dbxx';
 mysql> update user set Host='%' where user='userxx';
 ```
+
+# 连接数据库
+
+mysql -h 192.168.5.116 -P 3306 -u root -p123456
