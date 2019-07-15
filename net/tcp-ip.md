@@ -236,3 +236,7 @@ ss --options --extended --memory --processes --info
 * Compress transferred data.
 * Position servers closer to the user to reduce roundtrip times.
 * Reuse established TCP connections whenever possible.
+
+# Security Considerations
+
+当 retransmission timeouts 或接收到重复 ACK 时，TCP 会降低发送频率. 攻击者要降低连接的性能，只要使数据包或 ACK 丢失，或伪造过高的重复 ACK。 Causing two congestion control events back-to-back will often cut ssthresh to its minimum value of 2*SMSS, 导致连接马上进入到低性能的 congestion avoidance 阶段.
