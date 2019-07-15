@@ -152,7 +152,7 @@ slow start:
 Slow-Start Restart：
 * sysctl net.ipv4.tcp_slow_start_after_idle
 * sysctl -w net.ipv4.tcp_slow_start_after_idle=0
-* 当TCP连接空闲时，将cwdn设为默认值，从而避免拥塞
+* 当TCP连接空闲时，将cwnd设为默认值，从而避免拥塞，此时如果恢复传输，slow start
 * 会有性能问题，服务器端建议关闭此选项
 
 拥塞避免算法：
