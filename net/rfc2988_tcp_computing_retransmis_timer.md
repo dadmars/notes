@@ -1,12 +1,6 @@
 # Computing TCP's Retransmission Timer
 
-This document defines the standard algorithm that Transmission Control Protocol (TCP) senders are required to use to compute and manage their retransmission timer. 
-
-The Transmission Control Protocol (TCP) [Pos81] uses a retransmission timer to ensure data delivery in the absence of any feedback from the remote data receiver.  The duration of this timer is referred to as RTO (retransmission timeout).  RFC 1122 [Bra89] specifies that the RTO should be calculated as outlined in [Jac88].
-
-This document codifies the algorithm for setting the RTO.  In addition, this document expands on the discussion in section 4.2.3.1 of RFC 1122 and upgrades the requirement of supporting the algorithm from a SHOULD to a MUST.  RFC 2581 [APS99] outlines the algorithm TCP uses to begin sending after the RTO expires and a retransmission is sent.  This document does not alter the behavior outlined in RFC 2581 [APS99].
-
-In some situations it may be beneficial for a TCP sender to be more conservative than the algorithms detailed in this document allow. However, a TCP MUST NOT be more aggressive than the following algorithms allow.
+The duration of this timer is referred to as RTO (retransmission timeout).
 
 # The Basic Algorithm
 

@@ -1,4 +1,3 @@
-https://tools.ietf.org/html/rfc790
 
       The first type, or class a, of address has a 7-bit network number
       and a 24-bit local address.  This allows 128 class a networks.

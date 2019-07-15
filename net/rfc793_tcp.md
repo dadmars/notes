@@ -1,33 +1,6 @@
-# TCP要解决的问题
-
-* 基本的数据传输 Basic Data Transfer
-* 可靠性 Reliability
-* 流量控制 Flow Control
-* 多路复用 Multiplexing
-* 连接 Connections
-* 优先级和安全 Precedence and Security
-
 # Basic Data Transfer
 
-TCP可以在两个主机之间传输连续的字节流，并且可以同时双向传输。一般TCP可自行决定何时阻塞，何时传输数据。
-
 如果用户要确保提交的数据都被传输，可调用 push 功能。 push 操作使所有数据被发送，并提交给应用程序。push 操作对接收方是不可见的，所以不能被用作数据边界。
-
-# Reliability
-
-数据包有可能损坏，丢失，重复，乱序。TCP必须能够从这些情况中恢复。
-
-数据包中的每一个字节都被编号 sequence number，发送的每一个字节都要得到对方的确认 acknowledgment (ACK)。如果在一定时间内没有得到确认，重传数据。
-
-接收方通过 sequence numbers 确定数据包在字节流中的位置，判断数据是否重复。通过 checksum 来判断数据的正确性。
-
-# Flow Control
-
-接收方在发送ACK的同时，发送一个 "window"，通知发送方最多还能接收多少数据。
-
-# Multiplexing
-
-一个连接由一对 sockets 唯一标识。
 
 # Connections
 
