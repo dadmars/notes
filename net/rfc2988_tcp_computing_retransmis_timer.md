@@ -1,12 +1,8 @@
-# Computing TCP's Retransmission Timer
+# RTO (retransmission timeout)
 
-The duration of this timer is referred to as RTO (retransmission timeout).
-
-# The Basic Algorithm
+## The Basic Algorithm
 
 To compute the current RTO, a TCP sender maintains two state variables, SRTT (smoothed round-trip time) and RTTVAR (round-trip time variation).  In addition, we assume a clock granularity of G seconds.
-
-The rules governing the computation of SRTT, RTTVAR, and RTO are as follows:
 
    (2.1) Until a round-trip time (RTT) measurement has been made for a
          segment sent between the sender and receiver, the sender SHOULD

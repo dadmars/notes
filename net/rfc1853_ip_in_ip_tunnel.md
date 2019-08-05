@@ -4,7 +4,6 @@ The encapsulation technique is fairly simple.  An outer IP header is added befor
 
 The outer IP header Source and Destination identify the "endpoints" of the tunnel.  The inner IP header Source and Destination identify the original sender and recipient of the datagram.
 
-Each header chains to the next using IP Protocol values [RFC-1700].
 
                                           +---------------------------+
                                           |      Outer IP Header      |
@@ -21,13 +20,6 @@ Each header chains to the next using IP Protocol values [RFC-1700].
    Type Of Service  copied from the inner IP header.  Optionally,
                     another TOS may be used between cooperating peers.
 
-                    This is in keeping with the transparency principle
-                    that if the user was expecting a given level of
-                    service, then the tunnel should provide the same
-                    service.  However, some tunnels may be constructed
-                    specifically to provide a different level of service
-                    as a matter of policy.
-
    Identification   A new number is generated for each outer IP header.
 
                     The encapsulated datagram may have already been
@@ -35,14 +27,6 @@ Each header chains to the next using IP Protocol values [RFC-1700].
                     occur due to the tunnel encapsulation.  These tunnel
                     fragments will be reassembled by the decapsulator,
                     rather than the final destination.
-
-   Reserved
-                    ignored (set to zero).
-
-
-                    This unofficial flag has seen experimental use, and
-                    while it remains in the inner IP header, does not
-                    affect the tunnel.
 
    Don't Fragment   copied from the inner IP header.  This allows the
                     originator to control the level of performance
@@ -108,7 +92,3 @@ As a benefit of Tunnel MTU Discovery, any fragmentation which occurs because of 
 Because the TTL is reset each time that a datagram is encapsulated, routing loops within a tunnel are particularly dangerous when they arrive again at the encapsulator.  If the IP Source matches any of its interfaces, an implementation MUST NOT further encapsulate. Instead, the datagram is forwarded normally.
 
 ICMP (Type 11) Time Exceeded messages report routing loops within the tunnel itself.  ICMP (Type 3) Destination Unreachable messages report delivery failures to the decapsulator.  This soft state MUST be reported to the originator as (Type 3 Code 0) Network Unreachable.
-
-## Other ICMP Messages
-
-Most ICMP error messages are not relevant to the use of the tunnel. In particular, parameter problems are likely to be a result of misconfiguration of the encapsulator, and MUST NOT be reported to the originator.
