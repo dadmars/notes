@@ -2,7 +2,7 @@
 
 # rust
 
-[book](https://doc.rust-lang.org/book/ch16-01-threads.html)
+[book](https://doc.rust-lang.org/book/ch18-01-all-the-places-for-patterns.html)
 
 # net
 

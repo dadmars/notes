@@ -40,8 +40,8 @@ cargo build --release
 # 特性
 
 * expression-based 的语言。rust 中的语句分为两种，expression 和 statement:
-** expression: 执行指令，计算出一个结果，并返回。语句不以 ; 结束。{}, if 是 expression
-** statement: 执行指令，但是不返回任何结果。语句以 ; 结束。let, fn 是statement
+  * expression: 执行指令，计算出一个结果，并返回。语句不以 ; 结束。{}, if 是 expression
+  * statement: 执行指令，但是不返回任何结果。语句以 ; 结束。let, fn 是statement
 * 变量默认不可编辑
 * 强类型
 * 静态语言
@@ -52,11 +52,11 @@ cargo build --release
 ## ownership
 
 * 每个值都有一个 owner
-** 在退出作用域后，自动释放(调用 drop )
+  * 在退出作用域后，自动释放(调用 drop )
 * 一个值同一时刻只能有一个 owner
-** 赋值操作是 move 语意
-** 函数参数是 move 语意
-** 函数返回值是 move 语意
+  * 赋值操作是 move 语意
+  * 函数参数是 move 语意
+  * 函数返回值是 move 语意
 
 类型如果实现了 Copy trait ，则不会有 move 语意。Copy trait 与 Drop trait 不能同时实现。
 
@@ -370,12 +370,13 @@ unsafe {
 * *y ====> *(y.deref())
 * 当传递引用到函数时，会自动进行 deref 的转换
 * Deref 从一种类型到另一种类型的转换
-** &T, &mutT 到 &U， T: Deref<Target=U>
-** &mut T 到 &mut U， T: DerefMut<Target=U>
+  * &T, &mutT 到 &U， T: Deref<Target=U>
+  * &mut T 到 &mut U， T: DerefMut<Target=U>
 * std::mem::drop 可手工调用 drop
 
 ##### Box<T>
 
+* 线程不安全
 * 使用编译时不确定大小的类型
 * 占用大量内存，不希望进行 copy
 * 只关心类型实现的功能( Trait )，不关心具体类型
@@ -390,6 +391,9 @@ let val: u8 = *boxed;
 ```
 
 ##### 引用计数
+
+* Rc 线程不安全
+* Arc 线程安全
 
 ```c
 use std::rc::Rc;
@@ -444,6 +448,8 @@ use std::borrow::Cow;
 ##### interior mutability
 
 在有多个引用的情况下对值进行修改。
+* RefCell 线程不安全
+* Mutex 线程安全
 
 RefCell<T> 与 Box<T> 相似，区别前者在运行时，后者在编译时。
 
@@ -890,6 +896,18 @@ while number != 0 {
 }
 ```
 
+# 范围
+
+```c
+for i in 2..5 {
+    println!("{}", i);
+}
+
+for i in 2..=5 {
+    println!("{}", i);
+}
+```
+
 # 常量
 
 只有变量可设为常量。不管在何处定义，总在全局分配，并且在整个程序生命周期内都是存在的。不能动态生成，只能在编译时确定，所以必须给出类型。
@@ -1325,6 +1343,21 @@ fn title() -> impl Summary {
 }
 ```
 
+## trait object
+
+* 所有函数不能使用泛型
+* 返回类型不能为 Self
+
+```c
+pub trait Draw {
+    fn draw(&self);
+}
+
+pub struct Screen {
+    com: Box<dyn Draw>
+}
+```
+
 ## 动态类型检测
 
 ```c
@@ -1537,13 +1570,167 @@ process::exit(1);
 
 # 时间
 
-# 线程
-
 ```c
 use std::thread;
 use std::time::Duration;
 
 thread::sleep(Duration::from_secs(2));
+```
+
+# 线程
+
+* Send trait: 类型是线程安全的
+* Sync trait: 类型的引用是线程安全的
+
+## 创立线程
+
+```c
+use std::thread;
+use std::time::Duration;
+
+let v = vec![1, 2, 3];
+
+thread::spawn(move || {
+    for i in 1..10 {
+        println!("from thread:{:?}", v);
+        thread::sleep(Duration::from_millis(i));
+    }
+});
+
+for i in 1..5 {
+    println!("from main");
+    thread::sleep(Duration::from_millis(i));
+}
+```
+
+## 线程结束
+
+```c
+use std::thread;
+use std::time::Duration;
+
+let h = thread::spawn(|| {
+    for i in 1..10 {
+        println!("from thread");
+        thread::sleep(Duration::from_millis(i));
+    }
+});
+
+h.join().unwrap();
+
+for i in 1..5 {
+    println!("from main");
+    thread::sleep(Duration::from_millis(i));
+}
+```
+
+## 线程间通迅
+
+channel 发送者的数据通过 send() 发送后，数据的 ownership 会转移到接收端。
+
+```c
+use std::sync::mpsc;
+
+///////////////////////////////////
+let (tx, rx) = mpsc::channel();
+
+thread::spawn(move || {
+    let val = String::from("aa");
+    tx.send(val).unwrap();
+});
+
+let v = rx.recv().unwrap();
+println!("{:?}", v);
+
+///////////////////////////////////
+thread::spawn(move || {
+    let vals = vec![
+        String::from("aa"),
+        String::from("bb"),
+        String::from("cc"),
+    ];
+
+    // 不能使用 &vals ，因为send 要进行 ownership 的转移
+    for v in vals {
+        tx.send(val).unwrap();
+        thread::sleep(Duration::from_millis(1));
+    }
+});
+
+for v in rx {
+    println!("{:?}", v);
+}
+
+///////////////////////////////////
+let tx1 = mpsc::Sender::clone(&tx);
+thread::spawn(move || {
+    let vals = vec![
+        String::from("aa"),
+        String::from("bb"),
+        String::from("cc"),
+    ];
+
+    for v in vals {
+        tx1.send(val).unwrap();
+        thread::sleep(Duration::from_millis(1));
+    }
+});
+
+thread::spawn(move || {
+    let vals = vec![
+        String::from("1"),
+        String::from("2"),
+        String::from("3"),
+    ];
+
+    for v in vals {
+        tx.send(val).unwrap();
+        thread::sleep(Duration::from_millis(1));
+    }
+});
+
+for v in rx {
+    println!("{:?}", v);
+}
+```
+
+## 线程间同步
+
+```c
+////////////////////////////
+use std::sync::Mutex;
+
+let m = Mutex::new(5);
+
+{
+    let mut a = m.lock().unwrap();
+    *a = 6;
+}
+
+println!("{:?}", m);
+
+////////////////////////////
+use std::sync::{ Mutex, Arc };
+
+let m = Arc::new(Mutex::new(0));
+
+let mut hs = Vec::new();
+
+for _ in 0..10 {
+    let mt = Arc::clone(&m);
+    let h = thread::spawn(move ||{
+        let mut a = mt.lock().unwrap();
+        *a += 1;
+    });
+
+    hs.push(h);
+}
+
+for h in hs {
+    h.join().unwrap;
+}
+
+println!("{}", *m.lock().unwrap())
 ```
 
 # 异步
