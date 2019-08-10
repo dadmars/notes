@@ -1,3 +1,31 @@
+# ftp
+
+```bash
+sudo apt-get install vsftpd
+
+sudo cp /etc/vsftpd.conf /etc/vsftpd.conf.bk
+
+########################################
+/etc/vsftpd.conf
+write_enable=YES
+local_umask=022
+chroot_local_user=YES
+
+# add new line
+allow_writeable_chroot=YES
+pasv_min_port=40000
+pasv_max_port=40100
+########################################
+
+sudo systemctl restart vsftpd
+
+sudo useradd -m ftpuser -s /usr/sbin/nologin
+sudo passwd useradd
+echo "/usr/sbin/nologin" | sudo tee -a /etc/shells
+```
+
+ftp 会阻止 shell 不在 /etc/shells 的用户登录
+
 # 花生壳
 
 phddns

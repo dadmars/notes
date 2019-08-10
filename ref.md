@@ -1,8 +1,12 @@
-[5笔](https://doc.rust-lang.org/book/ch10-01-syntax.html)
+[5笔](https://www.52wubi.com/wbbmcx/search.php)
 
 # rust
 
-[book](https://doc.rust-lang.org/book/ch18-01-all-the-places-for-patterns.html)
+[book](https://doc.rust-lang.org/book/ch18-03-pattern-syntax.html)
+
+# ftp
+
+[ftp](https://www.krizna.com/ubuntu/setup-ftp-server-ubuntu-16-04/amp/)
 
 # net
 

@@ -737,7 +737,7 @@ m.call();
 ## Range
 
 ```c
-for i in (1..4) {
+for i in 1..4 {
     println!("{}", i);
 }
 ```
@@ -837,6 +837,15 @@ let a = match coin {
     },
     _ => (),
 };
+
+//////////////////////////////////
+let x = 1;
+match x => {
+    1 | 2 => println!("xxx"),
+    1...5 => println!("xxx"),   // 1, 2, 3, 4, 5
+    'a'...'c' => println!("xxx"),   // a, b, c
+    _ => println!("xxx"),
+}
 ```
 
 ### if let
@@ -884,6 +893,11 @@ for element in a.iter() {
 for number in (1..4).rev() {
     println!("{}!", number);
 }
+
+//////////////////////////////
+for (index, number) in a.iter().enumerate() {
+    println!("{}!", number);
+}
 ```
 
 ### while
@@ -893,6 +907,16 @@ let mut number = 3;
 
 while number != 0 {
     number -= 1;
+}
+
+////////////////////////
+let mut val = Vec::new();
+val.push(1);
+val.push(2);
+val.push(3);
+
+while let Some(t) = val.pop() {
+    println!("{}", t);
 }
 ```
 
