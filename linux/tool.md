@@ -1,3 +1,15 @@
+# GUI 用户登录设置
+
+```bash
+cd /etc/lightdm/lightdm.conf.d
+touch my.conf
+
+[SeatDefaults]
+allow-guest=false
+greeter-hide-users=true
+greeter-show-manual-login=true
+```
+
 # ftp
 
 ```bash
@@ -30,7 +42,12 @@ ftp 会阻止 shell 不在 /etc/shells 的用户登录
 
 phddns
 
-Wireshark
+# Wireshark
+
+```bash
+cat /etc/group
+sudo usermod -a -G wireshark username
+```
 
 # server 安装 gui
 

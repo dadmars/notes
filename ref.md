@@ -3,6 +3,11 @@
 # rust
 
 [book](https://doc.rust-lang.org/book/ch18-03-pattern-syntax.html)
+[crates](https://crates.io/)
+[rust](https://www.rust-lang.org/)
+[std](https://doc.rust-lang.org/std/index.html)
+[json](https://docs.serde.rs/serde_json/index.html)
+[compress](https://docs.rs/flate2/1.0.9/flate2/index.html)
 
 # ftp
 
@@ -27,6 +32,10 @@
 # mysql
 
 [](https://www.cyberciti.biz/tips/how-do-i-enable-remote-access-to-mysql-database-server.html)
+
+# dgraph
+
+[](https://docs.dgraph.io/get-started/)
 
 # react
 

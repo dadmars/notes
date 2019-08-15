@@ -22,15 +22,19 @@ ifconfig mon0 up
 
 ### 本地ip地址
 
+```bash
 hostname -I
 ip address
+```
 
 ### 路由器ip地址
 
+```bash
 ip route | grep default
 route -n
     注意 U 的含义是 route is 'up'，G 的含义是这是一个 gateway
 netstat -r -n
+```
 
 ## 扫描服务
 
@@ -48,7 +52,9 @@ xmodmap -e "keycode 128 = F3"
 
 ### 配置文件
 
+```bash
 ~/.Xmodmap
 
 keycode 128 = F3
 keycode 123 = Insert
+```

@@ -1543,37 +1543,46 @@ stdin().read_line(&s).expect("error");
 
 # 文件处理
 
-```c
+## 打开文件
+
+```rust
 use std::fs::{self, File};
 use std::io::ErrorKind;
 
-//////////////////////////////////
 let f = match File::open("a.txt") {
     Ok(v) => v,
     Err(error) => match error.kind() {
-        ErrorKind::NotFound => match File::create("a.txt") => {
-            Ok(fc) => fc,
-            Err(e) => panic!("create file error: {}", e)
-        },
-        other_error => panic!("open file error: {}", other_error)
+        ErrorKind::NotFound => (),
+        e => panic!("open file error: {}", e)
     }
 }
+```
 
-//////////////////////////////////
-let f = match File::open("a.txt").unwrap_or_else(|error| {
-    if error.kind() == ErrorKind::NotFound {
-        File::create("a.txt").unwrap_or_else(|error| {
-            panic!("create file error: {}", error);
-        })
-    }
-    else {
-        panic!("open file error: {}", error);
-    }
+## 新建文件
+
+```rust
+let f = match File::create("a.txt").unwrap_or_else(|e| {
+    panic!("create file error: {}", e);
 });
+```
 
-//////////////////////////////////
+## 读写
+
+```rust
+use std::io::BufReader;
+
 let s = fs::read_to_string("a.txt")
     .expect("read error");
+
+//////////////////////////////////
+let f = File::open("a.txt").unwrap();
+let mut b = BufReader::new(f);
+
+let mut buffer = Vec::new();
+b.read_to_end(&mut buffer).unwrap();
+
+let f = File::create("b.txt").unwrap();
+f.write_all(&buffer).unwrap()?;
 ```
 
 # 环境参数
