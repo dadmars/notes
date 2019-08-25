@@ -1,8 +1,15 @@
 # 配置
 
-## 支持中文
-
 ## 设置权限
+
+```bash
+docker ps | grep influxdb
+docker exec -it xxx influx
+
+> CREATE USER admin WITH PASSWORD '<password>' WITH ALL PRIVILEGES
+> CREATE USER <username> WITH PASSWORD '<password>' WITH ALL PRIVILEGES
+> CREATE DATABASE mydb
+```
 
 ## 修改权限
 
@@ -16,22 +23,17 @@
 
 # 删除数据库内容
 
-# mysql 数据库常用命令
+# 常用命令
 
 ```bash
 # 显示所有数据库
-
-# 新建表格
+show databases
+use xxx
 
 # 查看表格
+show measurements
 
 # 删除表格
-
-############################
-
-# 增加表格列
-
-# 删除表格列
 
 ############################
 
@@ -40,6 +42,9 @@
 # 更新数据
 
 # 删除数据
+
+# 查看数据
+select * from table_name;
 ```
 
 # 备份

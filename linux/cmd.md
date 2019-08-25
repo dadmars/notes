@@ -1,3 +1,21 @@
+# 用户
+
+## 添加sudo用户
+
+```bash
+adduser xx
+usermod -aG sudo xx
+```
+
+## ssh 登录
+
+```bash
+ls -al ~/.ssh
+ssh-keygen -t rsa -b 4096 -C "mcflym@N123456"
+ssh-add ~/.ssh/id_rsa
+cat ~/.ssh/id_rsa.pub | ssh username@server.address.com 'cat >> ~/.ssh/authorized_keys'
+```bash
+
 # 网络相关命令
 
 ## tcpdump

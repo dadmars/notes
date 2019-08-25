@@ -42,13 +42,6 @@ ftp 会阻止 shell 不在 /etc/shells 的用户登录
 
 phddns
 
-# Wireshark
-
-```bash
-cat /etc/group
-sudo usermod -a -G wireshark username
-```
-
 # server 安装 gui
 
 sudo apt-get install --no-install-recommends ubuntu-desktop
@@ -61,4 +54,20 @@ sudo apt-get update && sudo apt-get install systemback unionfs-fuse
 
 /usr/lib/systemback/sbsustart systemback
 /usr/lib/systemback/sbsustart systemback gtk+
+```
+
+# Wireshark
+
+## 一般用户使用
+
+```bash
+cat /etc/group
+sudo usermod -a -G wireshark username
+```
+
+## 工作流
+
+```bash
+sudo tcpdump port 443 -w output.pcap
+wireshark output.pcap
 ```

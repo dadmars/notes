@@ -37,7 +37,7 @@ mysql> update db set Host='%' where Db='dbxx';
 mysql> update user set Host='%' where user='userxx';
 ```
 
-## 设置 mysql 远程访问
+## 远程访问
 
 默认情况， mysql 禁止远程访问。
 
@@ -85,11 +85,12 @@ sudo rm -rf  /var/lib/mysql
 sudo rm -rf /etc/mysql
 ```
 
-# mysql 数据库常用命令
+# 常用命令
 
 ```bash
 # 显示所有数据库
 show databases;
+use realtime;
 
 # 新建表格
 CREATE TABLE table_name (column_name column_type);
@@ -119,7 +120,10 @@ INSERT INTO table_name ( field1, field2,...fieldN ) VALUES ( value1, value2,...v
 update table_name set age=age+1 where xxx;
 
 # 删除数据
-DELETE FROM table_name where xxx
+DELETE FROM table_name where xxx;
+
+# 查看数据
+select * from table_name;
 ```
 
 # 备份
