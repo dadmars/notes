@@ -1,3 +1,8 @@
+# sed
+
+```bash
+```
+
 # 用户
 
 ## 添加sudo用户
@@ -14,7 +19,7 @@ ls -al ~/.ssh
 ssh-keygen -t rsa -b 4096 -C "mcflym@N123456"
 ssh-add ~/.ssh/id_rsa
 cat ~/.ssh/id_rsa.pub | ssh username@server.address.com 'cat >> ~/.ssh/authorized_keys'
-```bash
+```
 
 # 网络相关命令
 
@@ -51,12 +56,51 @@ ip address
 ip route | grep default
 route -n
     注意 U 的含义是 route is 'up'，G 的含义是这是一个 gateway
-netstat -r -n
 ```
 
-## 扫描服务
+## ip
 
-nmap -v
+显示和管理路由，设备，policy routing and tunnels
+
+```bash
+ip route
+ip link
+```
+
+## netstat
+
+输出网络连接，路由表，网卡信息，无效连接，多播成员
+
+```bash
+# displays  a list of open sockets
+netstat
+
+# Display the kernel routing tables
+netstat -r
+
+# Display a table of all network interfaces
+netstat -i
+
+# Show numerical addresses instead of trying to determine symbolic host, port or user names
+-n
+```
+
+## nmap
+
+Network Mapper 网络探测及安全和端口扫描工具。用来快速扫描大型网络（也可用于本机）。可以探测网络上哪些主机可用，主机提供哪些服务，运行什么操作系统，何种类型的防火墙等等。
+
+```bash
+# -T4 faster execution
+# -A enable OS and version detection, script scanning, and traceroute
+nmap -A -T4 scanme.nmap.org
+
+# TCP Connect() scans
+nmap -sT <ipaddress>
+
+# scan 1000 TCP ports
+nmap <ipaddress>
+nmap -v <ipaddress>
+```
 
 # 键盘映射
 

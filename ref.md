@@ -2,8 +2,9 @@
 
 # rust
 
-[book](https://doc.rust-lang.org/book/ch18-03-pattern-syntax.html)
+[book](https://doc.rust-lang.org/book/ch19-01-unsafe-rust.html)
 [crates](https://crates.io/)
+[time chrono](https://crates.io/crates/chrono)
 [rust](https://www.rust-lang.org/)
 [std](https://doc.rust-lang.org/std/index.html)
 [json](https://docs.serde.rs/serde_json/index.html)
@@ -51,12 +52,14 @@
 [bootstrap](https://react-bootstrap.github.io/getting-started/introduction)
 [ant](https://ant.design/docs/react/introduce)
 [moment datetime](https://momentjs.com/guides/)
-[colors](https://www.materialpalette.com/colors)
+[tail-colors](https://tailwindcss.com/docs/customizing-colors#default-color-palette)
+[mui-colors](https://www.materialpalette.com/colors)
 [sortable-tree](https://github.com/frontend-collective/react-sortable-tree#getting-started)
 [d3-tree](http://bl.ocks.org/robschmuecker/7880033)
 [csv](https://www.npmjs.com/package/react-csv)
 [xlsx](https://www.npmjs.com/package/xlsx)
 [video](https://video-react.js.org/components/player/)
+[idle timer](https://www.npmjs.com/package/react-idle-timer)
 
 # docker
 
@@ -73,3 +76,7 @@
 # https
 
 [tornado](https://letsencrypt.org)
+
+# web
+
+[mdn](https://developer.mozilla.org/en-US/)

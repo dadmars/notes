@@ -296,9 +296,17 @@ d = time.strftime("%Y%m%d")
 d = datetime.datetime.now()
 w = d.weekday()
 h = d.hour
+s = d.strftime("%Y-%m-%d %H:%M:%S")
 
 ######
 d += datetime.timedelta(hours=8) # 当前时间增加８小时
+d += datetime.timedelta(days=8)
+d += datetime.timedelta(seconds=8)
+d += datetime.timedelta(microseconds=8)
+d += datetime.timedelta(milliseconds=8)
+d += datetime.timedelta(minutes=8)
+d += datetime.timedelta(hours=8)
+d += datetime.timedelta(weeks=8)
 ```
 
 # 线程

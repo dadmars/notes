@@ -1,3 +1,11 @@
+# download
+
+## 多线程下载
+
+```bash
+axel
+```
+
 # GUI 用户登录设置
 
 ```bash
@@ -70,4 +78,57 @@ sudo usermod -a -G wireshark username
 ```bash
 sudo tcpdump port 443 -w output.pcap
 wireshark output.pcap
+```
+
+# npm
+
+## 命令
+
+```bash
+npm install tailwindcss --save-dev
+```
+
+## 修改成华为云镜像源
+
+```bash
+npm config set registry https://mirrors.huaweicloud.com/repository/npm/
+npm config get registry
+```
+
+# centos
+
+## 修改成阿里云镜像源
+
+```bash
+mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
+wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-6.repo
+yum makecache
+```
+
+## install docker
+
+```bash
+sudo yum install -y yum-utils device-mapper-persistent-data lvm2
+sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+sudo yum install docker-ce docker-ce-cli containerd.io
+    or:
+        yum list docker-ce --showduplicates | sort -r
+        sudo yum install docker-ce-<VERSION_STRING> docker-ce-cli-<VERSION_STRING> containerd.io
+
+sudo systemctl start docker
+```
+
+## ip address
+
+```bash
+nmtui edit eno1
+```
+
+# curl
+
+```bash
+curl --header "Content-Type: application/json" --request POST --data '{"cmd":"update"}'  http://localhost:9998
+
+curl --header "Content-Type: application/json" --request POST --data '{"cmd":"update"}'  http://localhost/cfg
 ```

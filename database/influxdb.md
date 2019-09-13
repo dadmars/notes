@@ -6,9 +6,9 @@
 docker ps | grep influxdb
 docker exec -it xxx influx
 
-> CREATE USER admin WITH PASSWORD '<password>' WITH ALL PRIVILEGES
-> CREATE USER <username> WITH PASSWORD '<password>' WITH ALL PRIVILEGES
-> CREATE DATABASE mydb
+> CREATE USER admin WITH PASSWORD 'admin' WITH ALL PRIVILEGES
+> CREATE USER realtime WITH PASSWORD 'realtime' WITH ALL PRIVILEGES
+> CREATE DATABASE realtime
 ```
 
 ## 修改权限

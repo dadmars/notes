@@ -73,6 +73,11 @@ exit
 
 # 主从同步
 
+```bash
+--replicas
+    we recommend setting --replicas to 1, 3 or 5 (not 2 or 4). This allows 0, 1, or 2 nodes serving the same group to be down, respectively without affecting the overall health of that group.
+```
+
 ## 从服务器配置
 
 # 修改数据库文件位置

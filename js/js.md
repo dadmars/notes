@@ -157,6 +157,30 @@ Object.entries(t).forEach(([key, value]) => {
 // c: 3
 ```
 
+### Set
+
+```js
+////////////////////////////////////////////
+const set1 = new Set([1, 2, 3, 4, 5]);
+
+set1.has(1); // true
+set1.has(6); // false
+
+////////////////////////////////////////////
+var mySet = new Set();
+
+mySet.add(1); // Set [ 1 ]
+mySet.add('some text'); // Set [ 1, 'some text' ]
+mySet.delete(1); // removes 1 from the set
+
+for (let item of mySet) console.log(item);
+for (let item of mySet.keys()) console.log(item);
+for (let item of mySet.values()) console.log(item);
+
+let a = [...mySet2]; // to array
+var myArr = Array.from(mySet); // to array
+```
+
 ### 链表
 
 ### 树
@@ -341,7 +365,7 @@ const doubledNumbers = numbers.map(n => n * 2); // [0, 2, 4, 6, 8, 10, 12]
 
 const evenNumbers = numbers.filter(n => n % 2 === 0); // [0, 2, 4, 6]
 
-const sum = numbers.reduce((prev, next) => prev + next, 0); // 21
+const sum = numbers.reduce((prev, cur) => prev + cur, 0); // 21
 ```
 
 # 命令行
@@ -370,6 +394,8 @@ let v = new Date("2019-09-08T09:08:00"); // 本地时间
 let v = new Date("2019-09-08"); // utc时间(只有时期，没有时间)
 
 let a = v.getTime(); // 时间戳,豪秒
+
+v.setTime(v.getTime() + 8*60*60*1000); // 增加8小时
 ```
 
 # 线程
