@@ -1,3 +1,5 @@
+<!-- TOC -->autoauto- [特性](#特性)auto- [生存期( Lifetimes )](#生存期-lifetimes-)auto- [注释](#注释)auto- [对内存的表示](#对内存的表示)auto    - [连续的内存](#连续的内存)auto        - [数字](#数字)auto        - [数组](#数组)auto        - [字符串](#字符串)auto        - [向量](#向量)auto    - [内存数据的读写](#内存数据的读写)auto        - [直接读写](#直接读写)auto        - [只读](#只读)auto        - [shadwing](#shadwing)auto        - [间接读写](#间接读写)auto            - [指针](#指针)auto                - [指针类型](#指针类型)auto                - [空指针](#空指针)auto                - [得到指向的值](#得到指向的值)auto                - [指针运算](#指针运算)auto            - [智能指针](#智能指针)auto            - [引用](#引用)auto                - [连续空间部分内容的引用( Slice )](#连续空间部分内容的引用-slice-)auto                    - [String Slice](#string-slice)auto                    - [Other Slice](#other-slice)auto    - [类型转换](#类型转换)auto    - [destructuring](#destructuring)auto    - [非连续的内存](#非连续的内存)auto        - [对象](#对象)auto        - [Set](#set)auto        - [链表](#链表)auto        - [树](#树)auto- [空值](#空值)auto- [空对象](#空对象)auto- [结构化](#结构化)auto    - [元组( tuple )](#元组-tuple-)auto    - [结构( struct )](#结构-struct-)auto        - [Tuple Structs](#tuple-structs)auto        - [Unit-Like Structs](#unit-like-structs)auto    - [枚举( enum )](#枚举-enum-)auto- [扩展](#扩展)auto    - [Range](#range)auto- [程序指令的执行](#程序指令的执行)auto    - [函数](#函数)auto    - [一般函数](#一般函数)auto    - [函数参数列表: arguments](#函数参数列表-arguments)auto    - [闭包( closure )](#闭包-closure-)auto    - [分支](#分支)auto        - [if](#if)auto    - [match](#match)auto    - [循环](#循环)auto        - [loop](#loop)auto        - [for](#for)auto        - [while](#while)auto- [范围](#范围)auto- [常量](#常量)auto    - [字符和字符串常量](#字符和字符串常量)auto    - [数字字面常量](#数字字面常量)auto- [数据封装](#数据封装)auto    - [struct](#struct)auto- [错误处理](#错误处理)auto- [代码组织( 模块化 )](#代码组织-模块化-)auto    - [工具](#工具)auto    - [workspace](#workspace)auto    - [package](#package)auto    - [key: mod, pub](#key-mod-pub)auto    - [key: crate, self, super](#key-crate-self-super)auto    - [key: use, as](#key-use-as)auto    - [External Packages](#external-packages)auto    - [Separating Modules into Different Files](#separating-modules-into-different-files)auto- [自动化测试](#自动化测试)auto    - [单元测试](#单元测试)auto    - [集成测试](#集成测试)auto- [修饰器编程( Decorator )](#修饰器编程-decorator-)auto- [面向对象](#面向对象)auto    - [trait](#trait)auto    - [trait object](#trait-object)auto    - [动态类型检测](#动态类型检测)auto- [函数式编程](#函数式编程)auto- [泛型](#泛型)auto    - [迭代器( Iterators )](#迭代器-iterators-)auto- [命令行](#命令行)auto    - [命令行参数](#命令行参数)auto    - [用户输入](#用户输入)auto- [文件处理](#文件处理)auto    - [打开文件](#打开文件)auto    - [新建文件](#新建文件)auto    - [读写](#读写)auto- [环境参数](#环境参数)auto- [进程](#进程)auto- [时间](#时间)auto- [线程](#线程)auto    - [创立线程](#创立线程)auto    - [线程结束](#线程结束)auto    - [线程间通迅](#线程间通迅)auto    - [线程间同步](#线程间同步)auto- [异步](#异步)auto- [网络](#网络)autoauto<!-- /TOC -->
+
 # 特性
 
 # 生存期( Lifetimes )
@@ -130,6 +132,55 @@ t.split(".");  // ["a", "b", "c"]
 ```
 
 ## destructuring
+
+```js
+let [a, b, ...rest] = [10, 20, 30, 40, 50];
+console.log(a); // 10
+console.log(b); // 20
+console.log(rest); // [30, 40, 50]
+
+let {a, b, ...rest} = {a: 10, b: 20, c: 30, d: 40};
+console.log(a); // 10
+console.log(b); // 20
+console.log(rest); // {c: 30, d: 40}
+
+[a=5, b=7] = [1];
+console.log(a); // 1
+console.log(b); // 7
+
+var a = 1;
+var b = 3;
+[a, b] = [b, a];
+console.log(a); // 3
+console.log(b); // 1
+
+var [a, , b] = [1, 2, 3];
+console.log(a); // 1
+console.log(b); // 3
+
+[,,] = [1, 2, 3];
+
+var {a: aa = 10, b: bb = 5} = {a: 3};
+console.log(aa); // 3
+console.log(bb); // 5
+
+var user = {
+  id: 42,
+  displayName: 'jdoe',
+  fullName: {
+    firstName: 'John',
+    lastName: 'Doe'
+  }
+};
+function whois({displayName, fullName: {firstName: name}}) {
+  return `${displayName} is ${name}`;
+}
+
+let {a, b, ...rest} = {a: 10, b: 20, c: 30, d: 40}
+a; // 10
+b; // 20
+rest; // { c: 30, d: 40 }
+```
 
 ## 非连续的内存
 

@@ -38,6 +38,9 @@ sudo rm -rf /var/lib/docker
 ```bash
 docker ps
 docker logs xxxxx
+
+# 看最后的30行
+docker logs --tail 30 xxxxx
 ```
 
 # 编译

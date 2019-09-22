@@ -78,6 +78,48 @@ fn lo<'a>(a: &'a str, b: &'a str) -> &'a str {
 }
 ```
 
+# 输出
+
+```rust
+println!("{:>5}", 100);
+println!("{:>5}", 1000);
+println!("{:>5}", 10000);
+/*
+  100
+ 1000
+10000
+*/
+
+println!("{:<5} padded", 100);
+println!("{:<5} padded", 1000);
+println!("{:<5} padded", 10000);
+/*
+100   padded
+1000  padded
+10000 padded
+*/
+
+println!("[{:^8}]", 100);
+println!("[{:^8}]", 1000);
+println!("[{:^8}]", 10000);
+/*
+[    100    ]
+[    1000   ]
+[   10000   ]
+*/
+
+println!("[{:_^8}]", "t");
+println!("[{:^8}]", 100);
+println!("[{:^8}]", 1000);
+println!("[{:^8}]", 10000);
+/*
+[_____t_____]
+[    100    ]
+[    1000   ]
+[   10000   ]
+*/
+```
+
 # 调试
 
 ```rust
@@ -840,6 +882,20 @@ for i in 1..4 {
 }
 ```
 
+## Struct init
+
+```rust
+#[derive(Debug, Default)]
+Struct Foo {
+    x: i32,
+    y: i32
+}
+
+let a = Foo { x: 1, y: 2 };
+let b = Foo { x: 1, ..a };
+let c = Foo { x: 1, ..Default::default() };
+```
+
 # 程序指令的执行
 
 ## 主函数（ 程序进入点 ）
@@ -941,6 +997,14 @@ match x => {
     1...5 => println!("xxx"),   // 1, 2, 3, 4, 5
     'a'...'c' => println!("xxx"),   // a, b, c
     _ => println!("xxx"),
+}
+
+//////////////////////////////////
+fn divide(x: Option<i32>, y: Option<i32>) -> Option<i32> {
+    match (x, y) => {
+        (Some(i), Some(j)) if j != 0 => Some(i / j),
+        _ => None
+    }
 }
 ```
 

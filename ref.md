@@ -20,7 +20,8 @@
 
 # webassembly
 
-[emscripten](https://emscripten.org/docs/index.html)
+[mdn-WebAssembly](https://developer.mozilla.org/en-US/docs/WebAssembly)
+[rust webassembly](https://rustwasm.github.io/docs/book/)
 
 # async
 
@@ -38,11 +39,16 @@
 
 [](https://docs.dgraph.io/get-started/)
 
+# influxdb
+
+[](https://docs.influxdata.com/influxdb)
+
 # react
 
 [react](https://reactjs.org/docs/codebase-overview.html)
 [roboto-fonts](https://www.fontsquirrel.com/fonts/roboto)
 [material-ui](https://material-ui.com/getting-started/installation/)
+[icons-mui](https://material-ui.com/components/material-icons/)
 [time-picker](https://material-ui-pickers.dev/getting-started/installation)
 [serve](https://www.npmjs.com/package/serve)
 [serve-handler](https://github.com/zeit/serve-handler#options)
@@ -52,8 +58,8 @@
 [bootstrap](https://react-bootstrap.github.io/getting-started/introduction)
 [ant](https://ant.design/docs/react/introduce)
 [moment datetime](https://momentjs.com/guides/)
-[tail-colors](https://tailwindcss.com/docs/customizing-colors#default-color-palette)
-[mui-colors](https://www.materialpalette.com/colors)
+[colors-tail](https://tailwindcss.com/docs/customizing-colors#default-color-palette)
+[colors-mui](https://www.materialpalette.com/colors)
 [sortable-tree](https://github.com/frontend-collective/react-sortable-tree#getting-started)
 [d3-tree](http://bl.ocks.org/robschmuecker/7880033)
 [csv](https://www.npmjs.com/package/react-csv)

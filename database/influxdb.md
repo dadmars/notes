@@ -23,6 +23,9 @@ docker exec -it xxx influx
 
 # 删除数据库内容
 
+```bash
+```
+
 # 常用命令
 
 ```bash
@@ -32,6 +35,12 @@ use xxx
 
 # 查看表格
 show measurements
+show tag keys from xx
+show field keys from xx
+show tag values from xx with key=msn
+
+# 从一个表把一些列移到另一个表中, group by * 保证 tag key
+SELECT useful_field, nice_tag INTO new_measurement FROM measurement GROUP BY *
 
 # 删除表格
 
