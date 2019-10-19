@@ -24,6 +24,9 @@ logout and login
 docker --version
 docker version
 docker info
+
+# 下载 images
+docker pull xxx
 ```
 
 # 删除

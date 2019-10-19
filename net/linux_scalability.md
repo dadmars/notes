@@ -1,9 +1,6 @@
-This report explores the possible effects of a "thundering herd" problem associated with the Linux implementation of the POSIX accept() system call. We discuss the nature of the problem and how it may affect the scalability of the Linux kernel. In addition, we identify candidate solutions and considerations to keep in mind. Finally, we present a solution and benchmark it, giving a description of the benchmark methodology and the results of the benchmark.
+解决 linux 下的调用 accept() 引发的 "thundering herd" 问题。
 
-
-Introduction
-
-Network servers that use TCP/IP to communicate with their clients are rapidly increasing their offered loads. A service may elect to create multiple threads or processes to wait for increasing numbers of concurrent incoming connections. By pre-creating these multiple threads, a network server can handle connections and requests at a faster rate than with a single thread.
+服务器为每个到来的连接建立一个线程。
 
 In Linux, when multiple threads call accept() on the same TCP socket, they get put on the same wait queue, waiting for an incoming connection to wake them up. In the Linux 2.2.9 kernel (and earlier), when an incoming TCP connection is accepted, the wake_up_interruptible() function is invoked to awaken waiting threads. This function walks the socket's wait queue and awakens everybody. All but one of the threads, however, will put themselves back on the wait queue to wait for the next connection. This unnecessary awakening is commonly referred to as a "thundering herd" problem and creates scalability problems for network server applications.
 

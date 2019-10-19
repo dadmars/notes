@@ -26,12 +26,15 @@ sudo apt-get install vsftpd
 sudo cp /etc/vsftpd.conf /etc/vsftpd.conf.bk
 
 ########################################
-/etc/vsftpd.conf
+# 编辑文件： /etc/vsftpd.conf
+sudo vim /etc/vsftpd.conf
+
+# 在文件中找到下面的行，并设置值与下面一样
 write_enable=YES
 local_umask=022
 chroot_local_user=YES
 
-# add new line
+# 在文件最后添加下面的行
 allow_writeable_chroot=YES
 pasv_min_port=40000
 pasv_max_port=40100
@@ -40,7 +43,7 @@ pasv_max_port=40100
 sudo systemctl restart vsftpd
 
 sudo useradd -m ftpuser -s /usr/sbin/nologin
-sudo passwd useradd
+sudo passwd ftpuser
 echo "/usr/sbin/nologin" | sudo tee -a /etc/shells
 ```
 

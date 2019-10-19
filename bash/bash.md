@@ -1,3 +1,21 @@
+# shell 种类
+
+cat /etc/shells
+
+## 用户的默认 shell
+
+cat /etc/passwd
+
+## 登录 bash 的配置文件
+
+* /etc/profile
+* ~/.bash_profile, ~/.bash_login or ~/.profile: first existing readable file is read
+* ~/.bash_logout upon logout.
+
+## no-login bash 的配置文件
+
+* ~/.bashrc
+
 # Hello, world
 
 ```bash
@@ -6,25 +24,58 @@
 echo "hello word"
 ```
 
-# 特性
-
-# 生存期( Lifetimes )
-
-## ownership
-
-## Lifetimes
-
 # 注释
 
 ```bash
 # comment
 ```
 
-# 对内存的表示
+# 转义
+
+## \
+
+## ''
+
+```bash
+# 错误，单引号不能在单引号中间。有 \ 也不行
+'''
+'\''
+```
+
+## ""
+
+$, `, \ 还是保留原来的意思。
+
+*, @ 在双引号中间有特殊的含义。
+
+# 管道( | 和 |& )
+
+cmd1 | cmd2 : cmd1 的标准输出，作为 cmd2 的标准输入
+
+cmd1 |& cmd2 : cmd1 的标准输出加上错误输出，作为 cmd2 的标准输入
+
+time cmd1 : 统计命令运行时间
+
+# 命令列表
+
+## &
+
+cmd& : 命令在后台运行
+
+## ;
+
+cmd1; cmd2; cmd3; : 命令依次运行，结果为最后一个命令的返回结果。
+
+## || &&
 
 ## 连续的内存
 
 ### 整形
+
+```bash
+# 数学运算
+A=$[ 3 + 2 ]
+```
 
 #### 字符类型( char )
 
@@ -46,8 +97,6 @@ c
 xxx
 ```
 
-### 向量
-
 ## 内存数据的读写
 
 ### 直接读写
@@ -68,41 +117,13 @@ xxx
 
 ## 类型转换
 
-## destructuring
-
-## 非连续的内存
-
-### map
-
-### 链表
-
-### 树
-
 # 空值
 
 # 空对象
 
-## unit type
-
-# 结构化
-
-## 元组( tuple )
-
-## 结构( struct )
-
-### Tuple Structs
-
-### Unit-Like Structs
-
-## 枚举( enum )
-
 # 扩展
 
-## Range
-
 # 程序指令的执行
-
-## 主函数（ 程序进入点 ）
 
 ## 函数
 
@@ -127,11 +148,17 @@ then
 else
 fi
 
+#####################
 if ...
 then
 elif ...
 then
 else
+fi
+
+#数字判断
+if (( 3 > 2 ))
+then
 fi
 ```
 
@@ -148,12 +175,30 @@ esac
 
 ## 循环
 
+### until
+
+until test-commands; do consequent-commands; done
+
+运行命令直到测试条件返加值为非0
+
 ### for
+
+for name; do commands; done
+
+for name in words …; do commands; done
+
+for (( expr1 ; expr2 ; expr3 )) ; do commands ; done
 
 ```bash
 for v in a b c
 do
     wc $v
+done
+
+##########
+for (( N=1001; N<=1101; N++ ))
+do
+    echo $N
 done
 
 ##########
@@ -172,6 +217,10 @@ done
 ```
 
 ### while
+
+while test-commands; do consequent-commands; done
+
+运行命令直到测试条件返加值为0
 
 ```bash
 v=no
@@ -196,53 +245,7 @@ done
 
 ## 数字字面常量
 
-# 数据封装
-
-## struct
-
 # 错误处理
-
-# 代码组织( 模块化 )
-
-## 工具
-
-## workspace
-
-## package
-
-## key: mod, pub
-
-## key: crate, self, super
-
-## key: use, as
-
-## External Packages
-
-## Separating Modules into Different Files
-
-# 自动化测试
-
-## 单元测试
-
-## 集成测试
-
-# 修饰器编程( Decorator )
-
-## Display
-
-# 面向对象
-
-## trait
-
-## trait object
-
-## 动态类型检测
-
-# 函数式编程
-
-# 泛型
-
-## 迭代器( Iterators )
 
 # 命令行
 
@@ -284,22 +287,9 @@ if [ -d $v] # -d 如果目录存在
 
 # 时间
 
-# 线程
+# echo
 
-## 创立线程
-
-## 线程结束
-
-## 线程间通迅
-
-## 线程间同步
-
-# 异步
-
-# 网络
-
-# 调用外部程序
-
-# 宏
-
-# Unsafe Rust
+```bash
+# 输出不换行
+echo -n "aa"
+```

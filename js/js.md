@@ -1,8 +1,14 @@
-<!-- TOC -->autoauto- [特性](#特性)auto- [生存期( Lifetimes )](#生存期-lifetimes-)auto- [注释](#注释)auto- [对内存的表示](#对内存的表示)auto    - [连续的内存](#连续的内存)auto        - [数字](#数字)auto        - [数组](#数组)auto        - [字符串](#字符串)auto        - [向量](#向量)auto    - [内存数据的读写](#内存数据的读写)auto        - [直接读写](#直接读写)auto        - [只读](#只读)auto        - [shadwing](#shadwing)auto        - [间接读写](#间接读写)auto            - [指针](#指针)auto                - [指针类型](#指针类型)auto                - [空指针](#空指针)auto                - [得到指向的值](#得到指向的值)auto                - [指针运算](#指针运算)auto            - [智能指针](#智能指针)auto            - [引用](#引用)auto                - [连续空间部分内容的引用( Slice )](#连续空间部分内容的引用-slice-)auto                    - [String Slice](#string-slice)auto                    - [Other Slice](#other-slice)auto    - [类型转换](#类型转换)auto    - [destructuring](#destructuring)auto    - [非连续的内存](#非连续的内存)auto        - [对象](#对象)auto        - [Set](#set)auto        - [链表](#链表)auto        - [树](#树)auto- [空值](#空值)auto- [空对象](#空对象)auto- [结构化](#结构化)auto    - [元组( tuple )](#元组-tuple-)auto    - [结构( struct )](#结构-struct-)auto        - [Tuple Structs](#tuple-structs)auto        - [Unit-Like Structs](#unit-like-structs)auto    - [枚举( enum )](#枚举-enum-)auto- [扩展](#扩展)auto    - [Range](#range)auto- [程序指令的执行](#程序指令的执行)auto    - [函数](#函数)auto    - [一般函数](#一般函数)auto    - [函数参数列表: arguments](#函数参数列表-arguments)auto    - [闭包( closure )](#闭包-closure-)auto    - [分支](#分支)auto        - [if](#if)auto    - [match](#match)auto    - [循环](#循环)auto        - [loop](#loop)auto        - [for](#for)auto        - [while](#while)auto- [范围](#范围)auto- [常量](#常量)auto    - [字符和字符串常量](#字符和字符串常量)auto    - [数字字面常量](#数字字面常量)auto- [数据封装](#数据封装)auto    - [struct](#struct)auto- [错误处理](#错误处理)auto- [代码组织( 模块化 )](#代码组织-模块化-)auto    - [工具](#工具)auto    - [workspace](#workspace)auto    - [package](#package)auto    - [key: mod, pub](#key-mod-pub)auto    - [key: crate, self, super](#key-crate-self-super)auto    - [key: use, as](#key-use-as)auto    - [External Packages](#external-packages)auto    - [Separating Modules into Different Files](#separating-modules-into-different-files)auto- [自动化测试](#自动化测试)auto    - [单元测试](#单元测试)auto    - [集成测试](#集成测试)auto- [修饰器编程( Decorator )](#修饰器编程-decorator-)auto- [面向对象](#面向对象)auto    - [trait](#trait)auto    - [trait object](#trait-object)auto    - [动态类型检测](#动态类型检测)auto- [函数式编程](#函数式编程)auto- [泛型](#泛型)auto    - [迭代器( Iterators )](#迭代器-iterators-)auto- [命令行](#命令行)auto    - [命令行参数](#命令行参数)auto    - [用户输入](#用户输入)auto- [文件处理](#文件处理)auto    - [打开文件](#打开文件)auto    - [新建文件](#新建文件)auto    - [读写](#读写)auto- [环境参数](#环境参数)auto- [进程](#进程)auto- [时间](#时间)auto- [线程](#线程)auto    - [创立线程](#创立线程)auto    - [线程结束](#线程结束)auto    - [线程间通迅](#线程间通迅)auto    - [线程间同步](#线程间同步)auto- [异步](#异步)auto- [网络](#网络)autoauto<!-- /TOC -->
-
 # 特性
 
-# 生存期( Lifetimes )
+动态语言。
+
+对象的定义与其它语言不同。函数，数组，日期，正则表达式都是对象。
+
+Object
+* Function
+* Array
+* Date
+* RegExp
 
 # 注释
 
@@ -15,24 +21,87 @@
 
 ## 连续的内存
 
-### 数字
+### 数字( Number )
+
+双精度 64 位，不对数字进行整型的区分。实现时，整形为 32 位。
+
+#### NaN : Not a Number
 
 ```js
 NaN + 5; // NaN
-
 isNaN(NaN); // true
+```
 
+#### Infinity and -Infinity : 无穷
+
+```js
 1 / 0;   //  Infinity
 -1 / 0;  // -Infinity
 
+// 数字是否有限(非无穷)
 isFinite(1 / 0);      // false
 isFinite(-Infinity);  // false
 isFinite(NaN);        // false
 ```
 
-### 数组
+### 字符串( String )
+
+utf-16
 
 ```js
+// 字符长度
+"abc".length
+
+// 模板字符串
+let val = 1;
+`abc ${val} xxx
+ddd`
+
+// 查找
+indexOf()
+lastIndexOf()
+
+// 子字符串
+'hello'.charAt(0); // "h"
+
+const t = "abcd";
+t.slice(1,2);  // "b"
+t.slice(0,-2); // "ab"
+t.slice(2);  // "cd"
+
+// 替换
+'hello, world'.replace('world', 'mars'); // "hello, mars"
+
+// 大小写
+'hello'.toUpperCase(); // "HELLO"
+"AAA".toLowerCase(); // aaa
+```
+
+### 空类型
+
+```js
+null
+undefined
+```
+
+### Symbol
+
+### Boolean
+
+```js
+false:  0, empty strings (""), NaN, null, undefined
+All other values become true.
+```
+
+### 数组( Array )
+
+```js
+let a = new Array();
+a[0] = 'dog';
+a[1] = 'cat';
+a[2] = 'hen';
+a.length; // 3
+
 ['dog', 'cat', 'hen'].forEach(function(currentValue, index, array) {});
 
 a.push(item);
@@ -55,73 +124,36 @@ t.join();     // "a,b,c"
 t.toString()  // "a,b,c"
 ```
 
-### 字符串
-
-```js
-// 模板字符串
-let val = 1;
-`abc ${val} xxx
-ddd`
-
-// 查找
-indexOf()
-lastIndexOf()
-
-// 截取子字符串
-const t = "abcd";
-t.slice(1,2);  // "b"
-t.slice(0,-2); // "ab"
-t.slice(2);  // "cd"
-
-// 替换
-const t = "abcd";
-t.replace("a", "d");
-
-// 大小写
-'hello'.toUpperCase(); // "HELLO"
-radData.toLowerCase();
-```
-
-### 向量
-
 ## 内存数据的读写
 
-### 直接读写
+### 直接读写( let )
 
-### 只读
+let 的作用域为块级的。
+
+### 只读( const )
 
 ### shadwing
 
-### 间接读写
+### 连续空间部分内容的引用( Slice )
 
-#### 指针
+#### String Slice
 
-##### 指针类型
-
-##### 空指针
-
-##### 得到指向的值
-
-##### 指针运算
-
-#### 智能指针
-
-#### 引用
-
-##### 连续空间部分内容的引用( Slice )
-
-###### String Slice
-
-###### Other Slice
+#### Other Slice
 
 ## 类型转换
 
 ```js
 // 字符串转为数字
+parseInt('11', 2); // 3
 parseInt('123', 10); // 123
 parseInt('010', 10); // 10
 parseInt('hello', 10); // NaN
+parseInt('3hello', 10); // 3
 parseFloat("3.4"); // always uses base 10.
+
+// 数字转为字符串
+"" + 123; // "123"
+"abc" + 123; // "abc123"
 
 // 字符串转为数组
 const t = "a,b,c";
@@ -196,6 +228,10 @@ const t = {
 
 Object.keys(t);   // ["a", "b", "c"]
 
+// 删除item
+delete t.a;
+delete t["b"];
+
 // 遍历对象
 for (let [key, value] of Object.entries(t)) {
   console.log(`${key}: ${value}`);
@@ -232,25 +268,23 @@ let a = [...mySet2]; // to array
 var myArr = Array.from(mySet); // to array
 ```
 
-### 链表
+# 对象
 
-### 树
+```js
+let obj = new Object();
+let obj = {};
 
-# 空值
+let obj = {
+  name: 'Carrot',
+  details: {
+    color: 'orange',
+    size: 12
+  }
+};
 
-# 空对象
-
-# 结构化
-
-## 元组( tuple )
-
-## 结构( struct )
-
-### Tuple Structs
-
-### Unit-Like Structs
-
-## 枚举( enum )
+obj.details.color; // orange
+obj['details']['size']; // 12
+```
 
 # 扩展
 
@@ -283,7 +317,18 @@ console.log(n); // { x: 1, y: 2, a: 3, b: 4 }
 
 ## 函数
 
-## 一般函数
+```js
+var a = 1;
+var b = 2;
+
+(function() {
+  var b = 3;
+  a += b;
+})();
+
+a; // 4
+b; // 2
+```
 
 ## 函数参数列表: arguments
 
@@ -308,16 +353,75 @@ myFunc("Nick", "Anderson", 10, 12, 6);
 
 ### if
 
-## match
+```js
+if () {
+}
+else if () {
+}
+else {
+}
+```
+
+### ? :
+
+```js
+let a = i > 3 ? 4 : 9;
+```
+
+### || &&
+
+```js
+let a = str.length || 2;
+let a = str && str.length;
+```
+
+### switch
+
+```js
+switch (action) {
+  case 'draw':
+    drawIt();
+    break;
+  case 'eat':
+    eatIt();
+    break;
+  default:
+    doNothing();
+}
+
+//////////////////
+switch (a) {
+  case 1: // fallthrough
+  case 2:
+    eatIt();
+    break;
+  default:
+    doNothing();
+}
+
+////////////////////////
+switch (1 + 3) {
+  case 2 + 2:
+    yay();
+    break;
+  default:
+    neverhappens();
+}
+```
 
 ## 循环
-
-### loop
 
 ### for
 
 ```js
-// for .. of
+/////////////////////////////////////////
+// for ( let i = 0; i < 10; i++ )
+for (let i = 0; i < 10; i++) {
+    console.log(i);
+}
+
+/////////////////////////////////////////
+// for ( let v of array )
 const num = [4, 5, 6];
 for (let i of num) {
     console.log(i);
@@ -326,7 +430,8 @@ for (let i of num) {
 // 5
 // 6
 
-// for .. in
+/////////////////////////////////////////
+// for ( let v in object )
 const t = {
     a: 1,
     b: 2,
@@ -370,41 +475,19 @@ person.push('John');
 
 # 代码组织( 模块化 )
 
-## 工具
-
-## workspace
-
 ## package
-
-## key: mod, pub
-
-## key: crate, self, super
-
-## key: use, as
-
-## External Packages
 
 ## Separating Modules into Different Files
 
-# 自动化测试
-
-## 单元测试
-
-## 集成测试
-
-# 修饰器编程( Decorator )
-
 # 面向对象
-
-## trait
-
-## trait object
 
 ## 动态类型检测
 
-# 函数式编程
+```js
+typeof a[90];
+```
 
-# 泛型
+# 函数式编程
 
 ## 迭代器( Iterators )
 
@@ -419,12 +502,6 @@ const evenNumbers = numbers.filter(n => n % 2 === 0); // [0, 2, 4, 6]
 const sum = numbers.reduce((prev, cur) => prev + cur, 0); // 21
 ```
 
-# 命令行
-
-## 命令行参数
-
-## 用户输入
-
 # 文件处理
 
 ## 打开文件
@@ -434,8 +511,6 @@ const sum = numbers.reduce((prev, cur) => prev + cur, 0); // 21
 ## 读写
 
 # 环境参数
-
-# 进程
 
 # 时间
 
@@ -449,17 +524,4 @@ let a = v.getTime(); // 时间戳,豪秒
 v.setTime(v.getTime() + 8*60*60*1000); // 增加8小时
 ```
 
-# 线程
-
-## 创立线程
-
-## 线程结束
-
-## 线程间通迅
-
-## 线程间同步
-
-# 异步
-
 # 网络
-

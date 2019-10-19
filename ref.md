@@ -1,14 +1,18 @@
 [5笔](https://www.52wubi.com/wbbmcx/search.php)
+[usb iso](https://rufus.ie/)
 
 # rust
 
 [book](https://doc.rust-lang.org/book/ch19-01-unsafe-rust.html)
-[crates](https://crates.io/)
-[time chrono](https://crates.io/crates/chrono)
-[rust](https://www.rust-lang.org/)
 [std](https://doc.rust-lang.org/std/index.html)
+[rust](https://www.rust-lang.org/)
+[crates](https://crates.io/)
+[hyper](https://crates.io/crates/hyper)
+[time chrono](https://crates.io/crates/chrono)
+[redis](https://docs.rs/redis/)
 [json](https://docs.serde.rs/serde_json/index.html)
 [compress](https://docs.rs/flate2/1.0.9/flate2/index.html)
+[async](https://rust-lang.github.io/async-book/)
 
 # ftp
 
@@ -17,6 +21,8 @@
 # net
 
 [c10k](http://www.kegel.com/c10k.html)
+[tcp-ip guide](http://tcpipguide.com/free/t_toc.htm)
+[](http://tcpipguide.com/free/t_PPPMultilinkProtocolMPMLPMLPPPPPPMP.htm)
 
 # webassembly
 
@@ -30,6 +36,11 @@
 [async-io-on-linux](https://jvns.ca/blog/2017/06/03/async-io-on-linux--select--poll--and-epoll/)
 [epoll-surveys-review](https://www.stealthsecrets.com/epoll-surveys-review-is-it-a-scam-or-legit/)
 [linux-io-multiplexing](https://devarea.com/linux-io-multiplexing-select-vs-poll-vs-epoll/#.XMPRdUMRXCI)
+
+# redis
+
+[](https://redis.io/documentation)
+[data intro](https://redis.io/topics/data-types-intro)
 
 # mysql
 
@@ -53,7 +64,7 @@
 [serve](https://www.npmjs.com/package/serve)
 [serve-handler](https://github.com/zeit/serve-handler#options)
 [router](https://reacttraining.com/react-router/web/guides/quick-start)
-[react + d3](http://recharts.org/en-US/guide)
+[d3 + react](http://recharts.org/en-US/guide)
 [tailwind](https://tailwindcss.com/)
 [bootstrap](https://react-bootstrap.github.io/getting-started/introduction)
 [ant](https://ant.design/docs/react/introduce)
@@ -86,3 +97,12 @@
 # web
 
 [mdn](https://developer.mozilla.org/en-US/)
+
+# js
+
+[](https://developer.mozilla.org/en-US/docs/Web/JavaScript/A_re-introduction_to_JavaScript)
+
+# bash
+
+[ref](https://www.gnu.org/savannah-checkouts/gnu/bash/manual/bash.html)
+[guide](http://tldp.org/LDP/abs/html/)
