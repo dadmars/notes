@@ -1,5 +1,13 @@
 # 安装
 
+# centos
+
+```bash
+https://docs.docker.com/install/linux/docker-ee/centos/#package-install-and-upgrade
+```
+
+# ubuntu
+
 ```bash
 sudo apt-get install apt-transport-https ca-certificates curl software-properties-common
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
@@ -77,6 +85,10 @@ docker login registry.example.com
 
 # Upload tagged image to registry
 docker push username/repository:tag
+
+# save image to file
+docker save IMG:VER -o IMG-VER.tar
+gzip IMG-VER.tar
 ```
 
 # 运行

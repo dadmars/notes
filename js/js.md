@@ -75,6 +75,11 @@ t.slice(2);  // "cd"
 // 大小写
 'hello'.toUpperCase(); // "HELLO"
 "AAA".toLowerCase(); // aaa
+
+// 分割为数组
+var str = "How are you doing today?";
+var res = str.split(" ");
+// OUTPUT: How,are,you,doing,today?
 ```
 
 ### 空类型

@@ -47,6 +47,7 @@ SELECT useful_field, nice_tag INTO new_measurement FROM measurement GROUP BY *
 ############################
 
 # 插入数据
+INSERT table,tag1=serverA,tag2=us_west field1=0.64
 
 # 更新数据
 
