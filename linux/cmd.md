@@ -1,7 +1,66 @@
-# sed
+## iptables
 
 ```bash
+sudo iptables --line -vnL
+
+sudo iptables -A INPUT -p tcp -m tcp --dport 8088 -j ACCEPT
+service iptables save
+service iptables restart
 ```
+
+```bash
+sudo iptables -A INPUT -p tcp -m tcp --dport 22 -j ACCEPT
+```
+
+* -A INPUT add a rule to the INPUT chain, a chain is a group of rules
+* -p tcp set tcp as the protocol this rule will apply to
+* -m tcp use the tcp module.
+* -- indicate additional options for the previously used module
+* --dport 22 tcp module to only apply to port 22.
+* -j ACCEPT the -j argument tells iptables what to do if a packet matches the constraints specified in the previous arguments. In this case it will ACCEPT those packets, other options are REJECT, DROP and more.
+
+```bash
+sudo iptables -L
+sudo iptables -S
+```
+
+delete a specific rule choose a rule from sudo iptables -S
+
+```bash
+sudo iptables -D INPUT -p tcp -m tcp --dport 22 -j ACCEPT
+
+sudo iptables -L INPUT --line-numbers
+sudo iptables -D INPUT 2
+```
+
+Allow SSH on eth0 interface
+
+```bash
+sudo iptables -A INPUT -i eth0 -p tcp -m tcp --dport 22 -j ACCEPT
+```
+
+* -i eth0 apply rule to a specific interface, to allow from any interface remove this command.
+
+To limit incoming packets to a specific IP (i.e. 10.0.3.1/32).
+
+```bash
+sudo iptables -A INPUT -i eth0 -s 10.0.3.1/32 -p tcp -m tcp --dport 22 -j ACCEPT
+```
+
+* -s 10.0.3.1/32 specifies an IP/subnet to allow connections from.
+
+# netcat
+
+test which of your ports are open or closed.
+
+```bash
+nc -z -w5 -v SERVER_IP PORT
+```
+
+* nc is the netcat command.
+* -z just send a packet without payload.
+* -w5 wait up to 5 seconds for a response.
+* -v verbose mode.
 
 # 用户
 
@@ -48,6 +107,7 @@ ifconfig mon0 up
 ```bash
 hostname -I
 ip address
+nmtui edit eno1
 ```
 
 ### 路由器ip地址
@@ -72,6 +132,8 @@ ip link
 输出网络连接，路由表，网卡信息，无效连接，多播成员
 
 ```bash
+netstat -tulpn
+
 # displays  a list of open sockets
 netstat
 
@@ -252,16 +314,22 @@ sudo yum install docker-ce docker-ce-cli containerd.io
 sudo systemctl start docker
 ```
 
-## ip address
-
-```bash
-nmtui edit eno1
-```
-
 # curl
 
 ```bash
 curl --header "Content-Type: application/json" --request POST --data '{"cmd":"update"}'  http://localhost:9998
 
 curl --header "Content-Type: application/json" --request POST --data '{"cmd":"update"}'  http://localhost/cfg
+```
+
+# ibm mq
+
+```bash
+apt-get install python-dev
+./mqlicense.sh -accept
+apt-get install rpm
+rpm --prefix /opt/mqm -ivh --nodeps --force-debian MQSeriesRuntime...
+rpm --prefix /opt/mqm -ivh --nodeps --force-debian MQSeriesClien...
+rpm --prefix /opt/mqm -ivh --nodeps --force-debian MQSeriesSDK...
+pip install pymqi
 ```

@@ -17,3 +17,10 @@ cat /etc/centos-release
 ```bash
 sudo yum sudo yum install -y yum-utils device-mapper-persistent-data lvm2
 ```
+
+# python2 安装
+
+```bash
+sudo yum install epel-release
+sudo yum install python-pip
+```

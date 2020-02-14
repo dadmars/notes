@@ -1,3 +1,9 @@
+# 访问
+
+```bash
+curl -G 'http://localhost:8086/query?pretty=true' --data-urlencode "db=realtime" --data-urlencode "q=SELECT \"value\" FROM \"cpu_load_short\" WHERE \"region\"='us-west'"
+```
+
 # 配置
 
 ## 设置权限
@@ -61,7 +67,21 @@ select * from table_name;
 
 ## 备份数据库
 
+```bash
+docker exec -it xxxxx /bin/bash
+influxd backup -portable -database realtime ./back
+tar czf back.tar.gz ./back
+rm -rf ./back
+exit
+
+docker cp xxxxx:/back.tar.gz .
+```
+
 ## 还原数据库
+
+```bash
+influxd restore -portable ./back_2019-12-15
+```
 
 # 主从同步
 

@@ -35,6 +35,9 @@ curl localhost:8080/query -XPOST -d '
             name
             uid
         }
+        node {
+            expand(_all_)
+        }
     }
 }' | python -m json.tool | less
 ```

@@ -347,6 +347,7 @@ done
 ```bash
 # 查看 -d -c -l -w ，option为变量名
 # c: 表示 -c 后要有数据参数，此参数保存在 $OPTARG 中
+# $OPTIND 下一个参数的索引
 while getopts dc:lw option
 do
     echo $option
@@ -355,6 +356,9 @@ do
         echo $OPTARG
     fi
 done
+
+shift $[$OPTIND - 1]
+echo $1
 ```
 
 ## read 用户输入
@@ -418,7 +422,7 @@ c
 xxx
 
 # - 忽略行前面的 tab ，不包含空格
-cat << -xxx
+cat <<-xxx
     a
     b
     c

@@ -137,14 +137,6 @@ let 的作用域为块级的。
 
 ### 只读( const )
 
-### shadwing
-
-### 连续空间部分内容的引用( Slice )
-
-#### String Slice
-
-#### Other Slice
-
 ## 类型转换
 
 ```js

@@ -10,7 +10,7 @@
 [hyper](https://crates.io/crates/hyper)
 [time chrono](https://crates.io/crates/chrono)
 [redis](https://docs.rs/redis/)
-[json](https://docs.serde.rs/serde_json/index.html)
+[json](https://crates.io/crates/serde_json)
 [compress](https://docs.rs/flate2/1.0.9/flate2/index.html)
 [async](https://rust-lang.github.io/async-book/)
 
@@ -20,6 +20,7 @@
 
 # net
 
+[iptables](https://www.vultr.com/docs/easy-iptables-configuration-and-examples-on-ubuntu-16-04)
 [c10k](http://www.kegel.com/c10k.html)
 [tcp-ip guide](http://tcpipguide.com/free/t_toc.htm)
 [](http://tcpipguide.com/free/t_PPPMultilinkProtocolMPMLPMLPPPPPPMP.htm)
@@ -28,6 +29,8 @@
 
 [mdn-WebAssembly](https://developer.mozilla.org/en-US/docs/WebAssembly)
 [rust webassembly](https://rustwasm.github.io/docs/book/)
+[rust webassembly] (https://rustwasm.github.io/docs/book/game-of-life/implementing.html)
+[rust ](https://rustwasm.github.io/docs/wasm-bindgen/)
 
 # async
 
@@ -83,6 +86,7 @@
 [docker](https://docs.docker.com/get-started/)
 [docker logging](https://docs.docker.com/config/containers/logging/)
 [docker fluentd](https://docs.docker.com/config/containers/logging/fluentd/)
+[fluentd](https://docs.fluentd.org/output/file)
 
 # python
 
@@ -101,8 +105,10 @@
 # js
 
 [](https://developer.mozilla.org/en-US/docs/Web/JavaScript/A_re-introduction_to_JavaScript)
+[save file](https://github.com/eligrey/FileSaver.js)
 
 # bash
 
 [ref](https://www.gnu.org/savannah-checkouts/gnu/bash/manual/bash.html)
 [guide](http://tldp.org/LDP/abs/html/)
+[linux man](https://www.kernel.org/doc/man-pages/)

@@ -1,14 +1,12 @@
 # epoll
-Monitoring multiple file descriptors to see if I/O is possible on any of them.
 
-The epoll API can be used either as an edge-triggered or a level-triggered interface and scales well to large numbers of watched file descriptors.
+侦听多个文件描述符，如果有指定事件发生，对其进行响应。
 
-The central concept of the epoll API is the epoll instance, an in-kernel data structure which, can be considered as a container for two lists:
+* interest list: 要侦听的文件描述符放入此队列
+* ready list: I/O就绪，放入此列表，但是不会从 interest list 中删除． 
 
-* The interest list: the set of file descriptors that the process has registered an interest in monitoring.
-* ready list: the set of file descriptors that are "ready" for I/O.  The ready list is a subset of the file descriptors in the interest list that is dynamically populated by the kernel as a result of I/O activity on those file descriptors.
+## Level-triggered and edge-triggered
 
-##Level-triggered and edge-triggered
 1. The file descriptor that represents the read side of a pipe (rfd) is registered on the epoll instance.
 2. A pipe writer writes 2 kB of data on the write side of the pipe.
 3. A call to epoll_wait(2) is done that will return rfd as a ready file descriptor.
@@ -28,19 +26,22 @@ Since even with edge-triggered epoll, multiple events can be generated upon rece
 
 If multiple threads (or processes, if child processes have inherited the epoll file descriptor across fork) are blocked in epoll_wait waiting on the same epoll file descriptor and a file descriptor in the interest list that is marked for edge- triggered (EPOLLET) notification becomes ready, just one of the threads (or processes) is awoken from epoll_wait.  
 
-##Interaction with autosleep
+## Interaction with autosleep
+
 If the system is in autosleep mode via /sys/power/autosleep and an event happens which wakes the device from sleep, the device driver will keep the device awake only until that event is queued.  To keep the device awake until the event has been processed, it is necessary to use the epoll_ctl EPOLLWAKEUP flag.
 
 When the EPOLLWAKEUP flag is set, the system will be kept awake from the moment the event is queued, through the epoll_wait call which returns the event until the subsequent epoll_wait call.  If the event should keep the system awake beyond that time, then a separate wake_lock should be taken before the second epoll_wait(2) call.
 
-##/proc interfaces
+## /proc interfaces
+
 The following interfaces can be used to limit the amount of kernel memory consumed by epoll:
 
 /proc/sys/fs/epoll/max_user_watches This specifies a limit on the total number of file descriptors that a user can register across all epoll instances on the system.  The limit is per real user ID.
 
 When used as an edge-triggered interface, for performance reasons, it is possible to add the file descriptor inside the epoll interface (EPOLL_CTL_ADD) once by specifying (EPOLLIN|EPOLLOUT).  This allows you to avoid continuously switching between EPOLLIN and EPOLLOUT calling epoll_ctl(2) with EPOLL_CTL_MOD.
 
-##Questions and answers
+## Questions and answers
+
 0. What is the key used to distinguish the file descriptors regis‐ tered in an interest list?
 
    The key is the combination of the file descriptor number and the open file description.
