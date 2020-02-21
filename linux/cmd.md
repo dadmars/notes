@@ -333,3 +333,10 @@ rpm --prefix /opt/mqm -ivh --nodeps --force-debian MQSeriesClien...
 rpm --prefix /opt/mqm -ivh --nodeps --force-debian MQSeriesSDK...
 pip install pymqi
 ```
+
+Debug
+
+```bash
+dspmqaut -m SVR　-n SVR.LQ -t q -p guest
+setmqaut -m SVR　-n SVR.LQ -t q -p guest +put
+```

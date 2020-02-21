@@ -1987,3 +1987,38 @@ macro_rules! baseuse {
 ```
 
 # Unsafe Rust
+
+# Doc
+
+## 文档结构
+
+```bash
+[short sentence explaining what it is]
+[more detailed explanation]
+[at least one code example that users can copy/paste to try it]
+[even more advanced explanations if necessary]
+```
+
+## Command
+
+```bash
+rustdoc -h
+rustdoc -V
+
+# more verbose output
+rustdoc -v src/lib.rs
+rustdoc --verbose --version
+```
+
+## attribute
+
+```rust
+/// this is a doc comment
+#[doc = " this is a doc comment."]
+
+/// # Examples
+///
+/// ```
+/// let x = 5;
+/// ```
+```

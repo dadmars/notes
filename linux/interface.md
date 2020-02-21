@@ -128,7 +128,6 @@ interprocess communication (IPC)
             a timer (alarm clock) set by the process has expired; or
             the process attempted to access an invalid memory address.
 
-            In the interval between the time it is generated and the time it is delivered, a signal is said to be pending for a process.
             Normally, a pending signal is delivered as soon as the receiving process is next scheduled to run, or immediately if the pro cess is already running.
             However, it is also possible to block a signal by adding it to the process’s signal mask.
             If a signal is generated while it is blocked, it remains pending until it is later unblocked.
@@ -438,3 +437,17 @@ epoll instance
     the ready list: maintaining a list of file descriptors that are ready for I/O
 
     For each file descriptor, we can specify a bit mask indicating events that we are interested in knowing about.
+
+inotify mechanism
+    allows an application to monitor file events.
+
+    create an inotify instance. a file descriptor that is used to refer to the inotify instance
+    watch list, Each watch item consists of a pathname and an associated bit mask.
+    performs read() operations on the inotify file descriptor. returns one or more inotify_event structures
+    closes the inotify file descriptor
+
+    The inotify monitoring mechanism is not recursive
+    An inotify file descriptor can be monitored using select(), poll(), epoll, and signal-driven I/O. If events are available to be read, then these interfaces indicate the inotify file descriptor as being readable.
+
+/proc/sys/fs/inotify
+    Queuing inotify events requires kernel memory. the kernel places various limits on the operation of the inotify mechanism.

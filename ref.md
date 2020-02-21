@@ -9,6 +9,7 @@
 [crates](https://crates.io/)
 [hyper](https://crates.io/crates/hyper)
 [time chrono](https://crates.io/crates/chrono)
+[warp](https://docs.rs/warp/0.2.1/warp/)
 [redis](https://docs.rs/redis/)
 [json](https://crates.io/crates/serde_json)
 [compress](https://docs.rs/flate2/1.0.9/flate2/index.html)
