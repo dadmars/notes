@@ -1,8 +1,10 @@
 [5笔](https://www.52wubi.com/wbbmcx/search.php)
+[文档](https://shimo.im/docs/HPQkdK6hXKvxkw8y/read)
 [usb iso](https://rufus.ie/)
 
 # rust
 
+[cookbook](https://rust-lang-nursery.github.io/rust-cookbook/intro.html)
 [book](https://doc.rust-lang.org/book/ch19-01-unsafe-rust.html)
 [std](https://doc.rust-lang.org/std/index.html)
 [rust](https://www.rust-lang.org/)
@@ -45,6 +47,9 @@
 
 [](https://redis.io/documentation)
 [data intro](https://redis.io/topics/data-types-intro)
+[best practice](https://docs.microsoft.com/en-us/azure/azure-cache-for-redis/cache-best-practices)
+[best practice2](https://docs.microsoft.com/en-us/azure/azure-cache-for-redis/cache-troubleshoot-data-loss)
+[best practice3](https://redislabs.com/redis-best-practices/introduction/)
 
 # mysql
 
@@ -57,6 +62,11 @@
 # influxdb
 
 [](https://docs.influxdata.com/influxdb)
+
+# react-native
+
+[react-native](https://github.com/facebook/react-native)
+[android](https://developer.android.google.cn/studio/)
 
 # react
 
@@ -81,6 +91,8 @@
 [xlsx](https://www.npmjs.com/package/xlsx)
 [video](https://video-react.js.org/components/player/)
 [idle timer](https://www.npmjs.com/package/react-idle-timer)
+[table](https://github.com/tannerlinsley/react-table)
+[mui table](https://material-table.com/#/docs/get-started)
 
 # docker
 

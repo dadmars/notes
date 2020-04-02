@@ -1,3 +1,21 @@
+## Network bridge
+
+A bridge is a piece of software used to unite two or more network segments.A bridge behaves like a virtual network switch, working transparently (the other machines do not need to know or care about its existence). Any real devices (e.g. eth0) and virtual devices (e.g. tap0) can be connected to it.
+
+```bash
+ip link add name bridge_name type bridge
+ip link set bridge_name up
+ip link set eth0 up
+ip link set eth0 master bridge_name
+ip addr add dev bridge_name 192.168.66.66/24
+
+bridge link
+
+ip link set eth0 nomaster
+ip link set eth0 down
+ip link delete bridge_name type bridge
+```
+
 ## iptables
 
 ```bash
@@ -62,22 +80,26 @@ nc -z -w5 -v SERVER_IP PORT
 * -w5 wait up to 5 seconds for a response.
 * -v verbose mode.
 
-# 用户
-
-## 添加sudo用户
+# 添加sudo用户
 
 ```bash
 adduser xx
 usermod -aG sudo xx
 ```
 
-## ssh 登录
+# ssh 登录
 
 ```bash
 ls -al ~/.ssh
 ssh-keygen -t rsa -b 4096 -C "mcflym@N123456"
 ssh-add ~/.ssh/id_rsa
 cat ~/.ssh/id_rsa.pub | ssh username@server.address.com 'cat >> ~/.ssh/authorized_keys'
+```
+
+## sshpass
+
+```bash
+sshpass -p 'passwd' ssh xxxxx
 ```
 
 # 网络相关命令
