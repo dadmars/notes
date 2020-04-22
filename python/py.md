@@ -101,7 +101,13 @@ v[1:] # [2, 3]
 
 ## 非连续的内存
 
-### map
+### dict
+
+```py
+for k, v in d.iteritems():
+
+for k in d:
+```
 
 ### 链表
 

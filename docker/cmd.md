@@ -243,23 +243,3 @@ The macvlan driver uses the concept of a parent interface.This interface can be 
 * containers are not attached to any network and do not have any access to the external network or other containers
 * only create a loopback device.
 * used when you want to completely disable the networking stack on a container
-
-```bash
-# –advertise-addr flag: configures the manager node's address
-docker swarm init --advertise-addr 192.168.56.101
-
-# in the worker node, add to manager node
-docker sqarm join --token xxxx xx
-
-# on master node
-
-docker network create -d overlay myoverlaynetwork
-
-# hshar: account name on Docker Hub
-# webapp: name of the web application already present on Docker Hub.
-docker service create --name webapp1 -d --network myoverlaynetwork -p 8001:80 hshar/webapp
-docker service create --name mysql -d --network myoverlaynetwork -p 3306:3306 hshar/mysql:5.5
-
-docker service ls
-docker ps
-```
