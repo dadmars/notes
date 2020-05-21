@@ -250,5 +250,3 @@ Bundle resources to reduce HTTP requests
 
 Inline small resource
     Consider embedding small resources directly into the parent document to minimize the number of requests.
-
-

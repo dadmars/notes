@@ -1,10 +1,8 @@
 # Generic Routing Encapsulation (GRE)
 
-A system has a packet that needs to be encapsulated and delivered to some destination.  We will call this the payload packet.  The payload is first encapsulated in a GRE packet.  The resulting GRE packet can then be encapsulated in some other protocol and then forwarded.  We will call this outer protocol the delivery protocol. The algorithms for processing this packet are discussed later.
+数据首先在一个 GRE 包里被封装. 然后 GRE packet 被其它协议封装并转发(delivery protocol) 
 
 # Structure of a GRE Encapsulated Packet
-
-   A GRE encapsulated packet has the form:
 
     ---------------------------------
     |                               |
@@ -20,11 +18,7 @@ A system has a packet that needs to be encapsulated and delivered to some destin
     |                               |
     ---------------------------------
 
-This specification is generally concerned with the structure of the GRE header, although special consideration is given to some of the issues surrounding IPv4 payloads.
-
 ## GRE Header
-
-   The GRE packet header has the form:
 
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

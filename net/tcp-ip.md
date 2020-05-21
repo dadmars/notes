@@ -16,11 +16,11 @@ ISO: 实际用来教学。或者被产品（软硬件）用来描述自己对应
 
 由于硬件和传输介质的限制，传输的数据包都有长度的限制，即网络最大传输单元，称为MTU。当IP包大于MTU，要进行分片。当IP路由选择一条传输线路后，这条路径的最小MTU，称为 path MTU。
 
-# 物理层 ISO中为L1
+## 物理层 ISO中为L1
 
 唯一的一层和tcp/ip没有什么关系。有些硬件不仅仅只实现物理层的功能，如以太网的网卡就实现了链路层的功能。
 
-# 链路层 ISO中为L2
+## 链路层 ISO中为L2
 
 链路层处理硬件和传输介质的问题。如各种网卡驱动。链路层只能处理直接相连的主机的数据传输问题。
 
@@ -34,7 +34,7 @@ ISO: 实际用来教学。或者被产品（软硬件）用来描述自己对应
 
 主机通过ARP查找自己的IP，如果有收到回应，说明有IP地址冲突。也可用于主机更换网卡，向全网公布自己新的MAC地址。
 
-# 网络层 ISO中为L3
+## 网络层 ISO中为L3
 
 链路层只能解决本地网络的构建，互联网则由网络层来构建。
 
@@ -48,9 +48,9 @@ IP不提供可靠性，这样可以简化设计，使其专注于网络传输。
 
 为防IP包在网络中无限的存在下去，存在TTL，每经过一个路由器，此值减1,为0后，被丢弃，并发送一个ICMP到发送方。
 
-# IP地址
+## IP地址
 
-## class a
+### class a
 
 7-bit 网络号(包含128个网络)，24-bit 主机号。第一位为 0
 
@@ -59,7 +59,7 @@ IP不提供可靠性，这样可以简化设计，使其专注于网络传输。
 nnn.rrr.rrr.rrr
 (nnn为网络号，rrr为主机号。下同)
 
-## class b
+### class b
 
 14-bit 网络号(包含16384个网络)，16-bit 主机号。前2位为 1 0
 
@@ -67,7 +67,7 @@ nnn.rrr.rrr.rrr
 
 nnn.nnn.rrr.rrr
 
-## class c
+### class c
 
 21-bit 网络号(包含2097152个网络)，8-bit 主机号。前3位为 1 1 0
 
@@ -75,11 +75,11 @@ nnn.nnn.rrr.rrr
 
 nnn.nnn.nnn.rrr
 
-# 最小字节
+## 最小字节
 
 主机必须保证可以接收576字节的IP包。UDP一般将用户数据限制在512字节。
 
-# checksum
+## checksum
 
 IP的checksum 只校验头，不校验其它数据。因为其它协议会对自己数据进行较验。算法为：把所有数据分成16位，分别相加，取补数，然后保存在checksum字段。校验时，同样算法，结果全为1,校验成功。校验失败不发送ICMP，而是等待重传。
 
@@ -87,7 +87,7 @@ UPD的checksum包含头部和数据。包含前面12字节的pseudo-header
 
 TCP的checksum包含头部和数据。包含前面12字节的pseudo-header
 
-# IP路由
+## IP路由
 
 路由的作用就是找到下一个要发信息的主机。
 
@@ -107,6 +107,7 @@ TCP的checksum包含头部和数据。包含前面12字节的pseudo-header
 * 一些信息，在拥塞避免等算法中使用
 
 路由表：
+
 * 不联网，只有一个环回接口
 * 局域网，环回接口和局域网
 * 连接到路由器，加一个default，指向此路由器
@@ -128,13 +129,14 @@ TCP的checksum包含头部和数据。包含前面12字节的pseudo-header
 
 路由器之间交换路由信息通过RIP等动态路由协议来进行。RIP使用UDP。当路由器启动，广播一条信息，向相连的路由器请求路由表。收到后更新自己的路由表。后面定时发送自己的路由表（30秒）。
 
-# 传输层UDP
+## 传输层UDP
 
 广播和多播只能用于UDP。因为TCP是面向连接的。
 
-# 传输层TCP
+## 传输层TCP
 
 可靠性：
+
 * 将字节流分成一块块的数据，通过IP层向目标传输。
 * 对每一个字节进行编号。并且对每一个接收的字节进行确认
 * 建立连接时，交换MSS。MSS是为了防止分片，但是如果两个主机要经过多个中间路由器，起作用的是path MTU
@@ -146,11 +148,13 @@ TCP的checksum包含头部和数据。包含前面12字节的pseudo-header
 * 拥塞控制和慢启动
 
 建立连接
+
 * client发送SYN，通知server自己的初始序列号（ISN），MSS，窗口大小
 * server对client的SYN进行确认。server发送SYN，包含自己的初始序列号（ISN），MSS，窗口大小。如果不包含MSS，默认为536字节。
 * client对server的SYN进行确认
 
 关闭连接
+
 * client发送包含FIN标记的数据
 * server收到FIN后，通知用户程序end-of-file，向client发送确认
 * server用户程序处理完后，发送FIN到client
@@ -165,24 +169,28 @@ FIN_WAIT_2: client发送FIN，并收到ACK，进行FIN_WAIN_2状态。如果收�
 RESET： 数据到来但是发现连接是错误的，发送RESET。如，建立连接，发现server对应端口号没有帧听。
 
 Nagle 算法：
+
 * 当有大量小数据传输
 * 发送一个数据包，等待ACK，此时不继续发送。当收到ACK，将积累下来的数据包一起发送。
 * 在server会发生delayed ACK
 * socket API 使用TCP_NODELAY可以禁止此算法
 
 delyed ACK:
+
 * 接收的数据被放入IP的输入队列中
 * delyed ACK的定时器被设置
 * 定时器超时，发送ACK
 * delyed ACK的定时器被重新设置
 
 window flow control:
+
 * 接收方有一个接收buffer，大小为window size
 * 每一个ACK都会发送剩下buffer的大小（window size）
 * 发送方只能发送小于window size大小的数据
 * 当windows size为0时，发送方停止发送
 
 slow start:
+
 * 引入cwnd（拥塞窗口），初始化为一个数据包(现在一般为10个数据包)。发送方只能发送min(cwnd, window)的数据包
 * 在开始传输时，只发送一个数据包（cwnd为1个数据段）
 * 当收到ACK时，发送2个数据包（cwnd为2个数据段）
@@ -191,12 +199,14 @@ slow start:
 * cwnd是发送方对流量的控制，window是接收方对流量的控制（接收方的buffer）
 
 Slow-Start Restart：
+
 * sysctl net.ipv4.tcp_slow_start_after_idle
 * sysctl -w net.ipv4.tcp_slow_start_after_idle=0
 * 当TCP连接空闲时，将cwnd设为默认值，从而避免拥塞，此时如果恢复传输，slow start
 * 会有性能问题，服务器端建议关闭此选项
 
 拥塞避免算法：
+
 * 与slow start同时使用
 * 引入一个阀值ssthresh
 * 初始化, cwnd为一个数据包。ssthresh为65535
@@ -205,6 +215,7 @@ Slow-Start Restart：
 * 拥塞避免，cwnd += segsize * segsize / cwnd + segsize/8 (segsize由MSS决定，如果没有MSS，默认为536字节)
 
 快速重传，和快速恢复算法
+
 * client连续收到3个相同的ACK，开始重传而不等待超时。
 * ssthresh = cwnd/2， cwnd = ssthresh + 3×segments (当发生重传时，流量会减少到一半)
 * 开始重传
@@ -214,31 +225,35 @@ Slow-Start Restart：
 * 当重传数据时，可以传输更大的数据（包含要重传的数据）
 
 TCP的4个定时器：
+
 * 重传定时器，时间长度与RTT相关，并且会变化。RTT有专门的公式进行计算。
 * 当接收方window size为0时，定时探测window size大小
 * keepalive 定时器
 * 2MSL定时器
 
 Karn's Algorithm
+
 * 解决重传和老数据冲突问题
 
 传输过程中对ICMP错误的处理
+
 * source quench: cwnd=1，开始slow start
 * host/network unreachable: 被忽略
 
 window scale option
+
 * 默认打开
 * sysctl net.ipv4.tcp_window_scaling
 * sysctl -w net.ipv4.tcp_window_scaling=1
 * 将window size大小从16位增加到32位，增加可发送数据的上限
 * 只能在SYN时设置，必须双方都支持
 
-# 性能
+## 性能
 
 * 延时: 从源发送一个包，到目的端收到此包经过的时间
 * 带宽: 逻辑或物理路径的最大通过率
 
-## 性能提高
+### 性能提高
 
 主干网速度很高，主要延时来自网络边缘，相关因素：服务商的能力，中间路由器，费用等
 
@@ -246,42 +261,45 @@ window scale option
 * 数据靠近用户（CDN）
 * 程序减少延时：cache；提前获取；
 
-## TCP性能
+### TCP性能
 
 * 由于建立连接要花费很多时间（3次握手），所以要进行连接重用。重用连接可以避免3次握手和slow start,性能可能提高2倍
 
 TCP性能的核心
+
 * 3次握手建立连接产生的延迟
 * 新的连接都要slow start
 * flow control和congestion control在整个传输过程都起作用
 * TCP流量受当前的cwnd控制
 
 服务器最佳实践：
+
 * 增加初始拥塞窗口大小( TCP’s Initial Congestion Window )
 * Slow-Start Restart: 禁用此功能，提高长连接性能
 * Window Scaling: 开启此功能，提高流量
 * TCP Fast Open: 在发送SYN时发送用户数据。这是一个新的优化，要client和server同时支持
 
-查看socker设置
+查看socket设置
 
 ```bash
 ss --options --extended --memory --processes --info
 ```
 
 性能Checklist
-* Upgrade server kernel to latest version 
+
+* 内核更新到最新
 * Ensure that cwnd size is set to 10.
 * Disable slow-start after idle.
 * Ensure that window scaling is enabled.
 * Eliminate redundant data transfers.
-* Compress transferred data.
-* Position servers closer to the user to reduce roundtrip times.
-* Reuse established TCP connections whenever possible.
+* 压缩数据
+* 服务器靠近用户，减少 RTT
+* 尽可能重用 TCP 连接
 
-# Security Considerations
+## Security Considerations
 
-当 retransmission timeouts 或接收到重复 ACK 时，TCP 会降低发送频率. 攻击者要降低连接的性能，只要使数据包或 ACK 丢失，或伪造过高的重复 ACK。 Causing two congestion control events back-to-back will often cut ssthresh to its minimum value of 2*SMSS, 导致连接马上进入到低性能的 congestion avoidance 阶段.
+当重传超时或接收到重复 ACK 时，TCP 会降低发送频率. 攻击者要降低连接的性能，只要使数据包或 ACK 丢失，或伪造过高的重复 ACK。 Causing two congestion control events back-to-back will often cut ssthresh to its minimum value of 2*SMSS, 导致连接马上进入到低性能的拥塞避免阶段.
 
-# ISO中为L5 任务层 
+## ISO中为L5 任务层
 
 各种api，如 socket， rpc( remote procedure calls )

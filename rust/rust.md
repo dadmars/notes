@@ -1,6 +1,6 @@
-# 安装
+# Rust
 
-## Installation
+## 安装
 
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
@@ -11,7 +11,6 @@ rustup doc
 rustup doc --book
 
 rustc --version
-
 cargo --version
 ```
 
@@ -238,7 +237,54 @@ let x = &a[1]; // 返回类型为 &T
 let x = &mut a[1]; // 返回类型为 &mut T
 ```
 
-### 字符串
+## 字符串
+
+### unicode
+
+* 110xxxxx 2个字节编码
+* 1110xxxx 3个字节编码
+* 11110xxx 4个字节编码
+* 10xxxxxx 最后的一个字节
+
+例： 0xe9 进行utf8编码
+
+```bash
+0xe9   11101001         值填充到下面两个字节
+
+110?????   10??????     两个字节
+   12345     123456     共11位的空间
+
+           11101001     先填充后面的字节
+110?????   10??????
+
+           11           剩下两位，填充到前面字节
+110?????   10101001
+
+110???11   10101001     还有三位填充 0
+
+11000011   10101001     完成
+```
+
+### 对字符串的处理
+
+utf8 格式的字符串
+
+如果一个字符不是有效的 utf8 格式的字符，出错
+
+如
+
+```bash
+fn main() {
+    let arg = std::env::args().skip(1).next().expect("need args");
+    println!("{}", arg.to_uppercase());
+}
+
+printf "\xC3\xA9"
+printf "\xC3"
+
+cargo run --quiet $(printf "\xC3\xA9")   # good
+cargo run --quiet $(printf "\xC3")       # wrong
+```
 
 不支持索引：[]，可以通过bytes(), chars()，来分别以 u8 和 utf8 进行索引。
 

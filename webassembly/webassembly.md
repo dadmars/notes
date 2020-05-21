@@ -1,6 +1,7 @@
 # 关键概念( wasm )
 
 WebAssembly( wasm ), 有两种格式:
+
 * .wat  webassembly text
 * .wasm 二进制, 运行在wasm 虚拟机中
 

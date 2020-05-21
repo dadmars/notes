@@ -1,20 +1,22 @@
-# Basic Data Transfer
+# tcp
+
+## Basic Data Transfer
 
 如果用户要确保提交的数据都被传输，可调用 push 功能。 push 操作使所有数据被发送，并提交给应用程序。push 操作对接收方是不可见的，所以不能被用作数据边界。
 
-# Connections
+## Connections
 
 要实现可靠性和流量控制，数据流要初始化一些状态，如 sockets, sequence numbers, window sizes。所有这些状态的集合称为连接。
 
 两个进程进行通信，必须建立连接（初始化这些状态）。当通信结束，必须关闭连接来释放这些资源。
 
-# Precedence and Security
+## Precedence and Security
 
 The users of TCP may indicate the security and precedence of their communication.  Provision is made for default values to be used when these features are not needed.
 
 连接的安全不低于通信的双方端口。
 
-# Reliable Communication
+## Reliable Communication
 
 数据包第一个字节的 sequence number 称为此数据包的 segment sequence number
 
@@ -22,7 +24,7 @@ The users of TCP may indicate the security and precedence of their communication
 
 发送方接收到一个ACK，不能保证数据被提交到了对方用户。只表示接收方做出了一个响应。
 
-# Connection Establishment and Clearing
+## Connection Establishment and Clearing
 
 调用 OPEN，建立一个连接。连接的信息保存在 Transmission Control Block (TCB)。建立连接时同时决定是主动打开还是被动打开。
 
@@ -32,11 +34,11 @@ The users of TCP may indicate the security and precedence of their communication
 
 关闭连接也要发生数据包的交换，此时数据包包含 FIN
 
-# Data Communication
+## Data Communication
 
 数据放在用户的 buffer 中，如果数据包含 PUSH，buffer 立即返回。 如果 buffer 中的数据不包含 PUSH，buffer 満了之后返回给应用程序。
 
-# Header Format
+## Header Format
 
 * Source Port:  16 bits
 * Destination Port:  16 bits
@@ -134,7 +136,7 @@ The users of TCP may indicate the security and precedence of their communication
   * Padding:  variable
     确保 TCP header ends and data begins on a 32 bit boundary.  
 
-# TCB
+## TCB
 
 TCB 中存储着如下信息：
 
@@ -198,7 +200,7 @@ send and receive sequence numbers 相关的变量：
   * SEG.UP  - segment urgent pointer
   * SEG.PRC - segment 优先级
 
-# 连接在生命周期内的状态
+## 连接在生命周期内的状态
 
 * LISTEN        - 等待连接
 * SYN-SENT      - 发送了连接请求，等待对方的连接请求
@@ -214,7 +216,7 @@ send and receive sequence numbers 相关的变量：
 
 The events are the user calls, OPEN, SEND, RECEIVE, CLOSE, ABORT, and STATUS; the incoming segments, containing the SYN, ACK, RST and FIN flags; and timeouts.
 
-# Sequence Numbers
+## Sequence Numbers
 
 一个 ACK 为 X 说明 all octets up to but not including X have been received. ACK 用于如下方面：
 
@@ -241,10 +243,8 @@ TCP 接收数据包时，用到下面变量：
 
 接收的数据包必须要在接收 window 之内：
 
-```C
      RCV.NXT =< SEG.SEQ < RCV.NXT+RCV.WND
   || RCV.NXT =< SEG.SEQ+SEG.LEN-1 < RCV.NXT+RCV.WND
-```
 
 还要考虑 0 window 和 0 长度的数据包：
 
@@ -256,7 +256,7 @@ TCP 接收数据包时，用到下面变量：
 
 当接收 window 为 0, ACK，RST，URG 还是能接收的。
 
-## The SYN and FIN
+### The SYN and FIN
 
 只用在建立连接和关闭连接中。SYN is considered to occur before the first actual data
   octet of the segment in which it occurs, while the FIN is considered
@@ -265,7 +265,7 @@ TCP 接收数据包时，用到下面变量：
   space occupying controls.  When a SYN is present then SEG.SEQ is the
   sequence number of the SYN.
 
-## Initial Sequence Number Selection
+### Initial Sequence Number Selection
 
 一个连接建立时，双方必须同步ISN。 通过交换数据包来达到此目的，此时的数据包设定了 SYN 标志，数据包包含有ISN。  As a shorthand, segments carrying the SYN bit are also called "SYNs".
 
@@ -278,7 +278,7 @@ TCP 接收数据包时，用到下面变量：
 
 2 和 3 可以合并，所以称为3次握手。
 
-# The TCP Quiet Time Concept
+## The TCP Quiet Time Concept
 
 发送的所有字节与 sequence number 有一一对应关系。sequence number 每隔 2**32 循环一次。在源主机，一个数据包建立并进入发送队列时，TCP 都要消耗相应的 sequence number space。
 
@@ -286,9 +286,9 @@ TCP 接收数据包时，用到下面变量：
 
 如果主机崩溃，同时发送的数据还在路上，如果重新恢复，发送的sequence number可能重复，为了让在路上的数据包失效，主机要延迟 MSL 秒后才能发送数据。此时的 MSL 为 2 分钟。
 
-# 建立连接
+## 建立连接
 
-## 情况1
+### 情况1
 
  . | TCP A       |                                           | TCP B
 ---|:------------|:-----------------------------------------:|-----
@@ -300,7 +300,7 @@ TCP 接收数据包时，用到下面变量：
 
 第 4 行，TCP A 发送一个包含ACK的空数据包; 第 5 行, TCP A 发送了一些数据。两者的 sequence number 是一样的。因为 ACK 不占用 sequence number 空间.
 
-## 情况2
+### 情况2
 
  . | TCP A        |                                         | TCP B
 ---|:-------------|:---------------------------------------:|-----
@@ -312,7 +312,7 @@ TCP 接收数据包时，用到下面变量：
 6  | ESTABLISHED  | <-- <SEQ=300><ACK=101><CTL=SYN,ACK> <-- | SYN-RECEIVED
 7  | ...          |     <SEQ=101><ACK=301><CTL=ACK>     --> | ESTABLISHED
 
-## 情况3
+### 情况3
 
 三次握手的好处在于可以避免重复初始化连接。为解决重复初始化的问题，定义了一个控件信息: reset。当接收到 reset 后，接收方在 non-synchronized 状态 (SYN-SENT, SYN-RECEIVED), 返回到 LISTEN 状态。接收方在 synchronized 状态 (ESTABLISHED, FIN-WAIT-1, FIN-WAIT-2, CLOSE-WAIT, CLOSING, LAST-ACK, TIME-WAIT), 终止连接并通知应用程序。
 
@@ -329,9 +329,9 @@ TCP 接收数据包时，用到下面变量：
 
 TCP A 发现 ACK 不正确，发送 RST ，其中的 SEQ 值表明此包是可信赖的包。TCP B, 接收到 RST, 返回 LISTEN 状态。行 6，如果 SYN 在 RST 之前到达，RST 会在双方向传递，这会导致更复杂的数据交换。
 
-# Half-Open 连接和其它异常
+## Half-Open 连接和其它异常
 
-## 情况1
+### 情况1
 
 对方的连接关闭，向对方发送数据，得到 RST
 
@@ -347,7 +347,7 @@ TCP A 发现 ACK 不正确，发送 RST ，其中的 SEQ 值表明此包是可�
 
 When the SYN arrives at line 3, TCP B, being in a synchronized state, and the incoming segment outside the window, responds with an acknowledgment indicating what sequence it next expects to hear (ACK 100).  TCP A sees that this segment does not acknowledge anything it sent and, being unsynchronized, sends a reset (RST) because it has detected a half-open connection.  TCP B aborts at line 5.  TCP A will continue to try to establish the connection; the problem is now reduced to the basic 3-way handshake of figure 7.
 
-## 情况2
+### 情况2
 
         TCP A                                              TCP B
 
@@ -374,7 +374,7 @@ When the SYN arrives at line 3, TCP B, being in a synchronized state, and the in
 
   5  LISTEN                                        LISTEN
 
-# Reset Generation
+## Reset Generation
 
 接收到的数据包明显不属于此连接时，才发送 RST。
 
@@ -390,18 +390,18 @@ When the SYN arrives at line 3, TCP B, being in a synchronized state, and the in
 
     If an incoming segment has a security level, or compartment, or precedence which does not exactly match the level, and compartment, and precedence requested for the connection,a reset is sent and connection goes to the CLOSED state.  The reset takes its sequence number from the ACK field of the incoming segment.
 
-# Reset Processing
+## Reset Processing
 
 如果当前状态不是 SYN-SENT, 通过检查 SEQ-fields 验证 RST。 sequence number 必须在 window 范围。
 如果当前状态是 SYN-SENT (a RST received in response to an initial SYN), the RST is acceptable if the ACK field acknowledges the SYN.
 
 当接收到 RST ，首先进行验证，然后改变状态。 当前为 LISTEN 时，忽略它。如果当前是 SYN-RECEIVED 并且前一状态是 LISTEN ，回到 LISTEN 状态，否则终止连接，设为 CLOSED 状态. 其它情况都终止连接，通知应用程序，设为 CLOSED 状态
 
-# Closing a Connection
+## Closing a Connection
 
 发送方关闭连接后，还可能接收数据。发送方在关闭连接时，会将buffer中的所有数据都进行发送。
 
-## Local user initiates the close
+### Local user initiates the close
 
 FIN 数据加入发送队列。数据被发送后，进入 FIN-WAIT-1 状态, 此时可以接收数据。在接收到ACK之前，所有的数据，包含FIN，都可以被重传。
 
@@ -411,11 +411,11 @@ FIN 数据加入发送队列。数据被发送后，进入 FIN-WAIT-1 状态, �
 
 Note that a TCP receiving a FIN will ACK but not send its own FIN until its user has CLOSED the connection also.
 
-## TCP receives a FIN from the network
+### TCP receives a FIN from the network
 
 接收到一个 FIN，发送一个ACK到对方，并通知应用程序连接要关闭了。应用程序回应一个 CLOSE，将buffer中数据发送完后，发送 FIN 到对方，然后等待对方的 ACK。当收到后，删除连接。如果没收到，超时后，终止连接并通知程序。
 
-## both users close simultaneously
+### both users close simultaneously
 
     A simultaneous CLOSE by users at both ends of a connection causes
     FIN segments to be exchanged.  When all segments preceding the FINs
@@ -461,11 +461,11 @@ Note that a TCP receiving a FIN will ACK but not send its own FIN until its user
 
 The CLOSE user call implies a push function, as does the FIN control flag in an incoming segment.
 
-# Retransmission Timeout
+## Retransmission Timeout
 
 重传时间必须动态决定。
 
-# Managing the Window
+## Managing the Window
 
 window 表示接收方接收数据 buffer 的大小
 
@@ -475,7 +475,7 @@ window 表示接收方接收数据 buffer 的大小
 
 如果接收方的窗口为0,有数据到达时，也要回应一个ACK 和当前窗口（大小为0）。
 
-## Window Management Suggestions
+### Window Management Suggestions
 
 window 太小，数据会被拆分到大量的小数据包内发送。如果要提升性能，选择稍大一点的数据包。
 

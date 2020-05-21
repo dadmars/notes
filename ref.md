@@ -33,7 +33,7 @@
 [mdn-WebAssembly](https://developer.mozilla.org/en-US/docs/WebAssembly)
 [rust webassembly](https://rustwasm.github.io/docs/book/)
 [rust webassembly] (https://rustwasm.github.io/docs/book/game-of-life/implementing.html)
-[rust ](https://rustwasm.github.io/docs/wasm-bindgen/)
+[rust](https://rustwasm.github.io/docs/wasm-bindgen/)
 
 # async
 
@@ -67,6 +67,7 @@
 
 [react-native](https://github.com/facebook/react-native)
 [android](https://developer.android.google.cn/studio/)
+[ui elements](https://github.com/react-native-elements/react-native-elements)
 
 # react
 
@@ -80,8 +81,6 @@
 [router](https://reacttraining.com/react-router/web/guides/quick-start)
 [d3 + react](http://recharts.org/en-US/guide)
 [tailwind](https://tailwindcss.com/)
-[bootstrap](https://react-bootstrap.github.io/getting-started/introduction)
-[ant](https://ant.design/docs/react/introduce)
 [moment datetime](https://momentjs.com/guides/)
 [colors-tail](https://tailwindcss.com/docs/customizing-colors#default-color-palette)
 [colors-mui](https://www.materialpalette.com/colors)
@@ -90,7 +89,6 @@
 [csv](https://www.npmjs.com/package/react-csv)
 [xlsx](https://www.npmjs.com/package/xlsx)
 [video](https://video-react.js.org/components/player/)
-[idle timer](https://www.npmjs.com/package/react-idle-timer)
 [table](https://github.com/tannerlinsley/react-table)
 [mui table](https://material-table.com/#/docs/get-started)
 
@@ -221,7 +219,6 @@
 [](https://blog.trello.com/refining-the-way-we-structure-our-css-at-trello)
 [](https://github.com/davidtheclark/scalable-css-reading-list)
 [](https://hacks.mozilla.org/category/es6-in-depth/)
-[](https://codetower.github.io/es6-features/?utm_campaign=read_more&utm_medium=email&utm_source=mybridge)
 [](http://es6.ruanyifeng.com/)
 [](https://github.com/addyosmani/es6-tools)
 [](https://mbeaudru.github.io/modern-js-cheatsheet/)
@@ -295,7 +292,6 @@
 [](https://camjackson.net/post/9-things-every-reactjs-beginner-should-know)
 [](https://engineering.siftscience.com/best-practices-for-building-large-react-applications/)
 [](https://americanexpress.io/clean-code-dirty-code/)
-[](https://medium.freecodecamp.org/8-key-react-component-decisions-cc965db11594)
 [](https://github.com/enaqx/awesome-react)
 [](https://github.com/markerikson/react-redux-links)
 [](https://react.rocks/)
@@ -340,7 +336,6 @@
 [](http://www.dasblinkenlichten.com/kubernetes-networking-101-ingress-resources/)
 [](http://www.dasblinkenlichten.com/getting-started-with-calico-on-kubernetes/)
 [](https://github.com/GoogleCloudPlatform/continuous-deployment-on-kubernetes)
-[](https://medium.com/@sachin.arote1/kubernetes-best-practices-9b1435a4cb53)
 [](https://kubernetes.io/)
 [](https://kubernetes.io/docs/home/?path=users&persona=app-developer&level=foundational)
 [](https://kubernetes.io/docs/tutorials/kubernetes-basics/)

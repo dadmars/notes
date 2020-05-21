@@ -3,32 +3,30 @@
 侦听多个文件描述符，如果有指定事件发生，对其进行响应。
 
 * interest list     要侦听的文件描述符放入此队列
-* ready list        I/O就绪，放入此列表，但是不会从 interest list 中删除． 
+* ready list        I/O就绪，放入此列表，但是不会从 interest list 中删除
 
 ## Level-triggered and edge-triggered
 
-1. rfd 为从 pipe 中读数据的文件描述符， 注册到了 epoll 实例
+1. rfd 为从 pipe 中读数据的文件描述符，注册到了 epoll 实例
 2. 向 pip 写入 2kB 数据
-3. epoll_wait 返回 rfd
+3. 调用 epoll_wait 返回 rfd
 4. 从 rfd 读取 1kB 数据
-5. epoll_wait 返回
+5. 调用 epoll_wait
 
 如果 rfd 使用 edge-triggered , 第 5 步一直阻塞。原因是 edge-triggered 只有在变化产生时才产生 events。在上面的例子，一个事件在第 2 步产生，在第 3 步被消费。在第 4 步没有读完全部数据。在第 5 步将阻塞。
 
-当采用边缘触发时，应该使用 nonblocking file descriptors
+当采用边缘触发时，应该使用 nonblocking 文件描述符
 
-1. with nonblocking file descriptors
-2. by waiting for an event only after read or write return EAGAIN.
-
-使用 level-triggered interface, epoll 相当于 faster poll
+1. 使用 nonblocking 文件描述符
+2. 在 read or write 返回 EAGAIN 后再侦听事件 epoll_wait
 
 使用 edge-triggered, 会产生多个相同的事件，可以使用 EPOLLONESHOT 选项, 在 epoll_wait 收到一个事件返回时 disable 相关的文件描述符。此时，调用者控制描述符是否继续接收事件 epoll_ctl with EPOLL_CTL_MOD
 
 如果多个线程或进程侦听同一个文件描述符，当一个事件到来时，只有一个线程或进程被唤醒。
 
-## Interaction with autosleep
+## autosleep
 
-/sys/power/autosleep 系统处于 sleep ，当事件产生，系统被唤醒，当事件进入到队列中，系统继续 sleep。如果要让系统等到事件处理完成， 设置 epoll_ctl EPOLLWAKEUP 
+/sys/power/autosleep 系统处于 sleep ，当事件产生，系统被唤醒，当事件进入到队列中，系统继续 sleep。如果要让系统等到事件处理完成， 设置 epoll_ctl EPOLLWAKEUP
 
 ## /proc interfaces
 
@@ -38,15 +36,15 @@
 
 kcmp KCMP_EPOLL_TFD     一个文件描述符是否被侦听
 
-# epoll_create epoll_create1()
+## epoll_create, epoll_create1()
 
 返回文件描述符，使用 close 关闭
 
 ## EPOLL_CLOEXEC ( close-on-exec )
 
-调用 execve 成功后，文件描述符自动关闭，不成功，不关闭。多用于多线程程序中
+调用 execve 成功后，文件描述符自动关闭，不成功，不关闭。多用于多线程中
 
-# epoll_ctl
+## epoll_ctl
 
 对 the interest list 进行增，删，改
 
@@ -54,9 +52,9 @@ kcmp KCMP_EPOLL_TFD     一个文件描述符是否被侦听
 * EPOLL_CTL_MOD
 * EPOLL_CTL_DEL
 
-## The struct epoll_event 
+## The struct epoll_event
 
-```
+```c
 typedef union epoll_data {
     void        *ptr;
     int          fd;
@@ -76,7 +74,7 @@ events 是一个 bit mask:
 * EPOLLOUT      写
 * EPOLLRDHUP
     Stream socket peer 关闭连接，or shut down writing half of connection. (在边缘触发时，此标志可用于探测 peer shutdown)
-* EPOLLPRI      文件描述符产生 exceptional 
+* EPOLLPRI      文件描述符产生 exceptional
 * EPOLLERR
     epoll_wait 始终会等待此消息。没必要进行设置
 * EPOLLERR
@@ -96,18 +94,18 @@ events 是一个 bit mask:
 
     EPOLLEXCLUSIVE 只能通过 EPOLL_CTL_ADD 进行设置。通过 EPOLL_CTL_MOD 设置报错。
 
-# epoll_wait
+## epoll_wait
 
 阻塞，直到：
 
-* a file descriptor delivers an event;
-* the call is interrupted by a signal handler; or
+* 有文件描述符产生事件
+* the call is interrupted by a signal handler
 * the timeout expires.
 
-* timeout = -1 block indefinitely
-* timeout = 0 return immediately, even if no events are available.
+* timeout = -1 永远 block
+* timeout = 0 立即返回，即使没有事件产生
 
-```
+```c
 typedef union epoll_data {
        void    *ptr;
        int      fd;
@@ -121,7 +119,7 @@ struct epoll_event {
 };
 ```
 
-# epoll_pwait()
+## epoll_pwait()
 
 线程安全
 

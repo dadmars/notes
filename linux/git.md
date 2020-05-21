@@ -1,26 +1,28 @@
-# 创建版本库
+# git
+
+## 创建版本库
 
 ```bash
 git clone --bare a a.git
 git daemon --verbose --export-all --base-path=./
 ```
 
-# 配置
+## 配置
 
 * /etc/gitconfig    所有用户的配置文件
 * ~/.gitconfig      当前用户的配置文件
 * .git/config       当前工作区的配置文件
 
-## 列出配置
+### 列出配置
 
 ```bash
 git config --system
 git config --global
 git config --list
-git config user.name          
+git config user.name
 ```
 
-## 设置
+### 设置
 
 ```bash
 git config --global user.name "John Doe" 
@@ -34,7 +36,7 @@ git config --global alias.unstage 'reset HEAD --'
 git config --global alias.last 'log -1 HEAD'
 ```
 
-# 命令
+## 命令
 
 ```bash
 git status
@@ -71,7 +73,7 @@ git branch -v     列出分支
 git branch -a     列出所有分支
 ```
 
-# 配置服务器
+## 配置服务器
 
 ```bash
 sudo adduser git

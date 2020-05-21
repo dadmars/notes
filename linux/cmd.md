@@ -1,17 +1,16 @@
-# netcat
+# cmd
 
-test which of your ports are open or closed.
+## nc / ncat
+
+测试端口
 
 ```bash
 nc -z -w5 -v SERVER_IP PORT
 ```
 
-* nc is the netcat command.
-* -z just send a packet without payload.
-* -w5 wait up to 5 seconds for a response.
-* -v verbose mode.
-
-# 网络相关命令
+* -z    数据包不包含 payload
+* -w5   最多等待 5 秒
+* -v    冗余模式
 
 ## tcpdump
 
@@ -25,22 +24,22 @@ ifconfig wlo1 up
 
 tcpdump -i wlo1
 
-// 添加一个别名mon0，monitor模式
+# 添加一个别名mon0，monitor模式
 iwconfig wlo1 interface add mon0 type monitor
-// 启用mon0，默认不启用
+# 启用mon0，默认不启用
 ifconfig mon0 up
 ```
 
 ## Wireshark
 
-## 一般用户使用
+### 充许普通用户使用
 
 ```bash
 cat /etc/group
 sudo usermod -a -G wireshark username
 ```
 
-## 工作流
+### 工作流
 
 ```bash
 sudo tcpdump port 443 -w output.pcap
@@ -61,15 +60,11 @@ nmtui edit eno1
 
 ```bash
 ip route | grep default
+
+ # 注意 U 的含义是 route is 'up'，G 的含义是这是一个 gateway
 route -n
-    注意 U 的含义是 route is 'up'，G 的含义是这是一个 gateway
-```
 
-## ip
-
-显示和管理路由，设备，policy routing and tunnels
-
-```bash
+# 显示和管理路由，设备，policy routing and tunnels
 ip route
 ip link
 ```
@@ -81,13 +76,13 @@ ip link
 ```bash
 netstat -tulpn
 
-# displays  a list of open sockets
+# list of open sockets
 netstat
 
-# Display the kernel routing tables
+# routing tables
 netstat -r
 
-# Display a table of all network interfaces
+# table of all network interfaces
 netstat -i
 
 # Show numerical addresses instead of trying to determine symbolic host, port or user names
@@ -111,7 +106,7 @@ nmap <ipaddress>
 nmap -v <ipaddress>
 ```
 
-# curl
+## curl
 
 ```bash
 curl --header "Content-Type: application/json" --request POST --data '{"cmd":"update"}'  http://localhost:9998
@@ -188,4 +183,646 @@ sudo iptables -A INPUT -i eth0 -s 10.0.3.1/32 -p tcp -m tcp --dport 22 -j ACCEPT
 
 * -s 10.0.3.1/32 specifies an IP/subnet to allow connections from.
 
-# ncat
+## xxd
+
+输出16进制数
+
+```bash
+echo a | xxd -g 1
+```
+
+## strace
+
+查看系统调用
+
+```bash
+strace cat /etc/hosts
+```
+
+## 系统调用号
+
+```bash
+/usr/include/asm-generic/unistd.h
+```
+
+## node.js
+
+```bash
+curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+sudo apt-get install nodejs
+```
+
+## 快捷键
+
+### 打开终端时全屏或最大化
+
+打开“系统设置”==>“键盘”==>“自定义快捷键”
+
+分别自定义两个快捷键：
+
+a)Full Terminal
+
+命令：gnome-terminal --full-screen
+
+b)Max Terminal
+
+命令：gnome-terminal  --maximize
+
+## vim
+
+```bash
+git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+```
+
+.vimrc
+
+```bash
+set guifont=Bitstream\ Vera\ Sans\ Mono\ 14,Fixed\ 14
+set guifontwide=Microsoft\ Yahei\ 14,WenQuanYi\ Zen\ Hei\ 14
+set linespace=4
+
+map <F3> :BufExplorer <CR>
+map <F9> :PluginInstall <CR>
+map <F10> :BundleUpdate <CR>
+map <F11> :BundleClean <CR>
+map <C-n> :NERDTreeToggle<CR>
+
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+autocmd FileType c,cpp,java,sh autocmd BufWritePre <buffer> :%s/\s\+$//e
+
+set nocompatible
+filetype off
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+Plugin 'gmarik/Vundle.vim'
+Plugin 'jlanzarotta/bufexplorer'
+
+Plugin 'scrooloose/nerdtree'
+Plugin 'scrooloose/nerdcommenter'
+
+Plugin 'rust-lang/rust.vim'
+
+Plugin 'vim-flake8'
+
+Plugin 'pangloss/vim-javascript'
+Plugin 'mxw/vim-jsx'
+
+Plugin 'MarcWeber/vim-addon-mw-utils'
+Plugin 'tomtom/tlib_vim'
+Plugin 'garbas/vim-snipmate'
+Plugin 'honza/vim-snippets'
+
+call vundle#end()
+filetype plugin indent on
+syntax on
+
+let NERDTreeIgnore = ['\.pyc$', '\~$', '\.pyo$']
+
+autocmd BufWritePost *.py call Flake8()
+let g:flake8_show_in_file=1
+let g:flake8_show_in_gutter=1
+let g:flake8_show_quickfix=1
+
+let g:rustfmt_autosave = 1
+
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
+set expandtab
+set autoindent
+
+hi BadWhitespace guifg=gray guibg=red ctermfg=gray ctermbg=red
+au BufRead,BufNewFile *.py,*.pyw,*.c,*.h,*.html,*.css,*.htm match BadWhitespace /\s\+$/
+
+inoremap if. if () {<CR>}<UP><END><LEFT><LEFT><LEFT>
+inoremap f. for () {<CR>}<UP><END><LEFT><LEFT><LEFT>
+inoremap c. const  = () => {<CR>}<UP><END><LEFT><LEFT><LEFT><LEFT><LEFT><LEFT><LEFT><LEFT><LEFT><LEFT>
+
+:autocmd FileType rust inoremap if. if  {<CR>}<UP><END><LEFT><LEFT> \
+                       inoremap m. match  {<CR>}<UP><END><LEFT><LEFT> \
+                       inoremap f. for  {<CR>}<UP><END><LEFT><LEFT> \
+```
+
+./config/flake8
+
+```bash
+[flake8]
+max-line-length=150
+```
+
+### flod command
+
+:autocmd FileType rust setlocal foldmethod=expr foldexpr=getline(v:lnum)=~'^\\s*//'
+
+### auto pair
+
+Plugin 'jiangmiao/auto-pairs'
+
+```bash
+    input: [
+    output: [|]
+
+    Delete in pair
+
+    input: foo[<BS>]
+    output: foo
+
+    Insert new indented line after Return
+
+    input: {|} (press <CR> at |)
+    output: {
+        |
+    }          (press } to close the pair)
+    output: {
+    }|         (the inserted blank line will be deleted)
+
+    Insert spaces before closing characters, only for [], (), {}
+
+    input: {|} (press <SPACE> at |)
+    output: { | }
+
+    input: {|} (press <SPACE>foo} at |)
+    output: { foo }|
+
+    input: '|' (press <SPACE> at |)
+    output: ' |'
+
+    Skip ' when inside a word
+
+    input: foo| (press ' at |)
+    output: foo'
+
+    Skip closed bracket.
+
+    input: []
+    output: []
+
+    Ignore auto pair when previous character is \
+
+    input: "\'
+    output: "\'"
+
+    Fast Wrap
+
+    input: |[foo, bar()] (press (<M-e> at |)
+    output: ([foo, bar()])
+
+    Quick move char to closed pair
+
+    input: (|){["foo"]} (press <M-}> at |)
+    output: ({["foo"]}|)
+
+    input: |[foo, bar()] (press (<M-]> at |)
+    output: ([foo, bar()]|)
+
+    Quick jump to closed pair.
+
+    input:
+    {
+        something;|
+    }
+
+    (press } at |)
+
+    output:
+    {
+
+    }|
+
+    Fly Mode
+
+     input: if(a[3)
+     output: if(a[3])| (In Fly Mode)
+     output: if(a[3)]) (Without Fly Mode)
+
+     input:
+     {
+         hello();|
+         world();
+     }
+
+     (press } at |)
+
+     output:
+     {
+         hello();
+         world();
+     }|
+
+     (then press <M-b> at | to do backinsert)
+     output:
+     {
+         hello();}|
+         world();
+     }
+
+     See Fly Mode section for details
+
+    Multibyte Pairs
+
+     Support any multibyte pairs such as <!-- -->, <% %>, """ """
+     See multibyte pairs section for details
+
+    <CR>  : Insert new indented line after return if cursor in blank brackets or quotes.
+    <BS>  : Delete brackets in pair
+    <M-p> : Toggle Autopairs (g:AutoPairsShortcutToggle)
+    <M-e> : Fast Wrap (g:AutoPairsShortcutFastWrap)
+    <M-n> : Jump to next closed pair (g:AutoPairsShortcutJump)
+    <M-b> : BackInsert (g:AutoPairsShortcutBackInsert)
+
+If <M-p> <M-e> or <M-n> conflict with another keys or want to bind to another keys, add
+
+    let g:AutoPairsShortcutToggle = '<another key>'
+
+to .vimrc, if the key is empty string '', then the shortcut will be disabled.
+
+Options
+
+    g:AutoPairs
+
+    Default: {'(':')', '[':']', '{':'}',"'":"'",'"':'"', "`":"`", '```':'```', '"""':'"""', "'''":"'''"}
+
+    b:AutoPairs
+
+    Default: g:AutoPairs
+
+    Buffer level pairs set.
+
+    g:AutoPairsShortcutToggle
+
+    Default: '<M-p>'
+
+    The shortcut to toggle autopairs.
+
+    g:AutoPairsShortcutFastWrap
+
+    Default: '<M-e>'
+
+    Fast wrap the word. all pairs will be consider as a block (include <>).
+    (|)'hello' after fast wrap at |, the word will be ('hello')
+    (|)<hello> after fast wrap at |, the word will be (<hello>)
+
+    g:AutoPairsShortcutJump
+
+    Default: '<M-n>'
+
+    Jump to the next closed pair
+
+    g:AutoPairsMapBS
+
+    Default : 1
+
+    Map <BS> to delete brackets, quotes in pair
+    execute 'inoremap <buffer> <silent> <BS> <C-R>=AutoPairsDelete()<CR>'
+
+    g:AutoPairsMapCh
+
+    Default : 1
+
+    Map <C-h> to delete brackets, quotes in pair
+
+    g:AutoPairsMapCR
+
+    Default : 1
+
+    Map <CR> to insert a new indented line if cursor in (|), {|} [|], '|', "|"
+    execute 'inoremap <buffer> <silent> <CR> <C-R>=AutoPairsReturn()<CR>'
+
+    g:AutoPairsCenterLine
+
+    Default : 1
+
+    When g:AutoPairsMapCR is on, center current line after return if the line is at the bottom 1/3 of the window.
+
+    g:AutoPairsMapSpace
+
+    Default : 1
+
+    Map <space> to insert a space after the opening character and before the closing one.
+    execute 'inoremap <buffer> <silent> <CR> <C-R>=AutoPairsSpace()<CR>'
+
+    g:AutoPairsFlyMode
+
+    Default : 0
+
+    set it to 1 to enable FlyMode.
+    see FlyMode section for details.
+
+    g:AutoPairsMultilineClose
+
+    Default : 1
+
+    When you press the key for the closing pair (e.g. `)`) it jumps past it.
+    If set to 1, then it'll jump to the next line, if there is only whitespace.
+    If set to 0, then it'll only jump to a closing pair on the same line.
+
+    g:AutoPairsShortcutBackInsert
+
+    Default : <M-b>
+
+    Work with FlyMode, insert the key at the Fly Mode jumped postion
+
+    g:AutoPairsMoveCharacter
+
+    Default: "()[]{}\"'"
+
+    Map <M-(> <M-)> <M-[> <M-]> <M-{> <M-}> <M-"> <M-'> to
+    move character under the cursor to the pair.
+```
+
+## 安装中文输入法
+
+language support安装中文语言
+
+text entry 加入中文
+
+language support -> keyboard input method system: fcitx
+
+fcitx configuration 加入sogou pinyin和wubi
+
+```bash
+sudo apt-get install fonts-droid-fallback
+sudo apt remove fcitx* && sudo apt autoremove
+sudo dpkg -i ~/Downloads/sogoupinyin*.deb; sudo apt -f install
+sudo reboot
+```
+
+## vscode
+
+### setting font size
+
+window.zoomlevel
+
+## 添加sudo用户
+
+```bash
+adduser xx
+usermod -aG sudo xx
+```
+
+## ssh 登录
+
+```bash
+ls -al ~/.ssh
+ssh-keygen -t rsa -b 4096 -C "mcflym@N123456"
+ssh-add ~/.ssh/id_rsa
+cat ~/.ssh/id_rsa.pub | ssh username@server.address.com 'cat >> ~/.ssh/authorized_keys'
+```
+
+## sshpass
+
+```bash
+sshpass -p 'passwd' ssh xxxxx
+```
+
+## 键盘映射
+
+### 查看按键值
+
+xev
+
+### 进行键盘映射
+
+xmodmap -e "keycode 128 = F3"
+
+#### 配置文件
+
+```bash
+~/.Xmodmap
+
+keycode 128 = F3
+keycode 123 = Insert
+```
+
+## download
+
+### 多线程下载
+
+```bash
+axel
+```
+
+## GUI 用户登录设置
+
+```bash
+cd /etc/lightdm/lightdm.conf.d
+touch my.conf
+
+[SeatDefaults]
+allow-guest=false
+greeter-hide-users=true
+greeter-show-manual-login=true
+```
+
+## ftp
+
+```bash
+sudo apt-get install vsftpd
+
+sudo cp /etc/vsftpd.conf /etc/vsftpd.conf.bk
+
+########################################
+# 编辑文件： /etc/vsftpd.conf
+sudo vim /etc/vsftpd.conf
+
+# 在文件中找到下面的行，并设置值与下面一样
+write_enable=YES
+local_umask=022
+chroot_local_user=YES
+
+# 在文件最后添加下面的行
+allow_writeable_chroot=YES
+pasv_min_port=40000
+pasv_max_port=40100
+########################################
+
+sudo systemctl restart vsftpd
+
+sudo useradd -m ftpuser -s /usr/sbin/nologin
+sudo passwd ftpuser
+echo "/usr/sbin/nologin" | sudo tee -a /etc/shells
+```
+
+ftp 会阻止 shell 不在 /etc/shells 的用户登录
+
+## 制作iso systemback
+
+```bash
+sudo add-apt-repository ppa:nemh/systemback
+sudo apt-get update && sudo apt-get install systemback unionfs-fuse
+
+/usr/lib/systemback/sbsustart systemback
+/usr/lib/systemback/sbsustart systemback gtk+
+```
+
+## npm
+
+```bash
+npm install tailwindcss --save-dev
+```
+
+### 修改成华为云镜像源
+
+```bash
+npm config set registry https://mirrors.huaweicloud.com/repository/npm/
+npm config get registry
+```
+
+## ibm mq
+
+```bash
+apt-get install python-dev
+./mqlicense.sh -accept
+apt-get install rpm
+rpm --prefix /opt/mqm -ivh --nodeps --force-debian MQSeriesRuntime...
+rpm --prefix /opt/mqm -ivh --nodeps --force-debian MQSeriesClien...
+rpm --prefix /opt/mqm -ivh --nodeps --force-debian MQSeriesSDK...
+pip install pymqi
+```
+
+Debug
+
+```bash
+dspmqaut -m SVR　-n SVR.LQ -t q -p guest
+setmqaut -m SVR　-n SVR.LQ -t q -p guest +put
+```
+
+npm config set registry https://registry.npm.taobao.org
+npm config get registry
+
+./manage.py oscar_fork_app order yourappsfolder/
+git clone https://github.com/django-oscar/django-oscar.git
+cd django-oscar
+sudo make install
+make sandbox
+sandbox/manage.py runserver
+
+sudo update-alternatives --config vim
+apt-cache search py2
+
+./manage.py oscar_fork_app dashboard.reports gmapp/
+./manage.py oscar_fork_statics
+
+mysqldump -ugmshop -pgmshop -d gmshop >db.sql
+from oscar.core.loading import get_class
+>>> get_class('shipping.repository', 'Repository')
+
+Netcat is a tool for quickly creating TCP sockets from the command line. The following command starts a listening TCP socket on the previously specified port.
+
+$ nc -l 6142
+
+cpu信息
+    不为0，支持虚拟化  
+    egrep -c '(vmx|svm)' /proc/cpuinfo 
+    为0，不是64位      
+    egrep -c ' lm ' /proc/cpuinfo  
+
+内核是否为64位
+uname -m
+
+版本
+cat /etc/issue
+lsb_release -a
+
+查看端口
+lsof -i:80
+netstat -tunlp |grep 80 
+
+systemctl
+systemctl list-units            ##列出当前系统服务的状态
+systemctl list-unit-files       ##列出服务的开机状态
+systemctl status sshd           ##查看指定服务的状态
+systemctl stop sshd             ##关闭指定服务
+systemctl start sshd            ##开启指定服务
+systemctl restart sshd          ##从新启动服务
+systemctl enable sshd           ##设定指定服务开机开启
+systemctl disable sshd          ##设定指定服务开机关闭
+systemctl reload sshd           ##使指定服务从新加载配置
+systemctl list-dependencies sshd    ##查看指定服务的倚赖关系
+systemctl mask  sshd            ##冻结指定服务
+systemctl unmask sshd           ##启用服务
+systemctl set-default multi-user.target ##开机不开启图形
+systemctl set-default graphical.target  ##开机启动图形
+
+安装中文语言包
+sudo apt-get install  language-pack-zh-han*
+
+Gnome Tweaks 优化工具
+
+查看已经安装了哪些包
+
+dpkg -l
+
+如果系统使用时间长，安装了许多包查看不便时，可以使用翻页查看
+
+dpkg -l | less
+
+查看软件xxx安装内容
+
+dpkg -L xxx
+
+
+清除所有已删除包的残余配置文件
+
+dpkg -l |grep ^rc|awk '{print $2}' |sudo xargs dpkg -P
+
+可以清除一些残留无用的配置。
+
+
+显示系统安装包的统计信息
+
+apt-cache stats
+
+可以统计已经安装包的数量，大小，占用空间等
+
+显示xxx包的信息
+
+apt-cache show xxx
+
+查找文件属于哪个包
+
+dpkg -S filename ：在当前安装的包里查找文件。
+
+apt-file search filename ： 在所有源包里查找文件。
+
+查询软件xxx依赖哪些包
+
+apt-cache depends xxx
+
+查询软件xxx被哪些包依赖
+
+apt-cache rdepends xxx
+
+设置firefox包的状态为 hold；
+echo " firefox hold" | dpkg --set-selections
+
+如果想恢复可以更新的状态(install)，执行下面的命令；
+
+echo "firefox install" | dpkg --set-selections
+
+查询所有包的状态；
+
+sudo dpkg --get-selections | more  
+
+查询状态为hold的所有包;
+
+sudo dpkg --get-selections | grep hold
+
+sudo apt-get remove libreoffice-common  
+sudo apt-get remove unity-webapps-common  
+sudo apt-get -y purge rhythmbox*
+
+lock
+/var/lib/dpkg/lock-frontend
+
+查看进程
+
+        pidof   后面跟进程名称，显示此进程的进程号。可以得知此程序有多少个实例在运行。
+
+        打开终端时全屏或最大化：
+
+language support安装中文语言
+text entry 加入中文
+下载sogou输入法并安装，如果有依赖错误：sudo apt-get -f install
+language support->keyboard input method system: fcitx
+fcitx configuration 加入sogou pinyin和wubi
