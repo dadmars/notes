@@ -1,9 +1,6 @@
 # js
 
-- [js](#js)
 - [数字( Number )](#数字-number-)
-- [NaN : Not a Number](#nan--not-a-number)
-- [Infinity and -Infinity : 无穷](#infinity-and--infinity--无穷)
 - [字符串( String )](#字符串-string-)
 - [空类型](#空类型)
 - [Boolean](#boolean)
@@ -14,7 +11,6 @@
 - [Set](#set)
 - [扩展](#扩展)
 - [函数](#函数)
-- [函数参数列表: arguments](#函数参数列表-arguments)
 - [for](#for)
 - [常量](#常量)
 - [动态类型检测](#动态类型检测)

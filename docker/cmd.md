@@ -1,15 +1,34 @@
-# 安装
+# docker
 
-# redhat
+- [fluent](#fluent)
+- [centos](#centos)
+  - [安装](#安装)
+  - [docker 内部无法访问主机](#docker-内部无法访问主机)
+- [ubuntu](#ubuntu)
+- [删除](#删除)
+- [log](#log)
+- [编译](#编译)
+- [image](#image)
+- [运行](#运行)
+- [容器](#容器)
+- [网络](#网络)
 
-## 安装
+## fluent
+
+```bash
+docker run -d -p 24224:24224 -p 24224:24224/udp -v /data:/fluentd/log fluent/fluentd:v1.3-debian-1
+```
+
+## centos
+
+### 安装
 
 ```bash
 cd /etc/yum.repos.d
 wget -O CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
 
 change $releasever -> 7
-change $arch.. -> x86_64 
+change $arch.. -> x86_64
 
 yum repolist
 yum install -y yum-utils device-mapper-persistent-data lvm2
@@ -23,7 +42,7 @@ curl -L "https://github.com/docker/compose/releases/download/1.25.4/docker-compo
 chmod +x /usr/local/bin/docker-compose
 ```
 
-## docker 内部无法访问主机
+### docker 内部无法访问主机
 
 ```bash
 firewall-cmd --permanent --zone=public --add-rich-rule='rule family=ipv4 source address=172.17.0.0/16 accept'
@@ -39,13 +58,11 @@ systemctl disable firewalld
 firewall-cmd --state
 ```
 
-# centos
-
 ```bash
 https://docs.docker.com/install/linux/docker-ee/centos/#package-install-and-upgrade
 ```
 
-# ubuntu
+## ubuntu
 
 ```bash
 sudo apt-get install apt-transport-https ca-certificates curl software-properties-common
@@ -76,14 +93,14 @@ docker info
 docker pull xxx
 ```
 
-# 删除
+## 删除
 
 ```bash
 sudo apt-get purge docker-ce
 sudo rm -rf /var/lib/docker
 ```
 
-# log
+## log
 
 ```bash
 docker ps
@@ -93,14 +110,14 @@ docker logs xxxxx
 docker logs --tail 30 xxxxx
 ```
 
-# 编译
+## 编译
 
 ```bash
 # Create image using this directory's Dockerfile
 docker build -t friendlyhello .
 ```
 
-# image
+## image
 
 ```bash
 # List Docker images
@@ -130,7 +147,7 @@ docker save IMG:VER -o IMG-VER.tar
 gzip IMG-VER.tar
 ```
 
-# 运行
+## 运行
 
 ```bash
 docker run hello-world
@@ -148,7 +165,7 @@ docker run --name ubuntu_bash --rm -i -t ubuntu bash
 docker exec -it <hash> /bin/bash
 ```
 
-# 容器
+## 容器
 
 ```bash
 docker container --help
@@ -176,7 +193,7 @@ docker container rm $(docker container ls -a -q)
 docker container rm $(docker container ls -a -q -f status=exited)
 ```
 
-# 网络
+## 网络
 
 ```bash
 docker network --help
@@ -186,7 +203,7 @@ docker network inspect xxx
 docker network create –-driver drivername name
 ```
 
-## 创建网络
+### 创建网络
 
 create a network with a subnet and a gateway
 
@@ -197,9 +214,9 @@ docker network create –-driver bridge new_nw
 docker run –it –network=new_nw ubuntu:latest /bin/bash
 ```
 
-## 网络 driver
+### 网络 driver
 
-### bridge
+#### bridge
 
 * creates a private network internal to the host
 * all containers get an internal IP address
@@ -216,13 +233,13 @@ the Docker Engine creates:
 
 A built-in IPAM driver provides the container interfaces with private IP addresses from the subnet of the bridge network.
 
-### Overlay
+#### Overlay
 
 * Creates an internal private network that spans across all the nodes participating in the swarm cluster
 * Overlay networks facilitate communication between a swarm service and a standalone container, or between two standalone containers on different Docker Daemons.
 * IPAM, service discovery, multi-host connectivity, encryption, and load balancing are built in.
 
-### Macvlan
+#### Macvlan
 
 * assign a MAC address to a container, making it appear as a physical device on your network
 * the Docker daemon routes traffic to containers by their MAC addresses
@@ -232,13 +249,13 @@ A built-in IPAM driver provides the container interfaces with private IP address
 
 The macvlan driver uses the concept of a parent interface.This interface can be a host interface such as eth0, a sub-interface, or even a bonded host adaptor which bundles Ethernet interfaces into a single logical interface.
 
-### Host
+#### Host
 
 * removes the network isolation between the docker host
 * docker containers to use the host’s networking directly
 * you will not be able to run multiple web containers on the same host, on the same port as the port is now common to all containers in the host network.
 
-### None
+#### None
 
 * containers are not attached to any network and do not have any access to the external network or other containers
 * only create a loopback device.

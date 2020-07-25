@@ -118,16 +118,8 @@ show tag values from xx with key=msn
 # 从一个表把一些列移到另一个表中, group by * 保证 tag key
 SELECT useful_field, nice_tag INTO new_measurement FROM measurement GROUP BY *
 
-# 删除表格
-
-############################
-
 # 插入数据
 INSERT table,tag1=serverA,tag2=us_west field1=0.64
-
-# 更新数据
-
-# 删除数据
 
 # 查看数据
 select * from table_name;

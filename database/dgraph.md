@@ -1,4 +1,4 @@
-# 查看数据
+# dgraph
 
 ```bash
 curl localhost:8080/query -XPOST -d '
@@ -17,9 +17,9 @@ curl localhost:8080/query -XPOST -d '
 }' | python -m json.tool | less
 ```
 
-# 备份
+## 备份
 
-## 备份数据库
+### 备份数据库
 
 ```bash
 container id: xxxxx
@@ -33,7 +33,7 @@ docker cp xxxxx:/dgraph/export/dgraph-1-2019-08-13-09-52.rdf.gz .
 docker cp xxxxx:/dgraph/export/dgraph-1-2019-08-13-09-52.schema.gz .
 ```
 
-## 还原数据库
+### 还原数据库
 
 ```bash
 docker cp dgraph-1-2019-08-13-09-52.rdf.gz xxxxx:/dgraph/
@@ -49,20 +49,19 @@ rm -f *.gz
 exit
 ```
 
-# 主从同步
+## 主从同步
 
 ```bash
 --replicas
     we recommend setting --replicas to 1, 3 or 5 (not 2 or 4). This allows 0, 1, or 2 nodes serving the same group to be down, respectively without affecting the overall health of that group.
 ```
 
-# 查询语法
-
 ## eq
 
 Matches strings that have all specified terms in any order; 不分大小写
-* Schema Types: string
-* Index Required: term
+
+- Schema Types: string
+- Index Required: term
 
 ```bash
 me(func: eq(name, "Steven Spielberg")) @filter(has(director.film)) {
@@ -72,14 +71,15 @@ me(func: eq(name, "Steven Spielberg")) @filter(has(director.film)) {
   }
 }
 ```
-              
+
 ## anyofterms
 
 Matches strings that have any of the specified terms in any order; case insensitive.
-* Schema Types: string
-* Index Required: term
 
-Query Example: All nodes that have a name containing either poison or peacock. 
+- Schema Types: string
+- Index Required: term
+
+Query Example: All nodes that have a name containing either poison or peacock.
 
 ```bash
 me(func:anyofterms(name@en, "poison peacock")) {
@@ -88,7 +88,7 @@ me(func:anyofterms(name@en, "poison peacock")) {
       name@en
     }
 }
-              
+
 me(func: eq(name@en, "Steven Spielberg")) @filter(has(director.film)) {
     name@en
     director.film @filter(anyofterms(name@en, "war spies"))  {
@@ -96,12 +96,13 @@ me(func: eq(name@en, "Steven Spielberg")) @filter(has(director.film)) {
     }
 }
 ```
-              
+
 ## Regular Expressions
 
 regexp(predicate, /regular-expression/) or case insensitive regexp(predicate, /regular-expression/i)
-* Schema Types: string
-* Index Required: trigram
+
+- Schema Types: string
+- Index Required: trigram
 
 ```bash
 curl localhost:8080/query -XPOST -d '
@@ -114,7 +115,7 @@ curl localhost:8080/query -XPOST -d '
   }
 }' | python -m json.tool | less
 ```
-              
+
 A Trigram is a substring of three continuous runes. For example, Dgraph has trigrams Dgr, gra, rap, aph.
 
 At least one trigram must be matched by the regular expression (patterns shorter than 3 runes are not supported). That is, Dgraph requires regular expressions that can be converted to a trigram query.
@@ -132,8 +133,9 @@ If the partial result (for subset of trigrams) exceeds 1000000 uids during index
 ## Full Text Search
 
 alloftext(predicate, "space-separated text") and anyoftext(predicate, "space-separated text")
-* Schema Types: string
-* Index Required: fulltext
+
+- Schema Types: string
+- Index Required: fulltext
 
 ```bash
 { movie(func:alloftext(name@en, “the man maybe runs”)) { name@en } }
@@ -164,7 +166,7 @@ curl localhost:8080/query -XPOST -d '
   me(func: eq(count(genre), 13)) {
     name@en
     genre {
-    	name@en
+      name@en
     }
   }
 }' | python -m json.tool | less
@@ -173,7 +175,7 @@ curl localhost:8080/query -XPOST -d '
 {
   steve as var(func: (name@en, "Steven")) {
     films as count(director.film)
-  } 
+  }
 
   stevens(func: uid(steve)) @filter(eq(val(films), [1,2,3])) {
     name@en
@@ -1204,10 +1206,10 @@ email: string @index(exact) @upsert .
 
 The indices available for dateTime are as follows.
 
-* year 	index on year (default)
-* month 	index on year and month
-* day 	index on year, month and day
-* hour 	index on year, month, day and hour
+- year index on year (default)
+- month index on year and month
+- day index on year, month and day
+- hour index on year, month, day and hour
 
 ## Count index
 
@@ -1225,8 +1227,8 @@ For predicates with the @count Dgraph indexes the number of edges out of each no
 
 Predicate with scalar types can also store a list of values if specified in the schema. The scalar type needs to be enclosed within [] to indicate that its a list type. These lists are like an unordered set.
 
-* occupations: [string] .
-* score: [int] .
+- occupations: [string] .
+- score: [int] .
 
 ## Reverse Edges
 
@@ -1309,7 +1311,7 @@ curl localhost:8080/query -XPOST -d '
   }
 }' | python -m json.tool | less
 ```
-              
+
 Facets are retuned at the same level as the corresponding edge and have keys like edge|facet.
 
 All facets on an edge are queried with @facets.
@@ -1340,7 +1342,7 @@ curl localhost:8080/query -XPOST -d '
    }
 }' | python -m json.tool | less
 ```
-              
+
 ## Facets on UID predicates
 
 Facets on UID edges work similarly to facets on value edges.
@@ -1355,7 +1357,7 @@ curl localhost:8080/query -XPOST -d '
     }
   }
 }' | python -m json.tool | less
-              
+
 curl localhost:8080/query -XPOST -d '
 {
    data(func: eq(name, "Alice")) {
@@ -1365,7 +1367,7 @@ curl localhost:8080/query -XPOST -d '
      }
    }
 }' | python -m json.tool | less
-              
+
 curl localhost:8080/query -XPOST -d '
 {
   data(func: eq(name, "Alice")) {
@@ -1402,7 +1404,7 @@ curl localhost:8080/query -XPOST -d '
     }
   }
 }' | python -m json.tool | less
-              
+
 curl localhost:8080/query -XPOST -d '
 {
   data(func: eq(name, "Alice")) {
@@ -1421,7 +1423,7 @@ curl localhost:8080/query -XPOST -d '
     }
   }
 }' | python -m json.tool | less
-              
+
 curl localhost:8080/query -XPOST -d '
 {
   var(func: eq(name, "Alice")) {
@@ -1439,7 +1441,6 @@ curl localhost:8080/query -XPOST -d '
   }
 }' | python -m json.tool | less
 ```
-              
 
 Facet values of int and float can be assigned to variables and thus the values propagate.
 
@@ -1461,7 +1462,7 @@ curl localhost:8080/query -XPOST -d '
 
 }' | python -m json.tool | less
 ```
-              
+
 ## Facets and Aggregation
 
 Facet values assigned to value variables can be aggregated.
@@ -1477,7 +1478,7 @@ curl localhost:8080/query -XPOST -d '
     avg(val(r))
   }
 }' | python -m json.tool | less
-              
+
 curl localhost:8080/query -XPOST -d '
 {
   data(func: anyofterms(name, "Alice Bob")) {
@@ -1488,7 +1489,7 @@ curl localhost:8080/query -XPOST -d '
     avg(val(r))
   }
 }' | python -m json.tool | less
-              
+
 curl localhost:8080/query -XPOST -d '
 {
   var(func: has(~rated)) {
@@ -1505,7 +1506,7 @@ curl localhost:8080/query -XPOST -d '
 }' | python -m json.tool | less
 ```
 
-# 修改
+## 修改
 
 ```bash
 {
@@ -1570,7 +1571,7 @@ xid: string @index(exact) .
 
 Note xid edges are not added automatically in mutations. In general it is a user’s responsibility to check for existing xid’s and add nodes and xid edges if necessary. Dgraph leaves all checking of uniqueness of such xid’s to external processes.
 
-# Delete
+## Delete
 
 A delete mutation, signified with the delete keyword, removes triples from the store.
 
@@ -1597,10 +1598,9 @@ For a particular node N, all data for predicate P (and corresponding indexing) i
 }
 ```
 
-The pattern S * * deletes all edges out of a node (the node itself may remain as the target of edges), any reverse edges corresponding to the removed edges and any indexing for the removed data.
-
-```bash
-{
+The pattern ```bash
+docker run -d -p 24224:24224 -p 24224:24224/udp -v /data:/fluentd/log fluent/fluentd:v1.3-debian-1
+```
   delete {
      <0xf11168064b01135b> * * .
   }

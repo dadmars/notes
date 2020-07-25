@@ -1,14 +1,14 @@
-# command
+# redis
 
 docker exec -it af34b redis-cli
 
-# keys
+## keys
 
 * 二进制安全，key 值不仅仅是字符串，还可以是图片。空字符串也可以作为一个 key
 * 对 key 的命名可以定义模板： object-type:id
 * 可以设置 key 的生存时间
 
-# Hashes
+## Hashes
 
 一个 key 值可以有多个成员，对应于对象
 
@@ -35,5 +35,4 @@ hmset user:1000 username antirez birthyear 1977 verified 1
 (integer) 1987
 > hincrby user:1000 birthyear 10
 (integer) 1997
-
 ```
