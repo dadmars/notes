@@ -1,5 +1,36 @@
 # centos
 
+## 自定义安装 (kickstart)
+
+正常安装，记录保存在 /root/anaconda-ks.cfg, 对此文件进行修改
+
+确认修改正确
+
+```bash
+yum install pykickstart
+ksvalidator /path/to/kickstart.ks
+```
+
+查看系统各版本的语法差异
+
+```bash
+ksverdiff -f RHEL6 -t RHEL7
+```
+
+启动时使用选项
+
+```bash
+inst.ks=location
+
+To load your Kickstart file automatically without having to specify the inst.ks= boot option, name the file ks.cfg and place it on a storage volume labeled OEMDRV.
+```
+
+语法
+
+```bash
+firewall --enabled|--disabled device [options]
+```
+
 ## 查看版本号
 
 ```bash

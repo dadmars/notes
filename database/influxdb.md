@@ -1,4 +1,4 @@
-# 访问
+# influxdb
 
 ```bash
 curl -G 'http://localhost:8086/query?pretty=true' --data-urlencode "db=realtime" --data-urlencode "q=SELECT \"value\" FROM \"cpu_load_short\" WHERE \"region\"='us-west'"
@@ -17,15 +17,14 @@ insert cpu,host=serverA,region=us_west value=0.64
 insert payment,device=mobile,product=Notepad,method=credit billed=33,licenses=3i 1434067467100293230
 insert stock,symbol=AAPL bid=127.46,ask=127.48
 insert temperature,machine=unit42,type=assembly external=25,internal=37 1434067467000000000
-```
 
 curl -i -XPOST http://localhost:8086/query --data-urlencode "q=CREATE DATABASE mydb"
 curl -i -XPOST 'http://localhost:8086/write?db=mydb' --data-binary 'cpu_load_short,host=server01,region=us-west value=0.64 1434055562000000000'
 ```
 
-# 配置
+## 配置
 
-## 设置权限
+### 设置权限
 
 ```bash
 docker ps | grep influxdb
@@ -69,18 +68,13 @@ influx -precision rfc3339
 
 <measurement>[,<tag-key>=<tag-value>...] <field-key>=<field-value>[,<field2-key>=<field2-value>...] [unix-nano-timestamp]
 
-# 删除数据库内容
-
-```bash
-```
-
-# 多个查询用 ; 隔开
+## 多个查询用 ; 隔开
 
 ```bash
 curl -G 'http://localhost:8086/query?pretty=true' --data-urlencode "db=mydb" --data-urlencode "q=SELECT \"value\" FROM \"cpu_load_short\" WHERE \"region\"='us-west';SELECT count(\"value\") FROM \"cpu_load_short\" WHERE \"region\"='us-west'"
 ```
 
-# 多行写入，换行分隔
+## 多行写入，换行分隔
 
 ```bash
 curl -i -XPOST 'http://localhost:8086/write?db=mydb' --data-binary 'cpu_load_short,host=server02 value=0.67
@@ -88,7 +82,7 @@ cpu_load_short,host=server02,region=us-west value=0.55 1422568543702900257
 cpu_load_short,direction=in,host=server01,region=us-west value=2.0 1422568543702900257'
 ```
 
-# 文件写入
+## 文件写入
 
 不超过 5000
 
@@ -102,13 +96,13 @@ cpu_load_short,direction=in,host=server01,region=us-west value=2.0 1422568543702
 curl -i -XPOST 'http://localhost:8086/write?db=mydb' --data-binary @cpu_data.txt
 ```
 
-# 返回值
+## 返回值
 
 * 2xx: If your write request received HTTP 204 No Content, it was a success!
 * 4xx: InfluxDB could not understand the request.
 * 5xx: The system is overloaded or significantly impaired.
 
-# 常用命令
+## 常用命令
 
 ```bash
 # 显示所有数据库
@@ -139,9 +133,9 @@ INSERT table,tag1=serverA,tag2=us_west field1=0.64
 select * from table_name;
 ```
 
-# 备份
+## 备份
 
-## 备份数据库
+### 备份数据库
 
 ```bash
 docker exec -it xxxxx /bin/bash
@@ -153,7 +147,7 @@ exit
 docker cp xxxxx:/back.tar.gz .
 ```
 
-## 还原数据库
+### 还原数据库
 
 ```bash
 influxd restore -portable ./back_2019-12-15

@@ -1,5 +1,17 @@
 # Rust
 
+## 国内镜像
+
+```bash
+/home/bianhui/.cargo/config
+
+[source.crates-io]
+replace-with='crates-cn'
+
+[source.crates-cn]
+registry="https://gitee.com/crates/crates.io-index.git"
+```
+
 ## 安装
 
 ```bash

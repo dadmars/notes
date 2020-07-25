@@ -124,6 +124,10 @@
 [guide](http://tldp.org/LDP/abs/html/)
 [linux man](https://www.kernel.org/doc/man-pages/)
 
+# centos
+
+[iso](https://docs.centos.org/en-US/centos/install-guide/Kickstart2/)
+
 # 未分类
 
 [](https://blog.codinghorror.com/)

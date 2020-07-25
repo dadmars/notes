@@ -613,7 +613,7 @@ class|Properties
 .order-11 |order: 11;
 .order-12 |order: 12;
 
-# Grid Template Columns
+## Grid Template Columns
 
 Utilities for specifying the columns in a grid layout.
 

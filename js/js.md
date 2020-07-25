@@ -1,38 +1,39 @@
-# 特性
+# js
 
-动态语言。
+- [js](#js)
+- [数字( Number )](#数字-number-)
+- [NaN : Not a Number](#nan--not-a-number)
+- [Infinity and -Infinity : 无穷](#infinity-and--infinity--无穷)
+- [字符串( String )](#字符串-string-)
+- [空类型](#空类型)
+- [Boolean](#boolean)
+- [数组( Array )](#数组-array-)
+- [类型转换](#类型转换)
+- [destructuring](#destructuring)
+- [对象](#对象)
+- [Set](#set)
+- [扩展](#扩展)
+- [函数](#函数)
+- [函数参数列表: arguments](#函数参数列表-arguments)
+- [for](#for)
+- [常量](#常量)
+- [动态类型检测](#动态类型检测)
+- [迭代器( Iterators )](#迭代器-iterators-)
+- [时间](#时间)
+- [网页范围](#网页范围)
 
-对象的定义与其它语言不同。函数，数组，日期，正则表达式都是对象。
-
-Object
-* Function
-* Array
-* Date
-* RegExp
-
-# 注释
-
-```js
-// comment
-/* comment */
-```
-
-# 对内存的表示
-
-## 连续的内存
-
-### 数字( Number )
+## 数字( Number )
 
 双精度 64 位，不对数字进行整型的区分。实现时，整形为 32 位。
 
-#### NaN : Not a Number
+### NaN : Not a Number
 
 ```js
 NaN + 5; // NaN
 isNaN(NaN); // true
 ```
 
-#### Infinity and -Infinity : 无穷
+### Infinity and -Infinity : 无穷
 
 ```js
 1 / 0;   //  Infinity
@@ -44,7 +45,7 @@ isFinite(-Infinity);  // false
 isFinite(NaN);        // false
 ```
 
-### 字符串( String )
+## 字符串( String )
 
 utf-16
 
@@ -82,23 +83,21 @@ var res = str.split(" ");
 // OUTPUT: How,are,you,doing,today?
 ```
 
-### 空类型
+## 空类型
 
 ```js
 null
 undefined
 ```
 
-### Symbol
-
-### Boolean
+## Boolean
 
 ```js
 false:  0, empty strings (""), NaN, null, undefined
 All other values become true.
 ```
 
-### 数组( Array )
+## 数组( Array )
 
 ```js
 let a = new Array();
@@ -128,14 +127,6 @@ t.join();     // "a,b,c"
 
 t.toString()  // "a,b,c"
 ```
-
-## 内存数据的读写
-
-### 直接读写( let )
-
-let 的作用域为块级的。
-
-### 只读( const )
 
 ## 类型转换
 
@@ -211,9 +202,7 @@ b; // 20
 rest; // { c: 30, d: 40 }
 ```
 
-## 非连续的内存
-
-### 对象
+## 对象
 
 ```js
 // 得到keys
@@ -241,7 +230,7 @@ Object.entries(t).forEach(([key, value]) => {
 // c: 3
 ```
 
-### Set
+## Set
 
 ```js
 ////////////////////////////////////////////
@@ -265,25 +254,7 @@ let a = [...mySet2]; // to array
 var myArr = Array.from(mySet); // to array
 ```
 
-# 对象
-
-```js
-let obj = new Object();
-let obj = {};
-
-let obj = {
-  name: 'Carrot',
-  details: {
-    color: 'orange',
-    size: 12
-  }
-};
-
-obj.details.color; // orange
-obj['details']['size']; // 12
-```
-
-# 扩展
+## 扩展
 
 ```js
 const arr1 = ["a", "b", "c"];
@@ -308,10 +279,6 @@ const n = { x, y, ...z };
 console.log(n); // { x: 1, y: 2, a: 3, b: 4 }
 ```
 
-## Range
-
-# 程序指令的执行
-
 ## 函数
 
 ```js
@@ -327,7 +294,7 @@ a; // 4
 b; // 2
 ```
 
-## 函数参数列表: arguments
+### 函数参数列表: arguments
 
 ```js
 function myFunc() {
@@ -344,80 +311,9 @@ myFunc("Nick", "Anderson", 10, 12, 6);
 // 6
 ```
 
-## 闭包( closure )
-
-## 分支
-
-### if
+## for
 
 ```js
-if () {
-}
-else if () {
-}
-else {
-}
-```
-
-### ? :
-
-```js
-let a = i > 3 ? 4 : 9;
-```
-
-### || &&
-
-```js
-let a = str.length || 2;
-let a = str && str.length;
-```
-
-### switch
-
-```js
-switch (action) {
-  case 'draw':
-    drawIt();
-    break;
-  case 'eat':
-    eatIt();
-    break;
-  default:
-    doNothing();
-}
-
-//////////////////
-switch (a) {
-  case 1: // fallthrough
-  case 2:
-    eatIt();
-    break;
-  default:
-    doNothing();
-}
-
-////////////////////////
-switch (1 + 3) {
-  case 2 + 2:
-    yay();
-    break;
-  default:
-    neverhappens();
-}
-```
-
-## 循环
-
-### for
-
-```js
-/////////////////////////////////////////
-// for ( let i = 0; i < 10; i++ )
-for (let i = 0; i < 10; i++) {
-    console.log(i);
-}
-
-/////////////////////////////////////////
 // for ( let v of array )
 const num = [4, 5, 6];
 for (let i of num) {
@@ -442,11 +338,7 @@ for (let t in num) {
 // c
 ```
 
-### while
-
-# 范围
-
-# 常量
+## 常量
 
 对象和数组指向的内容可以被修改，类似于 c++ 中的 int *const p;
 
@@ -460,31 +352,11 @@ const person = [];
 person.push('John');
 ```
 
-## 字符和字符串常量
-
-## 数字字面常量
-
-# 数据封装
-
-## struct
-
-# 错误处理
-
-# 代码组织( 模块化 )
-
-## package
-
-## Separating Modules into Different Files
-
-# 面向对象
-
 ## 动态类型检测
 
 ```js
 typeof a[90];
 ```
-
-# 函数式编程
 
 ## 迭代器( Iterators )
 
@@ -499,17 +371,7 @@ const evenNumbers = numbers.filter(n => n % 2 === 0); // [0, 2, 4, 6]
 const sum = numbers.reduce((prev, cur) => prev + cur, 0); // 21
 ```
 
-# 文件处理
-
-## 打开文件
-
-## 新建文件
-
-## 读写
-
-# 环境参数
-
-# 时间
+## 时间
 
 ```js
 let v = new Date(); // 本地当前时间
@@ -521,19 +383,21 @@ let a = v.getTime(); // 时间戳,豪秒
 v.setTime(v.getTime() + 8*60*60*1000); // 增加8小时
 ```
 
-# 网络
+## 网页范围
 
-网页可见区域宽：document.body.clientWidth
-网页可见区域高：document.body.clientHeight
-网页可见区域宽：document.body.offsetWidth (包括边线的宽)
-网页可见区域高：document.body.offsetHeight (包括边线的宽)
-网页正文全文宽：document.body.scrollWidth
-网页正文全文高：document.body.scrollHeight
-网页被卷去的高：document.body.scrollTop
-网页被卷去的左：document.body.scrollLeft
-网页正文部分上：window.screenTop
-网页正文部分左：window.screenLeft
-屏幕分辨率的高：window.screen.height
-屏幕分辨率的宽：window.screen.width
-屏幕可用工作区高度：window.screen.availHeight
-屏幕可用工作区宽度：window.screen.availWidth
+```js
+document.body.clientWidth   // 网页可见区域宽
+document.body.clientHeight  // 网页可见区域高
+document.body.offsetWidth   // 网页可见区域宽(包括边线的宽)
+document.body.offsetHeight  // 网页可见区域高(包括边线的高)
+document.body.scrollWidth   // 网页正文全文宽
+document.body.scrollHeight  // 网页正文全文高
+document.body.scrollTop     // 网页被卷去的高
+document.body.scrollLeft    // 网页被卷去的左
+window.screenTop            // 网页正文部分上
+window.screenLeft           // 网页正文部分左
+window.screen.height        // 屏幕分辨率的高
+window.screen.width         // 屏幕分辨率的宽
+window.screen.availHeight   // 屏幕可用工作区高度
+window.screen.availWidth    // 屏幕可用工作区宽度
+```

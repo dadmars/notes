@@ -1,4 +1,6 @@
-# Create App
+# react native
+
+## Create App
 
 ```js
 npx react-native init my-app
@@ -6,7 +8,7 @@ cd my-app
 npx react-native start
 ```
 
-# Running app on Android devices
+## Running app on Android devices
 
 Enable Debugging over USB
 

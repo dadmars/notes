@@ -240,6 +240,8 @@ route data 包含一系列ip地址。如果 pointer 大于 length, 路由指向�
 
 Must be copied on fragmentation.  Appears at most once in a datagram.
 
+![图i1](./pic/i1.png)
+
 #### Strict Source and Record Route (SSRR)
 
 ```bash
@@ -314,6 +316,8 @@ flg [4 bits]
 毫秒级
 
 不能 copy 到分片
+
+![图i2](./pic/i2.png)
 
 ### Padding:  variable
 

@@ -23,11 +23,6 @@ iwconfig wlo1 mode monitor
 ifconfig wlo1 up
 
 tcpdump -i wlo1
-
-# 添加一个别名mon0，monitor模式
-iwconfig wlo1 interface add mon0 type monitor
-# 启用mon0，默认不启用
-ifconfig mon0 up
 ```
 
 ## Wireshark
@@ -825,4 +820,9 @@ language support安装中文语言
 text entry 加入中文
 下载sogou输入法并安装，如果有依赖错误：sudo apt-get -f install
 language support->keyboard input method system: fcitx
-fcitx configuration 加入sogou pinyin和wubi
+
+## firefox
+
+about:config
+
+print.always_print_silent
