@@ -1,5 +1,80 @@
 # cmd
 
+## tmux
+
+```bash
+C+b ?  # help
+C+b s  # 列出所有会话
+
+# 分离会话
+C+b d
+tmux detach
+
+tmux attach -t 0 # 接入会话
+tmux kill-session -t <session-name> # 杀死会话
+tmux switch -t <session-name> # 切换会话
+tmux new -smes # -s 任务名称
+
+tmux rename-session -t oldname <new-name>  # 重命名
+C+b $  # 重命名当前会话
+
+tmux attach -t <session-name>  # 接入会话
+
+C+b s # 切换 session
+
+C+b % # 划分左右两个窗格。
+C+b " # 划分上下两个窗格。
+C+b <arrow key> # 光标切换到其他窗格。<arrow key>是指向要切换到的窗格的方向键，比如切换到下方窗格，就按方向键↓。
+C+b ; # 光标切换到上一个窗格。
+C+b o # 光标切换到下一个窗格。
+C+b { # 当前窗格与上一个窗格交换位置。
+C+b } # 当前窗格与下一个窗格交换位置。
+C+b Ctrl+o # 所有窗格向前移动一个位置，第一个窗格变成最后一个窗格。
+C+b Alt+o # 所有窗格向后移动一个位置，最后一个窗格变成第一个窗格。
+C+b x # 关闭当前窗格。
+C+b ! # 将当前窗格拆分为一个独立窗口。
+C+b z # 当前窗格全屏显示，再使用一次会变回原来大小。
+C+b Ctrl+<arrow key> # 按箭头方向调整窗格大小。
+C+b q # 显示窗格编号。
+
+
+# 窗口
+C+b c # 创建一个新窗口，状态栏会显示多个窗口的信息。
+C+b p # 切换到上一个窗口（按照状态栏上的顺序）。
+C+b n # 切换到下一个窗口。
+C+b <number> # 切换到指定编号的窗口，其中的<number>是状态栏上的窗口编号。
+C+b w # 从列表中选择窗口。
+C+b , # 窗口重命名。
+
+tmux -d new -s xx -c /build/ r
+```
+
+### Tmux Plugin Manager
+
+```bash
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+
+~/.tmux.conf
+
+# List of plugins
+set -g @plugin 'tmux-plugins/tpm'
+set -g @plugin 'tmux-plugins/tmux-sensible'
+
+# Other examples:
+# set -g @plugin 'github_username/plugin_name'
+# set -g @plugin 'git@github.com:user/plugin'
+# set -g @plugin 'git@bitbucket.com:user/plugin'
+
+# Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
+run '~/.tmux/plugins/tpm/tpm'
+
+tmux source ~/.tmux.conf
+
+prefix + I # Installs
+prefix + U # updates
+prefix + alt + u # uninstall plugins not on the plugin list
+```
+
 ## nc / ncat
 
 测试端口
@@ -227,75 +302,6 @@ b)Max Terminal
 
 ```bash
 git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-```
-
-.vimrc
-
-```bash
-set guifont=Bitstream\ Vera\ Sans\ Mono\ 14,Fixed\ 14
-set guifontwide=Microsoft\ Yahei\ 14,WenQuanYi\ Zen\ Hei\ 14
-set linespace=4
-
-map <F3> :BufExplorer <CR>
-map <F9> :PluginInstall <CR>
-map <F10> :BundleUpdate <CR>
-map <F11> :BundleClean <CR>
-map <C-n> :NERDTreeToggle<CR>
-
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-autocmd FileType c,cpp,java,sh autocmd BufWritePre <buffer> :%s/\s\+$//e
-
-set nocompatible
-filetype off
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-Plugin 'gmarik/Vundle.vim'
-Plugin 'jlanzarotta/bufexplorer'
-
-Plugin 'scrooloose/nerdtree'
-Plugin 'scrooloose/nerdcommenter'
-
-Plugin 'rust-lang/rust.vim'
-
-Plugin 'vim-flake8'
-
-Plugin 'pangloss/vim-javascript'
-Plugin 'mxw/vim-jsx'
-
-Plugin 'MarcWeber/vim-addon-mw-utils'
-Plugin 'tomtom/tlib_vim'
-Plugin 'garbas/vim-snipmate'
-Plugin 'honza/vim-snippets'
-
-call vundle#end()
-filetype plugin indent on
-syntax on
-
-let NERDTreeIgnore = ['\.pyc$', '\~$', '\.pyo$']
-
-autocmd BufWritePost *.py call Flake8()
-let g:flake8_show_in_file=1
-let g:flake8_show_in_gutter=1
-let g:flake8_show_quickfix=1
-
-let g:rustfmt_autosave = 1
-
-set tabstop=4
-set softtabstop=4
-set shiftwidth=4
-set expandtab
-set autoindent
-
-hi BadWhitespace guifg=gray guibg=red ctermfg=gray ctermbg=red
-au BufRead,BufNewFile *.py,*.pyw,*.c,*.h,*.html,*.css,*.htm match BadWhitespace /\s\+$/
-
-inoremap if. if () {<CR>}<UP><END><LEFT><LEFT><LEFT>
-inoremap f. for () {<CR>}<UP><END><LEFT><LEFT><LEFT>
-inoremap c. const  = () => {<CR>}<UP><END><LEFT><LEFT><LEFT><LEFT><LEFT><LEFT><LEFT><LEFT><LEFT><LEFT>
-
-:autocmd FileType rust inoremap if. if  {<CR>}<UP><END><LEFT><LEFT> \
-                       inoremap m. match  {<CR>}<UP><END><LEFT><LEFT> \
-                       inoremap f. for  {<CR>}<UP><END><LEFT><LEFT> \
 ```
 
 ./config/flake8
@@ -812,9 +818,9 @@ lock
 
 查看进程
 
-        pidof   后面跟进程名称，显示此进程的进程号。可以得知此程序有多少个实例在运行。
+   pidof   后面跟进程名称，显示此进程的进程号。可以得知此程序有多少个实例在运行。
 
-        打开终端时全屏或最大化：
+   打开终端时全屏或最大化：
 
 language support安装中文语言
 text entry 加入中文

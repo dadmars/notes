@@ -142,5 +142,10 @@ docker cp xxxxx:/back.tar.gz .
 ### 还原数据库
 
 ```bash
+docker ps | grep infl # 得到容器id
+docker cp back.tar.gz xxxxx:/
+docker exec -it xxxxx /bin/bash
+tar xf ./back.tar.gz
+ls  # 假设这里输出目录为 back_2019-12-15
 influxd restore -portable ./back_2019-12-15
 ```

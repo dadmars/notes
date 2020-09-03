@@ -218,45 +218,44 @@ docker run –it –network=new_nw ubuntu:latest /bin/bash
 
 #### bridge
 
-* creates a private network internal to the host
-* all containers get an internal IP address
-* containers can access each other, using this internal IP
-* your applications run in standalone containers that need to communicate.
-* it only provides service discovery, IPAM, and connectivity on a single host
+- 在主机创建一个私有网络
+- 所有容器得到一个内部IP地址
+- 容器能过此IP，可以互相通信
+- 只提供服务发现, IPAM, 在一台主机内不同的容器进行连接
 
 the Docker Engine creates:
 
-* Linux bridges
-* internal interfaces
-* iptables rules
-* host routes
+- Linux bridges
+- internal interfaces
+- iptables rules
+- host routes
 
 A built-in IPAM driver provides the container interfaces with private IP addresses from the subnet of the bridge network.
 
 #### Overlay
 
-* Creates an internal private network that spans across all the nodes participating in the swarm cluster
-* Overlay networks facilitate communication between a swarm service and a standalone container, or between two standalone containers on different Docker Daemons.
-* IPAM, service discovery, multi-host connectivity, encryption, and load balancing are built in.
+- Creates an internal private network that spans across all the nodes participating in the swarm cluster
+- Overlay networks facilitate communication between a swarm service and a standalone container, or between two standalone containers on different Docker Daemons.
+- IPAM, service discovery, multi-host connectivity, encryption, and load balancing are built in.
 
 #### Macvlan
 
-* assign a MAC address to a container, making it appear as a physical device on your network
-* the Docker daemon routes traffic to containers by their MAC addresses
-* the best choice when you are expected to be directly connected to the physical network, rather than routed through the Docker host’s network stack.
-* rather than using any Linux bridging or port mapping, it connects container interfaces directly to host interfaces
-* Containers are addressed with routable IP addresses that are on the subnet of the external network.
+- assign a MAC address to a container, making it appear as a physical device on your network
+- the Docker daemon routes traffic to containers by their MAC addresses
+- the best choice when you are expected to be directly connected to the physical network, rather than routed through the Docker host’s network stack.
+- rather than using any Linux bridging or port mapping, it connects container interfaces directly to host interfaces
+- Containers are addressed with routable IP addresses that are on the subnet of the external network.
 
 The macvlan driver uses the concept of a parent interface.This interface can be a host interface such as eth0, a sub-interface, or even a bonded host adaptor which bundles Ethernet interfaces into a single logical interface.
 
 #### Host
 
-* removes the network isolation between the docker host
-* docker containers to use the host’s networking directly
-* you will not be able to run multiple web containers on the same host, on the same port as the port is now common to all containers in the host network.
+- removes the network isolation between the docker host
+- docker containers to use the host’s networking directly
+- you will not be able to run multiple web containers on the same host, on the same port as the port is now common to all containers in the host network.
 
 #### None
 
-* containers are not attached to any network and do not have any access to the external network or other containers
-* only create a loopback device.
-* used when you want to completely disable the networking stack on a container
+- containers are not attached to any network and do not have any access to the external network or other containers
+- only create a loopback device.
+- used when you want to completely disable the networking stack on a container
