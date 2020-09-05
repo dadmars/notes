@@ -6,7 +6,7 @@ filetype indent on
 set autoread
 au FocusGained,BufEnter * checktime
 
-set so=7
+" set so=7
 
 " Ignore compiled files
 set wildignore=*.o,*~,*.pyc
@@ -16,8 +16,8 @@ else
     set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store
 endif
 
-" Ignore case when searching
 set number
+" set relativenumber
 
 " Ignore case when searching
 set ignorecase
@@ -41,12 +41,6 @@ set magic
 set showmatch 
 " How many tenths of a second to blink when matching brackets
 set mat=2
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Colors and Fonts
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Enable syntax highlighting
-syntax enable 
 
 " Set utf8 as standard encoding and en_US as the standard language
 set encoding=utf8
@@ -119,6 +113,7 @@ Plugin 'scrooloose/nerdtree'
 Plugin 'scrooloose/nerdcommenter'
 
 Plugin 'rust-lang/rust.vim'
+Plugin 'racer-rust/vim-racer'
 
 Plugin 'vim-flake8'
 
@@ -129,6 +124,10 @@ Plugin 'MarcWeber/vim-addon-mw-utils'
 Plugin 'tomtom/tlib_vim'
 Plugin 'garbas/vim-snipmate'
 Plugin 'honza/vim-snippets'
+
+Plugin 'jiangmiao/auto-pairs'
+
+Plugin 'NLKNguyen/papercolor-theme'
 
 call vundle#end()
 filetype plugin indent on
@@ -143,10 +142,49 @@ let g:flake8_show_quickfix=1
 
 let g:rustfmt_autosave = 1
 
+inoremap  
+
 au FileType javascript inoremap if. if () {<CR>}<UP><END><LEFT><LEFT><LEFT>
-au FileType javascript inoremap f. for () {<CR>}<UP><END><LEFT><LEFT><LEFT>
+au FileType javascript inoremap for. for () {<CR>}<UP><END><LEFT><LEFT><LEFT>
 au FileType javascript inoremap c. const  = () => {<CR>}<UP><END><LEFT><LEFT><LEFT><LEFT><LEFT><LEFT><LEFT><LEFT><LEFT><LEFT>
+
+autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
+autocmd FileType javascript set omnifunc=htmlcomplete#CompleteTags
+autocmd FileType javascript set omnifunc=csscomplete#CompleteCSS
+autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 
 au FileType rust inoremap if. if  {<CR>}<UP><END><LEFT><LEFT>
 au FileType rust inoremap m. match  {<CR>}<UP><END><LEFT><LEFT>
-aut FileType rust inoremap f. for  {<CR>}<UP><END><LEFT><LEFT>
+au FileType rust inoremap for. for  {<CR>}<UP><END><LEFT><LEFT>
+
+set hidden
+let g:racer_cmd = "/home/bianhui/.cargo/bin/racer"
+
+" show the complete function definition
+let g:racer_experimental_completer = 1
+
+" insert the parenthesis in the completio
+let g:racer_insert_paren = 1
+
+augroup Racer
+    autocmd!
+    autocmd FileType rust nmap <buffer> gd         <Plug>(rust-def)
+    autocmd FileType rust nmap <buffer> gs         <Plug>(rust-def-split)
+    autocmd FileType rust nmap <buffer> gx         <Plug>(rust-def-vertical)
+    autocmd FileType rust nmap <buffer> gt         <Plug>(rust-def-tab)
+    autocmd FileType rust nmap <buffer> <leader>gd <Plug>(rust-doc)
+    autocmd FileType rust nmap <buffer> <leader>gD <Plug>(rust-doc-tab)
+augroup END
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Colors and Fonts
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Enable syntax highlighting
+syntax enable 
+
+"set t_Co=256   " This is may or may not needed.
+
+set background=light
+"set background=dark
+colorscheme PaperColor

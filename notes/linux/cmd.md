@@ -3,17 +3,9 @@
 ## tmux
 
 ```bash
-C+b ?  # help
-C+b s  # 列出所有会话
-C+b "  # 划分上下两个窗格。
-C+b %  # 划分左右两个窗格。
-C-d    # Closing Panes
-
-
-# 分离会话
-C+b d
-tmux detach
-C-b D   # give you a choice which of your sessions you want to detach
+C+b s # 切换 session
+C+b ? # help
+C+b d # 分离会话
 
 tmux attach -t 0 # 接入会话
 tmux kill-session -t <session-name> # 杀死会话
@@ -25,8 +17,8 @@ C+b $  # 重命名当前会话
 
 tmux attach -t <session-name>  # 接入会话
 
-C+b s # 切换 session
-
+C+b % # 划分左右两个窗格。
+C+b " # 划分上下两个窗格。
 C+b <arrow key> # 光标切换到其他窗格。<arrow key>是指向要切换到的窗格的方向键，比如切换到下方窗格，就按方向键↓。
 C+b ; # 光标切换到上一个窗格。
 C+b o # 光标切换到下一个窗格。
@@ -39,6 +31,7 @@ C+b ! # 将当前窗格拆分为一个独立窗口。
 C+b z # 当前窗格全屏显示，再使用一次会变回原来大小。
 C+b Ctrl+<arrow key> # 按箭头方向调整窗格大小。
 C+b q # 显示窗格编号。
+
 
 # 窗口
 C+b c # 创建一个新窗口，状态栏会显示多个窗口的信息。
@@ -58,14 +51,12 @@ git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
 ~/.tmux.conf
 
+set -g default-terminal "tmux-256color"
+set-option -g default-command bash
+
 # List of plugins
 set -g @plugin 'tmux-plugins/tpm'
 set -g @plugin 'tmux-plugins/tmux-sensible'
-
-set -g status-fg  green
-set -g status-bg  black
-set -g default-terminal "tmux-256color"
-set-option -g default-command bash
 
 # Other examples:
 # set -g @plugin 'github_username/plugin_name'
@@ -309,33 +300,6 @@ b)Max Terminal
 
 ```bash
 git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-
-rustup toolchain add nightly
-cargo +nightly install racer
-rustup component add rust-src
-racer complete std::io::B
-
-Plugin 'racer-rust/vim-racer'
-set hidden
-let g:racer_cmd = "/home/user/.cargo/bin/racer"
-let g:racer_experimental_completer = 1   # show the complete function definition
-let g:racer_insert_paren = 1 # insert the parenthesis in the completio
-augroup Racer
-    autocmd!
-    autocmd FileType rust nmap <buffer> gd         <Plug>(rust-def)
-    autocmd FileType rust nmap <buffer> gs         <Plug>(rust-def-split)
-    autocmd FileType rust nmap <buffer> gx         <Plug>(rust-def-vertical)
-    autocmd FileType rust nmap <buffer> gt         <Plug>(rust-def-tab)
-    autocmd FileType rust nmap <buffer> <leader>gd <Plug>(rust-doc)
-    autocmd FileType rust nmap <buffer> <leader>gD <Plug>(rust-doc-tab)
-augroup END
-
-
-Ctrl+ x, followed by Ctrl+ o
-
-autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
-:set omnifunc=htmlcomplete#CompleteTags
-:set omnifunc=csscomplete#CompleteCSS
 ```
 
 ./config/flake8
@@ -602,6 +566,9 @@ ls -al ~/.ssh
 ssh-keygen -t rsa -b 4096 -C "mcflym@N123456"
 ssh-add ~/.ssh/id_rsa
 cat ~/.ssh/id_rsa.pub | ssh username@server.address.com 'cat >> ~/.ssh/authorized_keys'
+
+github
+    burning123dad
 ```
 
 ## sshpass
