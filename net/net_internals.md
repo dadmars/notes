@@ -26,6 +26,8 @@ sk 指向此包对应的 socket, 此时包由本地产生或被本机接收。�
 
 ### 网卡设备
 
+在 L2 层
+
 ```c
 struct net_device
 ```
@@ -45,11 +47,14 @@ struct net_device
 - irq 中断号
 - dma DMA 通道
 - flags 设备状态 IFF_UP(设备使能)
-- mtu MTU
+- mtu MTU (以太网为1500字节, mtu 决定是否要对包进行分片)
 - type 设备类型 (Ethernet)
 - broadcast 链路层广播地址
-- dev_addr 网卡地址
+- dev_addr 网卡地址(mac地址)
 - promiscuity Promiscuous mode，设备接收所有经过的数据包，而不是只接收地址与设备相同的数据包
+- net_device_ops 回调函数，设置设备的属性
+- ethtool 回调函数, 支持 ethtool 命令
+- 发送和接收数据队列
 
 #### 统计数据
 
@@ -74,6 +79,12 @@ struct net_device
 
 - qdisc qdisc_sleeping qdisc_ingress qdisc_list 发送的接收队列
 - tx_queue_len 发送队列长度
+
+## netlink socket
+
+用户层与内核进行通信，如设置路由，得到路由信息等。
+
+双向异步
 
 ## Notification Chains
 
@@ -124,6 +135,10 @@ ip层
 
 ![路由13](./pic/r13.png)
 
+### ip 层发送数据
+
+![路由17](./pic/s2.png)
+
 ## 接收数据
 
 ![图5](./pic/5.png)
@@ -133,6 +148,10 @@ ip层
 ![路由16](./pic/r16.png)
 
 ![路由17](./pic/r17.png)
+
+### ip 层接收数据
+
+![路由17](./pic/s1.png)
 
 ## 路径
 
@@ -173,9 +192,18 @@ Default GW 为路由器，有多个网卡，运行路由协议，数据从一个
 
 路由表是一个数据库，称为 Forwarding Information Base (FIB)
 
+default gateway: 路由表中没有匹配项的包，都发往默认路由
+
+default route: 目标为 0.0.0.0/0 
+
+- 查找路由时，先在 cache 中查找，没找到，则查找路由表
+- 查找 local FIB
+- 查找 main FIB
+- 找到之后插入到 cache，结构为 dst_entry
+
 linux 内核有两个路由表
 
-- 本机地址路由表，如果在此表中查找成功，包提交到本机
+- 本机地址路由表，如果在此表中查找成功，包提交到本机。只能由内核添加表项。
 - 其它路由的路由表。由用户配置或由路由协议动态添加
 
 ### 路由 cache
@@ -377,3 +405,18 @@ ip route add 10.0.1.0/24 via 10.0.0.3 realms 100/200
 ### 内核数据结构与路由和 cache 的关系
 
 ![路由10](./pic/r10.png)
+
+## netfilter
+
+- Packet selection (iptables)
+- Packet filtering
+- Network Address Translation (NAT)
+- Packet mangling (modifying the contents of packet headers before or after routing)
+- Connection tracking
+- Gathering network statistics
+
+## Network namespaces
+
+轻量级的进程虚拟化方案，使资源 isolation。在进程组中 partition resources, 使这些进程 have a different view of the system than processes in other groups of processes.
+
+使用了容器技术，同一个主机，同一系统运行不同的 linux 版本

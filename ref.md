@@ -89,7 +89,6 @@
 [csv](https://www.npmjs.com/package/react-csv)
 [xlsx](https://www.npmjs.com/package/xlsx)
 [video](https://video-react.js.org/components/player/)
-[table](https://github.com/tannerlinsley/react-table)
 [mui table](https://material-table.com/#/docs/get-started)
 
 # docker

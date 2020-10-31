@@ -1,14 +1,21 @@
-The Linux Programming inTerface
-    --- by Michael KerrisK
-
 The kernel provid a software layer to manage the limited resources of a computer.
 
 /boot/vmlinuz
     The Linux kernel executable
 
-Memory management
-    Processes are isolated from one another and from the kernel, so that one process can’t read or modify the memory of another process or the kernel.
-    Only part of a process needs to be kept in memory, thereby lowering the memory requirements of each process and allowing more processes to be held in RAM simultaneously. This leads to better CPU utilization, since it increases the likelihood that, at any moment in time, there is at least one process that the CPU(s) can execute
+Processes are isolated from one another and from the kernel, so that one process can’t read or modify the memory of another process or the kernel. Only part of a process needs to be kept in memory, thereby lowering the memory requirements of each process and allowing more processes to be held in RAM simultaneously. This leads to better CPU utilization, since it increases the likelihood that, at any moment in time, there is at least one process that the CPU(s) can execute
+
+Each process has a current working directory. A process inherits its current working directory from its parent process. A login shell has its initial current working directory set to the location named in the home directory field of the user’s password file entry. The shell’s current working directory can be changed with the cd command.
+
+a process inherits three open file descriptors when it is started by the shell: 0, 1, 2
+
+Each thread shares the same data area and heap. However, each thread has it own stack containing local variables and function call linkage information.
+
+A session is a collection of process groups ( jobs). All of the processes in a session have the same session identifier. A session leader is the process that created the session, and its process ID becomes the session ID.
+
+Sessions usually have an associated controlling terminal. The controlling terminal is established when the session leader process first opens a terminal device. For a session created by an interactive shell, this is the terminal at which the user logged in. A terminal may be the controlling terminal of at most one session.
+
+As a consequence of opening the controlling terminal, the session leader becomes the controlling process for the terminal. The controlling process receives a SIGHUP signal if a terminal disconnect occurs (e.g., if the terminal window is closed).
 
 /etc/passwd
     mtk:x:1000:100:Michael Kerrisk:/home/mtk:/bin/bash

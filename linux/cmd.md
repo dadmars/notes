@@ -1,14 +1,67 @@
 # cmd
 
+## 文件
+
+```bash
+# 文件类型
+file
+```
+
+## ethtool
+
+## cache
+
+```bash
+# 缓存信息
+dmesg -H | grep cache
+
+# cpu 信息
+/proc/cpuinfo
+/sys/devices/system/cpu/cpu0/cache/index1
+
+1:
+    cache line: 64
+    size: 32K
+    set: 64
+    ways: 8
+    share: 0,4
+
+2:
+    cache line: 64
+    size: 256k
+    set: 1024
+    ways: 4
+    share: 0,4
+
+3:
+    cache line: 64
+    size: 6144K
+    set: 8192
+    ways: 12
+    share: 0-7
+```
+
 ## tmux
 
 ```bash
+sudo apt-get install xclip
+```
+
+```bash
 C+b ?  # help
+
+C+b y  # 拷贝到系统剪贴板
+
 C+b s  # 列出所有会话
+
 C+b "  # 划分上下两个窗格。
 C+b %  # 划分左右两个窗格。
 C-d    # Closing Panes
 
+C+b c # 创建一个新窗口，状态栏会显示多个窗口的信息。
+C+b w # 从列表中选择窗口。
+C+b p # 切换到上一个窗口（按照状态栏上的顺序）。
+C+b n # 切换到下一个窗口。
 
 # 分离会话
 C+b d
@@ -41,14 +94,31 @@ C+b Ctrl+<arrow key> # 按箭头方向调整窗格大小。
 C+b q # 显示窗格编号。
 
 # 窗口
-C+b c # 创建一个新窗口，状态栏会显示多个窗口的信息。
-C+b p # 切换到上一个窗口（按照状态栏上的顺序）。
-C+b n # 切换到下一个窗口。
 C+b <number> # 切换到指定编号的窗口，其中的<number>是状态栏上的窗口编号。
-C+b w # 从列表中选择窗口。
 C+b , # 窗口重命名。
 
 tmux -d new -s xx -c /build/ r
+```
+
+```bash
+tmux new -d -c mes/server/cfg -s cfg ./r
+tmux new -d -c mes/server/dc -s dc ./r
+tmux new -d -c mes/server/filecmd -s filecmd ./r
+tmux new -d -c mes/server/fileserver -s fileserver ./r
+tmux new -d -c mes/server/graphdb -s graphdb ./r
+tmux new -d -c mes/server/machine -s machine ./r
+tmux new -d -c mes/server/oee -s oee ./r
+tmux new -d -c mes/server/plc -s plc ./r
+tmux new -d -c mes/server/real -s real ./r
+tmux new -d -c mes/server/spc -s spc ./r
+tmux new -d -c mes/server/timedb -s timedb ./r
+tmux new -d -c mes/server/upload -s upload ./r
+tmux new -d -c mline/line/core -s line ./s
+
+tmux new -d -c mes -s mes
+tmux new -d -c mes/deploy/pj -s deploy
+tmux new -d -c mline/test -s test
+tmux new -d -c mclient -s client
 ```
 
 ### Tmux Plugin Manager
@@ -59,9 +129,10 @@ git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 ~/.tmux.conf
 
 # List of plugins
-set -g @plugin 'tmux-plugins/tpm'
-set -g @plugin 'tmux-plugins/tmux-sensible'
+# set -g @plugin 'tmux-plugins/tpm'
+# set -g @plugin 'tmux-plugins/tmux-sensible'
 
+set -g mouse on
 set -g status-fg  green
 set -g status-bg  black
 set -g default-terminal "tmux-256color"
@@ -73,7 +144,7 @@ set-option -g default-command bash
 # set -g @plugin 'git@bitbucket.com:user/plugin'
 
 # Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
-run '~/.tmux/plugins/tpm/tpm'
+# run '~/.tmux/plugins/tpm/tpm'
 
 tmux source ~/.tmux.conf
 

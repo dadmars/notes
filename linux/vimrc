@@ -40,7 +40,7 @@ set magic
 " Show matching brackets when text indicator is over them
 set showmatch 
 " How many tenths of a second to blink when matching brackets
-set mat=2
+set mat=1
 
 " Set utf8 as standard encoding and en_US as the standard language
 set encoding=utf8
@@ -92,7 +92,6 @@ endif
 
 set guifont=Bitstream\ Vera\ Sans\ Mono\ 14,Fixed\ 14
 set guifontwide=Microsoft\ Yahei\ 14,WenQuanYi\ Zen\ Hei\ 14
-set linespace=4
 
 map <F3> :BufExplorer <CR>
 map <F9> :PluginInstall <CR>
@@ -119,6 +118,7 @@ Plugin 'vim-flake8'
 
 Plugin 'pangloss/vim-javascript'
 Plugin 'mxw/vim-jsx'
+Plugin 'alvan/vim-closetag'
 
 Plugin 'MarcWeber/vim-addon-mw-utils'
 Plugin 'tomtom/tlib_vim'
@@ -146,7 +146,7 @@ inoremap  
 
 au FileType javascript inoremap if. if () {<CR>}<UP><END><LEFT><LEFT><LEFT>
 au FileType javascript inoremap for. for () {<CR>}<UP><END><LEFT><LEFT><LEFT>
-au FileType javascript inoremap c. const  = () => {<CR>}<UP><END><LEFT><LEFT><LEFT><LEFT><LEFT><LEFT><LEFT><LEFT><LEFT><LEFT>
+au FileType javascript inoremap c. const  = () => {<CR>};<UP><END><LEFT><LEFT><LEFT><LEFT><LEFT><LEFT><LEFT><LEFT><LEFT><LEFT>
 
 autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
 autocmd FileType javascript set omnifunc=htmlcomplete#CompleteTags
@@ -154,7 +154,7 @@ autocmd FileType javascript set omnifunc=csscomplete#CompleteCSS
 autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 
 au FileType rust inoremap if. if  {<CR>}<UP><END><LEFT><LEFT>
-au FileType rust inoremap m. match  {<CR>}<UP><END><LEFT><LEFT>
+au FileType rust inoremap match. match  {<CR>}<UP><END><LEFT><LEFT>
 au FileType rust inoremap for. for  {<CR>}<UP><END><LEFT><LEFT>
 
 set hidden
@@ -188,3 +188,10 @@ syntax enable
 set background=light
 "set background=dark
 colorscheme PaperColor
+
+let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*.js'
+
+set linespace=8
+
+set ttymouse=xterm2
+set mouse=a
