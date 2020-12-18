@@ -1,5 +1,55 @@
 # cmd
 
+- [cmd](#cmd)
+  - [文件](#文件)
+  - [ethtool](#ethtool)
+  - [cache](#cache)
+  - [tmux](#tmux)
+    - [Tmux Plugin Manager](#tmux-plugin-manager)
+  - [nc / ncat](#nc--ncat)
+  - [tcpdump](#tcpdump)
+  - [Wireshark](#wireshark)
+    - [充许普通用户使用](#充许普通用户使用)
+    - [工作流](#工作流)
+  - [ip地址](#ip地址)
+    - [本地ip地址](#本地ip地址)
+    - [路由器ip地址](#路由器ip地址)
+  - [netstat](#netstat)
+  - [nmap](#nmap)
+  - [curl](#curl)
+  - [Network bridge](#network-bridge)
+  - [iptables](#iptables)
+  - [xxd](#xxd)
+  - [strace](#strace)
+  - [系统调用号](#系统调用号)
+  - [node.js](#nodejs)
+  - [vim](#vim)
+    - [flod command](#flod-command)
+    - [auto pair](#auto-pair)
+  - [vscode](#vscode)
+    - [setting font size](#setting-font-size)
+  - [添加sudo用户](#添加sudo用户)
+    - [ubuntu](#ubuntu)
+    - [centos](#centos)
+  - [ssh 登录](#ssh-登录)
+  - [sshpass](#sshpass)
+  - [键盘映射](#键盘映射)
+    - [查看按键值](#查看按键值)
+    - [进行键盘映射](#进行键盘映射)
+      - [配置文件](#配置文件)
+  - [download](#download)
+    - [多线程下载](#多线程下载)
+  - [GUI 用户登录设置](#gui-用户登录设置)
+  - [ftp](#ftp)
+  - [制作iso systemback](#制作iso-systemback)
+  - [npm](#npm)
+    - [修改成华为云镜像源](#修改成华为云镜像源)
+  - [ibm mq](#ibm-mq)
+  - [安装 ubuntu](#安装-ubuntu)
+    - [打开终端时全屏或最大化](#打开终端时全屏或最大化)
+  - [other](#other)
+  - [firefox](#firefox)
+
 ## 文件
 
 ```bash
@@ -222,6 +272,8 @@ ip link
 输出网络连接，路由表，网卡信息，无效连接，多播成员
 
 ```bash
+apt-get install net-tools
+
 netstat -tulpn
 
 # list of open sockets
@@ -359,22 +411,6 @@ strace cat /etc/hosts
 curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
 sudo apt-get install nodejs
 ```
-
-## 快捷键
-
-### 打开终端时全屏或最大化
-
-打开“系统设置”==>“键盘”==>“自定义快捷键”
-
-分别自定义两个快捷键：
-
-a)Full Terminal
-
-命令：gnome-terminal --full-screen
-
-b)Max Terminal
-
-命令：gnome-terminal  --maximize
 
 ## vim
 
@@ -636,23 +672,6 @@ Options
     move character under the cursor to the pair.
 ```
 
-## 安装中文输入法
-
-language support安装中文语言
-
-text entry 加入中文
-
-language support -> keyboard input method system: fcitx
-
-fcitx configuration 加入sogou pinyin和wubi
-
-```bash
-sudo apt-get install fonts-droid-fallback
-sudo apt remove fcitx* && sudo apt autoremove
-sudo dpkg -i ~/Downloads/sogoupinyin*.deb; sudo apt -f install
-sudo reboot
-```
-
 ## vscode
 
 ### setting font size
@@ -661,9 +680,24 @@ window.zoomlevel
 
 ## 添加sudo用户
 
+### ubuntu
+
 ```bash
 adduser xx
 usermod -aG sudo xx
+```
+
+### centos
+
+```bash
+usermod -aG wheel xx
+
+or
+
+visudo
+
+root ALL=(ALL) ALL
+user ALL=(ALL) ALL
 ```
 
 ## ssh 登录
@@ -679,6 +713,8 @@ cat ~/.ssh/id_rsa.pub | ssh username@server.address.com 'cat >> ~/.ssh/authorize
 
 ```bash
 sshpass -p 'passwd' ssh xxxxx
+
+sshpass -p '12345678' ssh -o StrictHostKeyChecking=no zs@172.16.2.172 -t "./t.sh"
 ```
 
 ## 键盘映射
@@ -786,7 +822,38 @@ rpm --prefix /opt/mqm -ivh --nodeps --force-debian MQSeriesSDK...
 pip install pymqi
 ```
 
-Debug
+## 安装 ubuntu
+
+```bash
+startup disk creator  # 刻录
+esc 进入 bios
+
+efi 2Gb
+
+lshw # 查看硬件信息
+lshw -C display  # 查看显卡信息
+
+sudo ubuntu-drivers devices
+sudo ubuntu-drivers install
+# set UEFI secure boot enabled
+sudo nvidia-smi
+```
+
+### 打开终端时全屏或最大化
+
+打开“系统设置”==>“键盘”==>“自定义快捷键”
+
+分别自定义两个快捷键：
+
+a)Full Terminal
+
+命令：gnome-terminal --full-screen
+
+b)Max Terminal
+
+命令：gnome-terminal  --maximize
+
+## other
 
 ```bash
 dspmqaut -m SVR　-n SVR.LQ -t q -p guest
@@ -849,9 +916,6 @@ systemctl mask  sshd            ##冻结指定服务
 systemctl unmask sshd           ##启用服务
 systemctl set-default multi-user.target ##开机不开启图形
 systemctl set-default graphical.target  ##开机启动图形
-
-安装中文语言包
-sudo apt-get install  language-pack-zh-han*
 
 Gnome Tweaks 优化工具
 

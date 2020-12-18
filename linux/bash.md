@@ -1,19 +1,88 @@
 # bash
 
-## 配置
+- [bash](#bash)
+  - [shell 种类](#shell-种类)
+  - [启动 bash 时读取的配置文件](#启动-bash-时读取的配置文件)
+    - [login shell](#login-shell)
+    - [no-login shell](#no-login-shell)
+  - [运行哪个shell](#运行哪个shell)
+  - [debug](#debug)
+  - [运行](#运行)
+  - [别名](#别名)
+  - [变量](#变量)
+  - [特殊参数](#特殊参数)
+  - [数组](#数组)
+  - [转义](#转义)
+  - [扩展](#扩展)
+    - [{}](#)
+    - [~](#-1)
+    - [参数，命令，数学计算 $](#参数命令数学计算-)
+  - [字符串查找](#字符串查找)
+    - [expr](#expr)
+  - [预定义变量](#预定义变量)
+  - [函数](#函数)
+  - [条件判断](#条件判断)
+  - [if](#if)
+  - [case](#case)
+  - [until](#until)
+  - [for](#for)
+  - [while](#while)
+  - [命令行参数](#命令行参数)
+  - [read 用户输入](#read-用户输入)
+  - [文件处理](#文件处理)
+  - [文件 symbolic link](#文件-symbolic-link)
+  - [文件重定向](#文件重定向)
+  - [/dev/null 文件系统](#devnull-文件系统)
+  - [/proc 文件系统](#proc-文件系统)
+  - [here 文档](#here-文档)
+  - [目录](#目录)
+  - [echo](#echo)
+  - [sed 行编辑器](#sed-行编辑器)
+  - [awk 表格编辑器](#awk-表格编辑器)
+  - [sudo](#sudo)
+  - [ssh](#ssh)
+  - [计算秒级时间差](#计算秒级时间差)
+  - [grep](#grep)
+  - [color](#color)
 
-* cat /etc/shells   shell 种类
-* cat /etc/passwd   用户的默认 shell
+## shell 种类
 
-### 登录 bash 的配置文件
+```bash
+cat /etc/shells   # 系统支持的 shell 类型
+cat /etc/passwd   # 用户的默认 shell
+```
+
+## 启动 bash 时读取的配置文件
+
+### login shell
 
 * /etc/profile : 应用于所有的用户环境的设置
+  * /etc/bashrc : 由于 /etc/proflile 被所有类型的 shell 读取，可以将 bash 的配置放在此文件
 * ~/.bash_profile, ~/.bash_login or ~/.profile : 优先找到的进行执行
 * ~/.bash_logout : logout
 
-### no-login bash 的配置文件
+### no-login shell
 
 * ~/.bashrc
+
+## 运行哪个shell
+
+脚本的第一行说明此脚本运行哪个shell
+
+```bash
+#!/bin/bash
+```
+
+第一行也可以不是 shell
+
+```bash
+#!/bin/sh
+#!/bin/bash
+#!/usr/bin/perl
+#!/usr/bin/tcl
+#!/bin/sed -f
+#!/usr/awk -f
+```
 
 ## debug
 
@@ -53,17 +122,17 @@ unalias ...
 ## 变量
 
 ```bash
+# 全局变量(环境变量）
+env
+
+# 局部变量
+set
+
 # 引用方式
 ${VAR}
 
 # 简写
 $VAR
-
-# 环境变量（全局变量）
-env
-
-# 局部变量
-set
 
 # 设置选项
 set -o noclobber
@@ -72,8 +141,22 @@ set +o noclobber
 
 # 只能用在本 shell ，不能用在子 shell 中
 VARNAME="value"
+
 # 可以用在子 shell 中
 export VARNAME="value"
+```
+
+## 特殊参数
+
+```bash
+$@  # 所有的参数, $* 有同样含义但有问题不推荐使用
+$#  # 参数个数
+$?  # 最近命令的返回值
+$-  # 当前选项( 通过 set 设置)
+$$  # 当前进程 ID
+$!  # 最近命令的进程 ID
+$0  # 脚本的文件名
+$_  # 最近命令的最后一个参数，如果没有参数，则是命令本身
 ```
 
 ## 数组
@@ -90,23 +173,64 @@ unset a[1]
 unset a
 ```
 
-## 字符串
+## 转义
 
 ```bash
 # 转义
 \
 
-# ''
+''
 # 下面两条错误，单引号不能在单引号中间。有 \ 也不行
 '''
 '\''
 
-# ""
+""
 # $, `, \ 还是保留原来的意思。
 # *, @ 在双引号中间有特殊的含义。
 ```
 
-### 字符串查找
+## 扩展
+
+### {}
+
+注意 ${} 表示引用变量， 不能搞混
+
+```bash
+echo sp{el, al, ab}l  # spell spall spabl
+```
+
+### ~
+
+```bash
+~    # 扩展为 $HOME
+~+   # 扩展为 $PWD
+~-   # 扩展为 $OLDPWD
+~a   # 不扩展
+```
+
+### 参数，命令，数学计算 $
+
+```bash
+# 参数
+${PARAMETER}
+${!PARAMETER}   # 前面有 ! 间接扩展
+
+args=$#             # Number of args passed.
+lastarg=${!args}    # Note: This is an *indirect reference* to $args ...
+# Or:
+lastarg=${!#}       # This is an *indirect reference* to the $# variable. Note that lastarg=${!$#} doesn't work.
+
+${VAR:=value}   # 如果 VAR 没有定义，为其赋值
+
+# 命令
+$(command)
+`command`
+
+# 数学计算
+$((command))
+```
+
+## 字符串查找
 
 ```bash
 # 长度
@@ -124,7 +248,8 @@ ${A:=WORD}
 # 截取变量 A 的子串，LENGTH 没有，截取后面全部,从左边计数，从０开始
 ${A:OFFSET:LENGTH}
 # 截取变量 A 的子串，从右边计数，从1开始
-${A:0-OFFSET:LENGTH}
+${A:-OFFSET:LENGTH}
+${*:OFFSET:LENGTH}  # 得到第几个参数
 
 # 删除 WORD, # 最短匹配， ## 最长匹配， 如果是数组，对数组中的每项进行匹配
 ${A#WORD}
@@ -139,37 +264,35 @@ ${A%%WORD}
 # 替换, / 替换第一个, // 替换所有
 ${VAR/PATTERN/STRING}
 ${VAR//PATTERN/STRING}
+
+${string/#substring/replacement}  # If substring matches front end of string, substitute replacement for substring
+${string/%substring/replacement}  # If substring matches back end of string, substitute replacement for substring
+```
+
+### expr
+
+```bash
+# 匹配开头字符串， substring 为正则表达式, 结果返回最后的位置
+expr match "$string" '$substring'
+
+stringZ=abcABC123ABCabc
+        |------|
+      # 12345678
+echo `expr match "$stringZ" 'abc[A-Z]*.2'   # 8
+
+# 匹配开头字符串， substring 为正则表达式, 结果为开始的位置
+expr index "$string" '$substring'
+
+stringZ=abcABC123ABCabc
+      # 123456 ...
+echo `expr index "$stringZ" C12`    # 6
 ```
 
 ## 预定义变量
 
 ```bash
-# 当前用户的 USER ID
-# root 用户的 USER ID 为 0
+# 当前用户的 USER ID, root 用户的 USER ID 为 0
 $UID
-```
-
-## 扩展 {}
-
-注意 ${} 表示引用变量， 不能搞混
-
-```bash
-echo sp{el, al, ab}l  # spell spall spabl
-```
-
-## 运行子命令
-
-```bash
-$()
-```
-
-## 数学运算
-
-$[3 + 2]
-$(()) 也可以计算
-
-```bash
-((r_count++))
 ```
 
 ## 函数
@@ -181,30 +304,20 @@ square() {
 
 square 2
 
+# 读入文件的每行
 file_excerpt () {
   while read line
   do
     echo "$line" | grep $1 | awk -F":" '{ print $5 }'
   done
-} <$file    重定向函数输入为 stdin
-```
-
-### 函数参数
-
-```bash
-$@ 所有参数, "$*" 每个参数都为一个字符串, 结果为一数组
-$# 参数个数
-$? 上一命令的返回值
-$$ 本 shell 的进程ID: PID
-$! 最近的在后台运行的进程ID
-$0 本脚本或函数的名称
-$_ 在刚启动脚本时调用，返回本脚本的路径名。在一个命令之后调用，返回上一个命令的最后一个参数
+} <$file    # 重定向函数输入为 stdin
 ```
 
 ## 条件判断
 
-* [[]]: 不对文件名进行扩展， a*，不会解释为以 a 开头的所有文件。
 * []
+* [[]]  不对文件名进行扩展， a*，不会解释为以 a 开头的所有文件。
+* (())  数学判断
 
 ```bash
 [ -z STRING ]           字符串长度为0
@@ -580,16 +693,16 @@ echo $diff
 * -e    不把 “-” 解释为选项
 
 ```bash
-grep -n -r a file1 file2 hhh*   在file1，file2，当前目录下所有以hhh开头的文件中查找a
-grep -e -r file1                在file1中查找 "-r"，-e可以不把“-”解释为选项
+grep -n -r a file1 file2 hhh*   # 在file1，file2，当前目录下所有以hhh开头的文件中查找a
+grep -e -r file1                # 在file1中查找 "-r"，-e可以不把“-”解释为选项
 
-grep -n '^a' file      匹配行的开头
+grep -n '^a' file      # 匹配行的开头
 grep -n '^^' file
 
-grep -n 'a$' file      匹配行的结尾
+grep -n 'a$' file      # 匹配行的结尾
 grep -n '^$' file
 
-grep 'a[b7]' file       一个字符 ，范围在[]中
+grep 'a[b7]' file       # 一个字符 ，范围在[]中
 grep '[sdfsf]' file
 grep '[ad8]d[sf]' file
 grep '[09]b' file
@@ -599,19 +712,21 @@ grep '[25a-z]' file
 grep '[a0-5m-z]' file
 grep '[A-Z0-9a-z]' file
 
-grep '[^ab]' file       选择一个字符，不是a或b
-grep '[a^b$]' file      当 ^ 不是在 [] 中的第一个时，当作普通字符，所有元字符在[]中都当作普通字符。
+grep '[^ab]' file       # 选择一个字符，不是a或b
+grep '[a^b$]' file      # 当 ^ 不是在 [] 中的第一个时，当作普通字符，所有元字符在[]中都当作普通字符。
 
-grep -n '.' file        任意一个字符
+grep -n '.' file        # 任意一个字符
 grep -v -n '.' file
 grep '^.b' file
 grep '^...$' file
 
-grep '\<the\> file      完整匹配 
+grep '\<the\>' file      # 完整匹配 
 grep '\<the' file
 
-grep 'ab*' file         * 表示前面字符中的0个或多个实例，a, ab, abb, abb....
-grep '.*' file          .*可匹配任意字符
+grep 'ab*' file         # * 表示前面字符中的0个或多个实例，a, ab, abb, abb....
+grep '.*' file          # .*可匹配任意字符
+
+grep -w / /etc/fstab    # -w 匹配 / ，此字符两边是空格
 ```
 
 ## color
