@@ -108,6 +108,8 @@ call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
 Plugin 'jlanzarotta/bufexplorer'
 
+Plugin 'Valloric/YouCompleteMe'
+
 Plugin 'scrooloose/nerdtree'
 Plugin 'scrooloose/nerdcommenter'
 

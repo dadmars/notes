@@ -53,6 +53,9 @@
 ## 文件
 
 ```bash
+# log 文件
+exec 1>$LOGFILE 2>&1
+
 # 文件类型
 file
 ```
@@ -98,9 +101,20 @@ sudo apt-get install xclip
 ```
 
 ```bash
-C+b ?  # help
+copy and paste
 
-C+b y  # 拷贝到系统剪贴板
+copy
+  CTRL`+`b [
+    Use the arrow keys to go to the position from where you want to start copying.
+  CTRL`+SPACE` # to start copying.
+    Use arrow keys to go to the end of text you want to copy
+  ALT`+`w or CTRL`+`w # to copy into Tmux buffer.
+
+paste
+    CTRL`+`b ]
+
+
+C+b ?  # help
 
 C+b s  # 列出所有会话
 
@@ -163,12 +177,14 @@ tmux new -d -c mes/server/real -s real ./r
 tmux new -d -c mes/server/spc -s spc ./r
 tmux new -d -c mes/server/timedb -s timedb ./r
 tmux new -d -c mes/server/upload -s upload ./r
+tmux new -d -c mes/server/mt -s mt ./r
 tmux new -d -c mline/line/core -s line ./s
 
 tmux new -d -c mes -s mes
 tmux new -d -c mes/deploy/pj -s deploy
 tmux new -d -c mline/test -s test
 tmux new -d -c mclient -s client
+tmux new -d -c mclient/maintain -s mtc
 ```
 
 ### Tmux Plugin Manager
@@ -416,6 +432,9 @@ sudo apt-get install nodejs
 
 ```bash
 git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+
+# complete
+plugin: AutoComplPop-master
 
 rustup toolchain add nightly
 cargo +nightly install racer
@@ -676,7 +695,7 @@ Options
 
 ### setting font size
 
-window.zoomlevel
+window.zoomlevel = 2
 
 ## 添加sudo用户
 
@@ -920,6 +939,8 @@ systemctl set-default graphical.target  ##开机启动图形
 Gnome Tweaks 优化工具
 
 查看已经安装了哪些包
+
+aptitude 
 
 dpkg -l
 

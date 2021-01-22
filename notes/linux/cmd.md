@@ -1,11 +1,122 @@
 # cmd
 
+- [cmd](#cmd)
+  - [文件](#文件)
+  - [ethtool](#ethtool)
+  - [cache](#cache)
+  - [tmux](#tmux)
+    - [Tmux Plugin Manager](#tmux-plugin-manager)
+  - [nc / ncat](#nc--ncat)
+  - [tcpdump](#tcpdump)
+  - [Wireshark](#wireshark)
+    - [充许普通用户使用](#充许普通用户使用)
+    - [工作流](#工作流)
+  - [ip地址](#ip地址)
+    - [本地ip地址](#本地ip地址)
+    - [路由器ip地址](#路由器ip地址)
+  - [netstat](#netstat)
+  - [nmap](#nmap)
+  - [curl](#curl)
+  - [Network bridge](#network-bridge)
+  - [iptables](#iptables)
+  - [xxd](#xxd)
+  - [strace](#strace)
+  - [系统调用号](#系统调用号)
+  - [node.js](#nodejs)
+  - [vim](#vim)
+    - [flod command](#flod-command)
+    - [auto pair](#auto-pair)
+  - [vscode](#vscode)
+    - [setting font size](#setting-font-size)
+  - [添加sudo用户](#添加sudo用户)
+    - [ubuntu](#ubuntu)
+    - [centos](#centos)
+  - [ssh 登录](#ssh-登录)
+  - [sshpass](#sshpass)
+  - [键盘映射](#键盘映射)
+    - [查看按键值](#查看按键值)
+    - [进行键盘映射](#进行键盘映射)
+      - [配置文件](#配置文件)
+  - [download](#download)
+    - [多线程下载](#多线程下载)
+  - [GUI 用户登录设置](#gui-用户登录设置)
+  - [ftp](#ftp)
+  - [制作iso systemback](#制作iso-systemback)
+  - [npm](#npm)
+    - [修改成华为云镜像源](#修改成华为云镜像源)
+  - [ibm mq](#ibm-mq)
+  - [安装 ubuntu](#安装-ubuntu)
+    - [打开终端时全屏或最大化](#打开终端时全屏或最大化)
+  - [other](#other)
+  - [firefox](#firefox)
+
+## 文件
+
+```bash
+# 文件类型
+file
+```
+
+## ethtool
+
+## cache
+
+```bash
+# 缓存信息
+dmesg -H | grep cache
+
+# cpu 信息
+/proc/cpuinfo
+/sys/devices/system/cpu/cpu0/cache/index1
+
+1:
+    cache line: 64
+    size: 32K
+    set: 64
+    ways: 8
+    share: 0,4
+
+2:
+    cache line: 64
+    size: 256k
+    set: 1024
+    ways: 4
+    share: 0,4
+
+3:
+    cache line: 64
+    size: 6144K
+    set: 8192
+    ways: 12
+    share: 0-7
+```
+
 ## tmux
 
 ```bash
-C+b s # 切换 session
-C+b ? # help
-C+b d # 分离会话
+sudo apt-get install xclip
+```
+
+```bash
+C+b ?  # help
+
+C+b y  # 拷贝到系统剪贴板
+
+C+b s  # 列出所有会话
+
+C+b "  # 划分上下两个窗格。
+C+b %  # 划分左右两个窗格。
+C-d    # Closing Panes
+
+C+b c # 创建一个新窗口，状态栏会显示多个窗口的信息。
+C+b w # 从列表中选择窗口。
+C+b p # 切换到上一个窗口（按照状态栏上的顺序）。
+C+b n # 切换到下一个窗口。
+
+# 分离会话
+C+b d
+tmux detach
+C-b D   # give you a choice which of your sessions you want to detach
 
 tmux attach -t 0 # 接入会话
 tmux kill-session -t <session-name> # 杀死会话
@@ -17,8 +128,8 @@ C+b $  # 重命名当前会话
 
 tmux attach -t <session-name>  # 接入会话
 
-C+b % # 划分左右两个窗格。
-C+b " # 划分上下两个窗格。
+C+b s # 切换 session
+
 C+b <arrow key> # 光标切换到其他窗格。<arrow key>是指向要切换到的窗格的方向键，比如切换到下方窗格，就按方向键↓。
 C+b ; # 光标切换到上一个窗格。
 C+b o # 光标切换到下一个窗格。
@@ -32,16 +143,32 @@ C+b z # 当前窗格全屏显示，再使用一次会变回原来大小。
 C+b Ctrl+<arrow key> # 按箭头方向调整窗格大小。
 C+b q # 显示窗格编号。
 
-
 # 窗口
-C+b c # 创建一个新窗口，状态栏会显示多个窗口的信息。
-C+b p # 切换到上一个窗口（按照状态栏上的顺序）。
-C+b n # 切换到下一个窗口。
 C+b <number> # 切换到指定编号的窗口，其中的<number>是状态栏上的窗口编号。
-C+b w # 从列表中选择窗口。
 C+b , # 窗口重命名。
 
 tmux -d new -s xx -c /build/ r
+```
+
+```bash
+tmux new -d -c mes/server/cfg -s cfg ./r
+tmux new -d -c mes/server/dc -s dc ./r
+tmux new -d -c mes/server/filecmd -s filecmd ./r
+tmux new -d -c mes/server/fileserver -s fileserver ./r
+tmux new -d -c mes/server/graphdb -s graphdb ./r
+tmux new -d -c mes/server/machine -s machine ./r
+tmux new -d -c mes/server/oee -s oee ./r
+tmux new -d -c mes/server/plc -s plc ./r
+tmux new -d -c mes/server/real -s real ./r
+tmux new -d -c mes/server/spc -s spc ./r
+tmux new -d -c mes/server/timedb -s timedb ./r
+tmux new -d -c mes/server/upload -s upload ./r
+tmux new -d -c mline/line/core -s line ./s
+
+tmux new -d -c mes -s mes
+tmux new -d -c mes/deploy/pj -s deploy
+tmux new -d -c mline/test -s test
+tmux new -d -c mclient -s client
 ```
 
 ### Tmux Plugin Manager
@@ -51,12 +178,15 @@ git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
 ~/.tmux.conf
 
+# List of plugins
+# set -g @plugin 'tmux-plugins/tpm'
+# set -g @plugin 'tmux-plugins/tmux-sensible'
+
+set -g mouse on
+set -g status-fg  green
+set -g status-bg  black
 set -g default-terminal "tmux-256color"
 set-option -g default-command bash
-
-# List of plugins
-set -g @plugin 'tmux-plugins/tpm'
-set -g @plugin 'tmux-plugins/tmux-sensible'
 
 # Other examples:
 # set -g @plugin 'github_username/plugin_name'
@@ -64,7 +194,7 @@ set -g @plugin 'tmux-plugins/tmux-sensible'
 # set -g @plugin 'git@bitbucket.com:user/plugin'
 
 # Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
-run '~/.tmux/plugins/tpm/tpm'
+# run '~/.tmux/plugins/tpm/tpm'
 
 tmux source ~/.tmux.conf
 
@@ -142,6 +272,8 @@ ip link
 输出网络连接，路由表，网卡信息，无效连接，多播成员
 
 ```bash
+apt-get install net-tools
+
 netstat -tulpn
 
 # list of open sockets
@@ -280,26 +412,37 @@ curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
 sudo apt-get install nodejs
 ```
 
-## 快捷键
-
-### 打开终端时全屏或最大化
-
-打开“系统设置”==>“键盘”==>“自定义快捷键”
-
-分别自定义两个快捷键：
-
-a)Full Terminal
-
-命令：gnome-terminal --full-screen
-
-b)Max Terminal
-
-命令：gnome-terminal  --maximize
-
 ## vim
 
 ```bash
 git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+
+rustup toolchain add nightly
+cargo +nightly install racer
+rustup component add rust-src
+racer complete std::io::B
+
+Plugin 'racer-rust/vim-racer'
+set hidden
+let g:racer_cmd = "/home/user/.cargo/bin/racer"
+let g:racer_experimental_completer = 1   # show the complete function definition
+let g:racer_insert_paren = 1 # insert the parenthesis in the completio
+augroup Racer
+    autocmd!
+    autocmd FileType rust nmap <buffer> gd         <Plug>(rust-def)
+    autocmd FileType rust nmap <buffer> gs         <Plug>(rust-def-split)
+    autocmd FileType rust nmap <buffer> gx         <Plug>(rust-def-vertical)
+    autocmd FileType rust nmap <buffer> gt         <Plug>(rust-def-tab)
+    autocmd FileType rust nmap <buffer> <leader>gd <Plug>(rust-doc)
+    autocmd FileType rust nmap <buffer> <leader>gD <Plug>(rust-doc-tab)
+augroup END
+
+
+Ctrl+ x, followed by Ctrl+ o
+
+autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
+:set omnifunc=htmlcomplete#CompleteTags
+:set omnifunc=csscomplete#CompleteCSS
 ```
 
 ./config/flake8
@@ -529,34 +672,32 @@ Options
     move character under the cursor to the pair.
 ```
 
-## 安装中文输入法
-
-language support安装中文语言
-
-text entry 加入中文
-
-language support -> keyboard input method system: fcitx
-
-fcitx configuration 加入sogou pinyin和wubi
-
-```bash
-sudo apt-get install fonts-droid-fallback
-sudo apt remove fcitx* && sudo apt autoremove
-sudo dpkg -i ~/Downloads/sogoupinyin*.deb; sudo apt -f install
-sudo reboot
-```
-
 ## vscode
 
 ### setting font size
 
-window.zoomlevel
+window.zoomlevel = 2
 
 ## 添加sudo用户
+
+### ubuntu
 
 ```bash
 adduser xx
 usermod -aG sudo xx
+```
+
+### centos
+
+```bash
+usermod -aG wheel xx
+
+or
+
+visudo
+
+root ALL=(ALL) ALL
+user ALL=(ALL) ALL
 ```
 
 ## ssh 登录
@@ -566,15 +707,14 @@ ls -al ~/.ssh
 ssh-keygen -t rsa -b 4096 -C "mcflym@N123456"
 ssh-add ~/.ssh/id_rsa
 cat ~/.ssh/id_rsa.pub | ssh username@server.address.com 'cat >> ~/.ssh/authorized_keys'
-
-github
-    burning123dad
 ```
 
 ## sshpass
 
 ```bash
 sshpass -p 'passwd' ssh xxxxx
+
+sshpass -p '12345678' ssh -o StrictHostKeyChecking=no zs@172.16.2.172 -t "./t.sh"
 ```
 
 ## 键盘映射
@@ -682,7 +822,38 @@ rpm --prefix /opt/mqm -ivh --nodeps --force-debian MQSeriesSDK...
 pip install pymqi
 ```
 
-Debug
+## 安装 ubuntu
+
+```bash
+startup disk creator  # 刻录
+esc 进入 bios
+
+efi 2Gb
+
+lshw # 查看硬件信息
+lshw -C display  # 查看显卡信息
+
+sudo ubuntu-drivers devices
+sudo ubuntu-drivers install
+# set UEFI secure boot enabled
+sudo nvidia-smi
+```
+
+### 打开终端时全屏或最大化
+
+打开“系统设置”==>“键盘”==>“自定义快捷键”
+
+分别自定义两个快捷键：
+
+a)Full Terminal
+
+命令：gnome-terminal --full-screen
+
+b)Max Terminal
+
+命令：gnome-terminal  --maximize
+
+## other
 
 ```bash
 dspmqaut -m SVR　-n SVR.LQ -t q -p guest
@@ -746,13 +917,12 @@ systemctl unmask sshd           ##启用服务
 systemctl set-default multi-user.target ##开机不开启图形
 systemctl set-default graphical.target  ##开机启动图形
 
-安装中文语言包
-sudo apt-get install  language-pack-zh-han*
-
 Gnome Tweaks 优化工具
 
 查看已经安装了哪些包
 
+aptitude 
+`
 dpkg -l
 
 如果系统使用时间长，安装了许多包查看不便时，可以使用翻页查看
