@@ -1002,4 +1002,4 @@ language support->keyboard input method system: fcitx
 
 about:config
 
-print.always_print_silent
+print.always_print_silent   打印时不弹出对话框

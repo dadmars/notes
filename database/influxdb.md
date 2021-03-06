@@ -152,3 +152,24 @@ tar xf ./back.tar.gz
 ls  # 假设这里输出目录为 back_2019-12-15
 influxd restore -portable ./back_2019-12-15
 ```
+
+## tsi
+
+```bash
+docker stop influxdb
+docker rm influxdb
+
+INFLUXDB_DATA_INDEX_VERSION=tsi1
+
+docker run influxdb
+
+influx_inspect buildtsi -datadir=/var/lib/influxdb/data -waldir=/var/lib/influxdb/wal
+
+find /var/lib/influxdb -type d -name index
+
+influxd cofig
+
+docker stop influxdb
+docker rm influxdb
+docker run influxdb
+```
