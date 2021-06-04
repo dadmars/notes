@@ -105,16 +105,16 @@ set nocompatible
 filetype off
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
+
 Plugin 'gmarik/Vundle.vim'
 Plugin 'jlanzarotta/bufexplorer'
 
-Plugin 'Valloric/YouCompleteMe'
+Plugin 'exvim/ex-autocomplpop'
 
 Plugin 'scrooloose/nerdtree'
 Plugin 'scrooloose/nerdcommenter'
 
 Plugin 'rust-lang/rust.vim'
-Plugin 'racer-rust/vim-racer'
 
 Plugin 'vim-flake8'
 
@@ -144,6 +144,8 @@ let g:flake8_show_quickfix=1
 
 let g:rustfmt_autosave = 1
 
+let g:snipMate = { 'snippet_version' : 1 }
+
 inoremap  
 
 au FileType javascript inoremap if. if () {<CR>}<UP><END><LEFT><LEFT><LEFT>
@@ -160,24 +162,6 @@ au FileType rust inoremap match. match  {<CR>}<UP><END><LEFT><LEFT>
 au FileType rust inoremap for. for  {<CR>}<UP><END><LEFT><LEFT>
 
 set hidden
-let g:racer_cmd = "/home/bianhui/.cargo/bin/racer"
-
-" show the complete function definition
-let g:racer_experimental_completer = 1
-
-" insert the parenthesis in the completio
-let g:racer_insert_paren = 1
-
-augroup Racer
-    autocmd!
-    autocmd FileType rust nmap <buffer> gd         <Plug>(rust-def)
-    autocmd FileType rust nmap <buffer> gs         <Plug>(rust-def-split)
-    autocmd FileType rust nmap <buffer> gx         <Plug>(rust-def-vertical)
-    autocmd FileType rust nmap <buffer> gt         <Plug>(rust-def-tab)
-    autocmd FileType rust nmap <buffer> <leader>gd <Plug>(rust-doc)
-    autocmd FileType rust nmap <buffer> <leader>gD <Plug>(rust-doc-tab)
-augroup END
-
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Colors and Fonts

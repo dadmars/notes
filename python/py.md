@@ -124,3 +124,13 @@ d += datetime.timedelta(weeks=8)
 ```
 
 /usr/lib/python2.7/xml/etree/ElementTree.py
+
+## pip
+
+```bash
+sudo apt-get remove --purge python-pip
+sudo apt-get autoremove
+sudo rm -f /usr/local/bin/pip
+sudo easy_install pip==20.3.4
+pip --version
+```

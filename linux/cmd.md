@@ -52,8 +52,24 @@
     - [打开终端时全屏或最大化](#打开终端时全屏或最大化)
   - [other](#other)
   - [firefox](#firefox)
+  - [opcua](#opcua)
 
 ## cubic
+
+ubuntu20.04.2.0 LTS
+
+2G cpu
+4G mem
+25G hard drive space
+
+sudo apt-add-repository ppa:cubic-wizard/release
+sudo apt update
+sudo apt install cubic
+
+add-apt-repository --yes main
+add-apt-repository --yes restricted
+add-apt-repository --yes universe
+add-apt-repository --yes multiverse
 
 ```bash
 rm -f /etc/resolv.conf
@@ -72,49 +88,37 @@ debconf-get-selections --installer > alloptions.cfg
 得到所有选项
 debconf-get-selections >> alloptions.cfg
 
+检测文件是否正确
+debconf-set-selections -c preseed.cfg
+
 第一次启动时运行
 /etc/rc.local
 
+initrd
+
 preseed.cfg:
 
-## Options to set on the command line
-d-i debian-installer/locale string en_US
+ubiquity ubiquity/minimal_install boolean true
+d-i pkgsel/update-policy select none
+d-i pkgsel/upgrade select none
+
+d-i debian-installer/locale string zh_CN
+
 d-i console-setup/ask_detect boolean false
-d-i console-setup/layoutcode string us
-d-i netcfg/get_hostname string unassigned-hostname
-d-i netcfg/get_domain string unassigned-domain
+d-i keyboard-configuration/layoutcode string us
+d-i keyboard-configuration/xkb-keymap select us
 
-d-i netcfg/choose_interface select auto
-d-i netcfg/wireless_wep string
+d-i passwd/user-fullname string zs
+d-i passwd/username string zs
+d-i passwd/user-password password 123456789
+d-i passwd/user-password-again password 123456789
+d-i passwd/auto-login boolean true
 
-d-i base-installer/kernel/override-image string linux-server
-d-i clock-setup/utc-auto boolean true
-d-i clock-setup/utc boolean true
-d-i time/zone string US/Pacific
-d-i clock-setup/ntp boolean true
+d-i time/zone string Asia/Shanghai
 
-d-i mirror/country string US
-d-i mirror/http/proxy string
-d-i pkgsel/install-language-support boolean false
-tasksel tasksel/first multiselect standard, ubuntu-server
+d-i partman-auto/disk string /dev/sda
 
-d-i partman-auto/method string regular
-d-i partman-auto/purge_lvm_from_device boolean true
-d-i partman-lvm/confirm boolean true
-d-i partman-auto/choose_recipe select atomic
-d-i partman/confirm_write_new_label boolean true
-d-i partman/choose_partition select finish
-d-i partman/confirm boolean true
-d-i passwd/user-fullname string Ubuntu User
-d-i passwd/username string ubuntu
-d-i passwd/user-password password insecure
-d-i passwd/user-password-again password insecure
-
-d-i grub-installer/only_debian boolean true
-d-i grub-installer/with_other_os boolean true
 d-i finish-install/reboot_in_progress note
-
-file=/cdrom/preseed/ubuntu-server.seed
 ```
 
 [seed](https://help.ubuntu.com/lts/installation-guide/s390x/apbs05.html)
@@ -509,6 +513,9 @@ sudo apt-get install nodejs
 ## vim
 
 ```bash
+sudo add-apt-repository ppa:jonathonf/vim
+sudo apt-get update
+
 git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 
 # complete
@@ -1115,3 +1122,16 @@ language support->keyboard input method system: fcitx
 about:config
 
 print.always_print_silent
+
+cp /usr/share/applications/firefox.desktop  ~/.config/autostart/
+chmod +x ~/.config/autostart/firefox.desktop
+
+firefox --kiosk
+
+## opcua
+
+```bash
+pip3.6 install opcua -i https://mirrors.aliyun.com/pypi/simple/ 
+pip install opcua-client
+pip install opcua-modeler
+```

@@ -93,7 +93,7 @@ show databases;
 use realtime;
 
 # 新建表格
-CREATE TABLE table_name (column_name column_type);
+CREATE TABLE table_name (column_name column_type, ...);
 
 # 查看表格
 use realtime;
