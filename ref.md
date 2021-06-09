@@ -1,5 +1,4 @@
 [5笔](https://www.52wubi.com/wbbmcx/search.php)
-[文档](https://shimo.im/docs/HPQkdK6hXKvxkw8y/read)
 [usb iso](https://rufus.ie/)
 
 # rust

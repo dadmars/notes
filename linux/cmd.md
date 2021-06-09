@@ -778,9 +778,17 @@ Options
 
 ## vscode
 
-### setting font size
+settings.json
 
-window.zoomlevel = 2
+```json
+  {
+    "workbench.colorTheme": "Visual Studio Light",
+    "window.zoomLevel": 2,
+    "markdownlint.config": {
+      "MD024": false
+    },
+}
+```
 
 ## 添加sudo用户
 

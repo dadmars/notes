@@ -177,7 +177,7 @@ colorscheme PaperColor
 
 let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*.js'
 
-set linespace=8
+set linespace=4
 
 set ttymouse=xterm2
 set mouse=a
