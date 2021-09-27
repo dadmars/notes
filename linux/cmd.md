@@ -54,6 +54,12 @@
   - [firefox](#firefox)
   - [opcua](#opcua)
 
+## firefox cros
+
+about:config
+
+security.fileuri.strict_origin_policy   false
+
 ## cubic
 
 ubuntu20.04.2.0 LTS
@@ -363,6 +369,11 @@ route -n
 # 显示和管理路由，设备，policy routing and tunnels
 ip route
 ip link
+
+ifdown eth0
+ifup eth0
+
+service network restart
 ```
 
 ## netstat
@@ -511,6 +522,10 @@ sudo apt-get install nodejs
 ```
 
 ## vim
+
+### 改变颜色
+
+:colorscheme <tab>
 
 ```bash
 sudo add-apt-repository ppa:jonathonf/vim
@@ -785,7 +800,7 @@ settings.json
     "workbench.colorTheme": "Visual Studio Light",
     "window.zoomLevel": 2,
     "markdownlint.config": {
-      "MD024": false
+     "MD024": false
     },
 }
 ```

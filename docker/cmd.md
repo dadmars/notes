@@ -259,3 +259,18 @@ The macvlan driver uses the concept of a parent interface.This interface can be 
 - containers are not attached to any network and do not have any access to the external network or other containers
 - only create a loopback device.
 - used when you want to completely disable the networking stack on a container
+
+## 更改默认 ip
+
+```json
+/etc/docker/daemon.json
+
+{
+  "bip": "127.30.0.1/16",
+  "mtu": 1500
+}
+```
+
+```bash
+systemctl restart docker
+```

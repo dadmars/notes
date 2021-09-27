@@ -118,8 +118,10 @@ Plugin 'rust-lang/rust.vim'
 
 Plugin 'vim-flake8'
 
+Plugin 'posva/vim-vue'
+
 Plugin 'pangloss/vim-javascript'
-Plugin 'mxw/vim-jsx'
+Plugin 'MaxMEllon/vim-jsx-pretty'
 Plugin 'alvan/vim-closetag'
 
 Plugin 'MarcWeber/vim-addon-mw-utils'
@@ -171,13 +173,13 @@ syntax enable
 
 "set t_Co=256   " This is may or may not needed.
 
-set background=light
-"set background=dark
+"set background=light
+set background=dark
 colorscheme PaperColor
 
 let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*.js'
 
-set linespace=4
+set linespace=6
 
 set ttymouse=xterm2
 set mouse=a
