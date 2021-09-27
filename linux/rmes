@@ -1,0 +1,22 @@
+tmux new -d -c mes/server/cfg -s cfg ./r
+tmux new -d -c mes/server/dc -s dc ./r
+tmux new -d -c mes/server/filecmd -s filecmd ./r
+tmux new -d -c mes/server/fileserver -s fileserver ./r
+tmux new -d -c mes/server/graphdb -s graphdb ./r
+tmux new -d -c mes/server/machine -s machine ./r
+tmux new -d -c mes/server/oee -s oee
+tmux new -d -c mes/server/plc -s plc ./r
+tmux new -d -c mes/server/real -s real ./r
+tmux new -d -c mes/server/spc -s spc ./r
+tmux new -d -c mes/server/timedb -s timedb ./r
+tmux new -d -c mes/server/upload -s upload ./r
+tmux new -d -c mes/server/mt -s mt ./r
+tmux new -d -c mes/server/tosql/ -s tosql
+tmux new -d -c mline/line/core -s line ./s
+
+tmux new -d -c mes -s mes
+tmux new -d -c mes/deploy/pj -s deploy
+tmux new -d -c mline/test -s test
+tmux new -d -c mclient -s client
+tmux new -d -c mclient/kms/core -s kms ./s
+tmux new -d -c mclient/km/core -s km
