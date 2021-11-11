@@ -1318,6 +1318,10 @@ opt-level = 0
 
 [profile.release]
 opt-level = 3
+
+[dependencies.opcua-client]
+path = "../opcua-master/client"
+version = "0.9.0"
 ```
 
 这里要注意，当 cargo 第一次下载依赖时，将下载版本号为 0.3.x 的依赖，这个 x 是当前最新的版本。不一定和指定的版本号相同。

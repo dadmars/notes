@@ -1,7 +1,7 @@
 # git
 
 dadmars
-11burning22
+github: burning2001
 
 ## 创建版本库
 
