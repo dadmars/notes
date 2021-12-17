@@ -2,6 +2,11 @@
 
 docker exec -it af34b redis-cli
 
+volumes:
+      - /myredis/conf:/usr/local/etc/redis
+
+      /myredis/conf/redis.conf
+
 ## keys
 
 * 二进制安全，key 值不仅仅是字符串，还可以是图片。空字符串也可以作为一个 key

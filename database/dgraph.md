@@ -1608,3 +1608,5 @@ docker run -d -p 24224:24224 -p 24224:24224/udp -v /data:/fluentd/log fluent/flu
 ```
 
 Note The patterns * P O and * * O are not supported since its expensive to store/find all the incoming edges.
+
+ Dgraph is 16 CPUs and 32 GiB of memory per machine

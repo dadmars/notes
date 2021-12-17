@@ -54,6 +54,13 @@
   - [firefox](#firefox)
   - [opcua](#opcua)
 
+## 检查网络
+
+```bash
+nmcli d
+ip addr show dev eth0
+```
+
 ## firefox cros
 
 about:config
@@ -1158,3 +1165,13 @@ pip3.6 install opcua -i https://mirrors.aliyun.com/pypi/simple/
 pip install opcua-client
 pip install opcua-modeler
 ```
+
+## 性能分析
+
+apt-get install binutils
+
+gprof
+
+curl -o profiles.tar.gz "http://localhost:8086/debug/pprof/all?cpu=true"
+curl -o vars.txt "http://localhost:8086/debug/vars"
+iostat -xd 1 30 > iostat.txt
