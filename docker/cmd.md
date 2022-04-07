@@ -274,3 +274,7 @@ The macvlan driver uses the concept of a parent interface.This interface can be 
 ```bash
 systemctl restart docker
 ```
+
+## copy 数据
+
+docker cp xxxxx:/dgraph/export/dgraph-1-2019-08-13-09-52.rdf.gz .

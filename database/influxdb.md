@@ -36,6 +36,8 @@ docker exec -it xxx influx
 > CREATE USER admin WITH PASSWORD 'admin' WITH ALL PRIVILEGES
 > CREATE USER realtime WITH PASSWORD 'realtime' WITH ALL PRIVILEGES
 > CREATE DATABASE realtime
+> CREATE USER other WITH PASSWORD 'other' WITH ALL PRIVILEGES
+> CREATE DATABASE other
 ```
 
 /etc/influxdb/influxdb.conf
@@ -121,6 +123,9 @@ show tag values from xx with key=msn
 # 从一个表把一些列移到另一个表中, group by * 保证 tag key
 SELECT useful_field, nice_tag INTO new_measurement FROM measurement GROUP BY *
 
+# copy 一个表到另一个数据库
+SELECT * INTO new_db..new_measurement FROM measurement GROUP BY *
+
 # 插入数据
 INSERT table,tag1=serverA,tag2=us_west field1=0.64
 
@@ -181,6 +186,8 @@ nproc
 
 GOMAXPROCS=4
 
+## 生存策略
+
 alter retention policy "autogen" on "mydb" duration 2w shard duration 1w replication 1 default
 show retention policies on realtime
 alter retention policy "autogen" on "realtime" shard duration 72h
@@ -191,13 +198,24 @@ show retention policies on "groundwork"
 create retention policy "groundwork_10_weeks" on "groundwork" duration 10w replication 1 default
 alter retention policy "groundwork_56_weeks" on "groundwork" default
 
-duration: 保存多长时间数据
+duration: 保存多长时间数据, 0s 为永久保存
 replication factor: 在集群中保存多少份拷贝
 shard group duration: 在 shard groups 中覆盖多长时间的数据
           时间为经常查询的2倍
           each shard group ends up with at least 100,000 points per group—you want more data per shard, but not too much data.
           each shard group has at least 1,000 points per series.
 
+## 启动超时
+
 /usr/lib/influxdb/scripts/influxd-systemd-start.sh
 comment out line 34 (exit 1) – < this is a bad idea in the long run but will allow you to test if it works
 or set the sleep command in line 29 to 10 seconds (depending on how long does it take your influx to start, for me 10 cycles (line 25) of 10 seconds was enough)
+
+## 释放缓冲
+
+sync
+echo 3 > /proc/sys/vm/drop_caches
+
+## 得到行数
+
+select sum(count) from (select *,count::integer from MyMeasurement group by count fill(1))

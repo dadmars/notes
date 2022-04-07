@@ -6,10 +6,20 @@
 /home/bianhui/.cargo/config
 
 [source.crates-io]
-replace-with='crates-cn'
+registry = "https://github.com/rust-lang/crates.io-index"
+replace-with = 'sjtu'
 
-[source.crates-cn]
-registry="https://gitee.com/crates/crates.io-index.git"
+[source.tuna]
+registry = "https://mirrors.tuna.tsinghua.edu.cn/git/crates.io-index.git"
+
+[source.ustc]
+registry = "git://mirrors.ustc.edu.cn/crates.io-index"
+
+[source.sjtu]
+registry = "https://mirrors.sjtug.sjtu.edu.cn/git/crates.io-index"
+
+[source.rustcc]
+registry = "git://crates.rustcc.cn/crates.io-index"
 ```
 
 ## 安装
