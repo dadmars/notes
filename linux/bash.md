@@ -1,55 +1,117 @@
 # bash
 
-- [bash](#bash)
-  - [shell 种类](#shell-种类)
-  - [启动 bash 时读取的配置文件](#启动-bash-时读取的配置文件)
-    - [login shell](#login-shell)
-    - [no-login shell](#no-login-shell)
-  - [运行哪个shell](#运行哪个shell)
-  - [debug](#debug)
-  - [运行](#运行)
-  - [别名](#别名)
-  - [变量](#变量)
-  - [特殊参数](#特殊参数)
-  - [数组](#数组)
-  - [转义](#转义)
-  - [扩展](#扩展)
-    - [{}](#)
-    - [~](#-1)
-    - [参数，命令，数学计算 $](#参数命令数学计算-)
-  - [字符串查找](#字符串查找)
-    - [expr](#expr)
-  - [预定义变量](#预定义变量)
-  - [函数](#函数)
-  - [条件判断](#条件判断)
-  - [if](#if)
-  - [case](#case)
-  - [until](#until)
-  - [for](#for)
-  - [while](#while)
-  - [命令行参数](#命令行参数)
-  - [read 用户输入](#read-用户输入)
-  - [文件处理](#文件处理)
-  - [文件 symbolic link](#文件-symbolic-link)
-  - [文件重定向](#文件重定向)
-  - [/dev/null 文件系统](#devnull-文件系统)
-  - [/proc 文件系统](#proc-文件系统)
-  - [here 文档](#here-文档)
-  - [目录](#目录)
-  - [echo](#echo)
-  - [sed 行编辑器](#sed-行编辑器)
-  - [awk 表格编辑器](#awk-表格编辑器)
-  - [sudo](#sudo)
-  - [ssh](#ssh)
-  - [计算秒级时间差](#计算秒级时间差)
-  - [grep](#grep)
-  - [color](#color)
+<!-- TOC -->
 
-## 时间和日期
+- [bash](#bash)
+    - [shell 种类](#shell-%E7%A7%8D%E7%B1%BB)
+        - [log shell登录系统后运行的 shell 启动时读取的配置文件](#log-shell%E7%99%BB%E5%BD%95%E7%B3%BB%E7%BB%9F%E5%90%8E%E8%BF%90%E8%A1%8C%E7%9A%84-shell-%E5%90%AF%E5%8A%A8%E6%97%B6%E8%AF%BB%E5%8F%96%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6)
+        - [non_log shell启动一个 shell终端 启动时读取的配置文件](#non_log-shell%E5%90%AF%E5%8A%A8%E4%B8%80%E4%B8%AA-shell%E7%BB%88%E7%AB%AF-%E5%90%AF%E5%8A%A8%E6%97%B6%E8%AF%BB%E5%8F%96%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6)
+    - [设置时间](#%E8%AE%BE%E7%BD%AE%E6%97%B6%E9%97%B4)
+    - [磁盘](#%E7%A3%81%E7%9B%98)
+    - [内存](#%E5%86%85%E5%AD%98)
+    - [文件系统](#%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F)
+        - [通配符](#%E9%80%9A%E9%85%8D%E7%AC%A6)
+    - [shell 种类](#shell-%E7%A7%8D%E7%B1%BB)
+    - [启动 bash 时读取的配置文件](#%E5%90%AF%E5%8A%A8-bash-%E6%97%B6%E8%AF%BB%E5%8F%96%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6)
+        - [login shell](#login-shell)
+        - [no-login shell](#no-login-shell)
+    - [sha-bang  #!](#sha-bang--)
+    - [debug](#debug)
+    - [运行](#%E8%BF%90%E8%A1%8C)
+    - [别名](#%E5%88%AB%E5%90%8D)
+    - [变量](#%E5%8F%98%E9%87%8F)
+        - [位置变量](#%E4%BD%8D%E7%BD%AE%E5%8F%98%E9%87%8F)
+        - [全局变量](#%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F)
+        - [本地变量， 只针对当前 shell](#%E6%9C%AC%E5%9C%B0%E5%8F%98%E9%87%8F-%E5%8F%AA%E9%92%88%E5%AF%B9%E5%BD%93%E5%89%8D-shell)
+    - [特殊参数](#%E7%89%B9%E6%AE%8A%E5%8F%82%E6%95%B0)
+    - [数组](#%E6%95%B0%E7%BB%84)
+    - [转义](#%E8%BD%AC%E4%B9%89)
+    - [扩展](#%E6%89%A9%E5%B1%95)
+        - [{}](#)
+        - [~](#)
+        - [参数，命令，数学计算 $](#%E5%8F%82%E6%95%B0%E5%91%BD%E4%BB%A4%E6%95%B0%E5%AD%A6%E8%AE%A1%E7%AE%97-)
+    - [字符串查找](#%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%9F%A5%E6%89%BE)
+        - [expr](#expr)
+    - [预定义变量](#%E9%A2%84%E5%AE%9A%E4%B9%89%E5%8F%98%E9%87%8F)
+    - [函数](#%E5%87%BD%E6%95%B0)
+    - [条件判断](#%E6%9D%A1%E4%BB%B6%E5%88%A4%E6%96%AD)
+    - [if](#if)
+    - [case](#case)
+    - [until](#until)
+    - [for](#for)
+    - [while](#while)
+    - [命令行参数](#%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%82%E6%95%B0)
+    - [read 用户输入](#read-%E7%94%A8%E6%88%B7%E8%BE%93%E5%85%A5)
+    - [文件处理](#%E6%96%87%E4%BB%B6%E5%A4%84%E7%90%86)
+    - [文件 symbolic link](#%E6%96%87%E4%BB%B6-symbolic-link)
+    - [文件重定向](#%E6%96%87%E4%BB%B6%E9%87%8D%E5%AE%9A%E5%90%91)
+    - [/dev/null 文件系统](#devnull-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F)
+    - [/proc 文件系统](#proc-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F)
+    - [here 文档](#here-%E6%96%87%E6%A1%A3)
+    - [目录](#%E7%9B%AE%E5%BD%95)
+    - [echo](#echo)
+    - [sed 行编辑器](#sed-%E8%A1%8C%E7%BC%96%E8%BE%91%E5%99%A8)
+    - [awk 表格编辑器](#awk-%E8%A1%A8%E6%A0%BC%E7%BC%96%E8%BE%91%E5%99%A8)
+    - [sudo](#sudo)
+    - [ssh](#ssh)
+    - [计算秒级时间差](#%E8%AE%A1%E7%AE%97%E7%A7%92%E7%BA%A7%E6%97%B6%E9%97%B4%E5%B7%AE)
+    - [grep](#grep)
+    - [color](#color)
+
+<!-- /TOC -->
+
+## shell 种类
+
+```bash
+cat /etc/shells
+```
+
+### log shell(登录系统后运行的 shell) 启动时读取的配置文件
+
+```bash
+/etc/profile
+    应用于所有用户环境的设置都放在此文件中。被所有类型的 shell 读取
+
+~/.bash_profile
+~/.bash_login
+    login 到系统时读取
+~/.profile
+    上面三个文件哪个第一个找到，读取哪个
+
+~/.bash_logout logout 时读取
+```
+
+### non_log shell(启动一个 shell终端) 启动时读取的配置文件
+
+```bash
+~/.bashrc
+```
+
+## 设置时间
 
 ```bash
 date
 cal    # 日历
+```
+
+```bash
+timedatectl
+
+输出:
+    Local time: 三 2020-10-28 09:40:44 CST    # 本地当前时间
+    Time zone: Asia/Shanghai (CST, +0800)     # 时区
+
+timedatectl list-timezones    # 列出所有时区
+
+timedatectl set-timezone Asia/Shanghai  # 设置时区
+
+# 设置日期时间
+    date -s '2019-12-12 16:18:45'
+# 或
+    timedatectl set-ntp 0 # 关闭自动同步时间
+    timedatectl set-time '2019-12-12 16:18:45'  # 设置日期和时间
+    timedatectl set-time 2019-12-12  # 设置日期
+    timedatectl set-time 16:18:45  # 设置时间
 ```
 
 ## 磁盘
@@ -167,9 +229,9 @@ cat /etc/passwd   # 用户的默认 shell
 
 ### no-login shell
 
-* ~/.bashrc
+~/.bashrc
 
-## 运行哪个shell
+## sha-bang ( #!)
 
 脚本的第一行说明此脚本运行哪个shell
 
@@ -250,6 +312,77 @@ VARNAME="value"
 export VARNAME="value"
 ```
 
+### 位置变量
+
+$0, $1, $2, $3 . . . ${10}, ${11}, ${12}.
+
+$@ 输出所有参数
+
+$# 参数个数
+
+shift  $1 <--- $2, $2 <--- $3, $3 <--- $4
+
+```bash
+#!/bin/bash
+
+if [ -n "$1" ] # 参数不为空
+then
+    echo "Parameter #1 is $1"
+fi
+
+if [ -z $1 ] # 参数为空
+then
+    exit $E_MISSING_POS_PARAM
+fi
+
+case `basename $0` in
+"wh"       ) whois $1@whois.tucows.com;;
+"wh-ripe"  ) whois $1@whois.ripe.net;;
+"wh-apnic" ) whois $1@whois.apnic.net;;
+"wh-cw"    ) whois $1@whois.cw.net;;
+*          ) echo "Usage: `basename $0` [domain-name]";;
+esac
+
+exit $?
+
+until [ -z "$1" ]
+do
+    echo -n "$1 "
+    shift  # $1 <--- $2, $2 <--- $3, $3 <--- $4
+done
+
+shift 3 # Shift 3 positions.
+```
+
+### 全局变量
+
+```bash
+env
+```
+
+### 本地变量， 只针对当前 shell
+
+```bash
+# 查看本地变量
+set
+
+# shll 选项
+set -o
+set -o noclobber   # 设置选项
+set +o noclobber   # 取消设置
+
+# 设置本地变量, 子shell无法使用
+W="a"
+echo $W
+
+# 删除本地变量
+unset W
+
+# 设置本地变量, 子shell也可以使用
+# 在子shell调用 unset W, 不会影响其它子shell和父shell
+export W="a
+```
+
 ## 特殊参数
 
 ```bash
@@ -261,6 +394,34 @@ $$  # 当前进程 ID
 $!  # 最近命令的进程 ID
 $0  # 脚本的文件名
 $_  # 最近命令的最后一个参数，如果没有参数，则是命令本身
+
+;  # 同一行运行多个命令
+    echo hello; echo there
+
+    if [ -x "$filename" ]; then
+        echo "File $filename exists."; cp $filename $filename.bak
+    else
+        echo "File $filename not found."; touch $filename
+    fi
+
+: # null command
+    :
+    echo $?  # 0
+
+    while :
+    do
+        operation-1
+        ...
+        operation-n
+    done
+
+    if condition
+    then :
+        # Do nothing and branch ahead
+    else
+    fi
+
+    : > data.xxx # 同 cat /dev/null >data.xxx
 ```
 
 ## 数组
@@ -284,6 +445,7 @@ unset a
 \
 
 ''
+# 单引号内的字符没有任何特殊含义
 # 下面两条错误，单引号不能在单引号中间。有 \ 也不行
 '''
 '\''
@@ -291,6 +453,21 @@ unset a
 ""
 # $, `, \ 还是保留原来的意思。
 # *, @ 在双引号中间有特殊的含义。
+
+List="one two three"
+
+for a in $List
+do
+    echo $a   # one
+              # two
+              # three
+done
+
+echo "---"
+for a in "$List"
+do
+    echo $a  # one two three
+done
 ```
 
 ## 扩展
@@ -332,6 +509,7 @@ $(command)
 
 # 数学计算
 $((command))
+$[command]
 ```
 
 ## 字符串查找
@@ -419,14 +597,14 @@ file_excerpt () {
 
 ## 条件判断
 
-* []
-* [[]]  不对文件名进行扩展， a*，不会解释为以 a 开头的所有文件。
-* (())  数学判断
-
 ```bash
-[ -z STRING ]           字符串长度为0
-[ STRING ]              字符串长度不为0 [ -n STRING ]
-[ STRING1 == STRING2 ]  字符串相等
+[]
+[[]]  # 不对文件名进行扩展， a*，不会解释为以 a 开头的所有文件。
+(())  # 数学判断
+
+[ -z STRING ]           # 字符串长度为0
+[ STRING ]              # 字符串长度不为0 [ -n STRING ]
+[ STRING1 == STRING2 ]  # 字符串相等
 [ STRING1 != STRING2 ]
 [ STRING1 < STRING2 ]
 [ STRING1 > STRING2 ] 
@@ -445,6 +623,30 @@ file_excerpt () {
 [ EXPR1 -o EXPR2 ]      or
 
 [ -o noclobber ]        检测环境变量
+
+read v
+if [ -a $v] # 如果文件存在
+if [ -b $v] # 如果文件存在, 是一个block-special文件
+if [ -c $v] # 如果文件存在, 是一个character-special文件
+if [ -d $v] # 如果目录存在
+if [ -e $v] # 如果文件存在
+if [ -f $v] # 如果文件存在，并是一个普通文件
+if [ -g $v] # 如果文件存在，SGID 标志位被设置
+if [ -h $v] # 如果文件存在，并是一个 symbolic link
+if [ -k $v] # 如果文件存在，sticky 标志位被设置
+if [ -p $v] # 如果文件存在，是一个 pipe
+if [ -r $v] # 如果文件可读
+if [ -u $v] # 如果文件存在，SUID 标志位被设置
+if [ -w $v] # 如果文件可写
+if [ -x $v] # 如果文件可执行
+if [ -s $v] # 如果文件存在，大小不为 0
+if [ -O $v] # 如果文件存在，owned by the effective user ID
+if [ -G $v] # 如果文件存在，owned by the effective group ID
+if [ -N $v] # 如果文件存在，在最后一次读取后，被修改过
+if [ -S $v] # 如果文件存在，是一个 socket
+if [ $v1 -nt $v2] # 如果文件v1修改时间比v2大，或者v1存在，v2不存在
+if [ $v1 -ot $v2] # 如果文件v1修改时间比v2小，或者v1不存在，v2存在
+if [ $v1 -ef $v2] # 如果文件v1和v2指向同一个 device and inode numbers
 ```
 
 ## if
@@ -580,19 +782,6 @@ read -n v           输入 n 个字符就返回，而不是等回车
 
 ## 文件处理
 
-```bash
-read v
-if [ -a $v] # 如果文件存在
-if [ -e $v] # 如果文件存在
-if [ -f $v] # 如果文件存在，并是一个普通文件
-if [ -s $v] # 如果文件存在，大小不为 0
-if [ -d $v] # 如果目录存在
-if [ -h $v] # 如果文件存在，并是一个 symbolic link
-if [ -r $v] # 如果文件可读
-if [ -w $v] # 如果文件可写
-if [ -x $v] # 如果文件可执行
-```
-
 ## 文件 symbolic link
 
 * /dev/fd/N 文件描述 N
@@ -677,17 +866,20 @@ echo -e "a\ta"      处理转义字符
 
 ## sed 行编辑器
 
-* a   当前行下面添加文字
-* c   当前行对文字进行替换
-* i   当前行上面添加文字
-* d   删除文字
-* p   打印文字
-* r   读文件
-* w   写文件
-* s   查找并替换文字
+```bash
+a   # 当前行下面添加文字
+c   # 当前行对文字进行替换
+i   # 当前行上面添加文字
+d   # 删除文字
+p   # 打印文字
+r   # 读文件
+w   # 写文件
+s   # 查找并替换文字
 
-* -n  不输出多余信息
-* -e  执行多个命令
+-n  # 不输出多余信息
+-e  # 执行多个命令
+-f  # 命令文件
+```
 
 ```bash
 sed -n '/aa/=' file      =表示只输出行号
@@ -726,19 +918,19 @@ sed -f mod.rec file     可以将参数放在mod.rec文件中
 
 数据驱动，描述你要操作的数据，然后对找到的数据进行操作
 
-* awk COMMAND inputfiles
-* awk -f COMMAND-FILE inputfiles
-
-将读入的内容分为列
-
-* $0            整行
-* $1, $2 $3 ... 第 1 列， 第 2 列， ...
-* NR            行号
-* NR            行号
-* BEGIN         前面输出
-* END           后面输出
-
 ```bash
+awk COMMAND inputfiles
+awk -f COMMAND-FILE inputfiles
+
+# 将读入的内容分为列
+
+$0            # 整行
+$1, $2 $3 ... # 第 1 列， 第 2 列， ...
+NR            # 行号
+NR            # 行号
+BEGIN         # 前面输出
+END           # 后面输出
+
 ls -l | awk '{print $4 $5}'
 ls -l | awk '{print "aaa"\t: $4 "bbb" $5}'
 ls -l | awk '{print "aaa"\t: NR $4 "bbb" $5}'   NR 代表行号
@@ -787,14 +979,16 @@ echo $diff
 
 ## grep
 
-* -n    输出行号
-* -r    包含子目录。
-* -l    只列出文件名
-* -c    在文件中的匹配数
-* -x    整行匹配
-* -v    反意搜索
-* -i    不分大小写
-* -e    不把 “-” 解释为选项
+```bash
+-n    # 输出行号
+-r    # 包含子目录。
+-l    # 只列出文件名
+-c    # 在文件中的匹配数
+-x    # 整行匹配
+-v    # 反意搜索
+-i    # 不分大小写
+-e    # 不把 “-” 解释为选项
+```
 
 ```bash
 grep -n -r a file1 file2 hhh*   # 在file1，file2，当前目录下所有以hhh开头的文件中查找a
