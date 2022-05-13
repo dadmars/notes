@@ -12,6 +12,8 @@
     - [条件变量 std::sync::Condvar](#%E6%9D%A1%E4%BB%B6%E5%8F%98%E9%87%8F-stdsynccondvar)
     - [Mutex](#mutex)
     - [运行时](#%E8%BF%90%E8%A1%8C%E6%97%B6)
+        - [任务队列](#%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97)
+        - [多线程运行时](#%E5%A4%9A%E7%BA%BF%E7%A8%8B%E8%BF%90%E8%A1%8C%E6%97%B6)
         - [运行时 handle](#%E8%BF%90%E8%A1%8C%E6%97%B6-handle)
         - [运行时内容](#%E8%BF%90%E8%A1%8C%E6%97%B6%E5%86%85%E5%AE%B9)
     - [主线程的管理](#%E4%B8%BB%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%AE%A1%E7%90%86)
@@ -95,6 +97,26 @@ impl<R: ResType> ExternalResource<R> {
 ## Atomics 内存序
 
 编译器和硬件会对程序进行优化，会对指令的顺序进行调整。这种情况在多线程程序下会产生问题。
+
+```rust
+初始: x = 0, y = 1
+
+线程1            线程2
+y = 3;          if x == 1 {
+x = 1;              y *= 2;
+                }
+
+此程序有两种结果
+
+    y = 3: (线程2在线程1完成之前进行了判断)
+    y = 6: (线程2在线程1完成之后进行了判断)
+
+第三种情况是由硬件引起的:
+
+    y = 2: (线程2看到 x = 1, 但是没看到 y = 3, 对 y = 3 进行了覆盖)
+```
+
+为了防止上面的优化，在进行原子操作时，有三种方式
 
 ### Sequentially Consistent (SeqCst)
 
@@ -269,6 +291,18 @@ fn build_threaded_runtime(&mut self) -> io::Result<Runtime>
 运行任务
 
 1. tokio::spawn() 最后调用运行时的 spawner->spawn()
+
+### 任务队列
+
+```rust
+runtime -> queue.rs
+```
+
+### 多线程运行时
+
+```rust
+runtime -> thread_pool -> worker.rs
+```
 
 ### 运行时 handle
 

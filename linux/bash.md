@@ -105,13 +105,24 @@ timedatectl list-timezones    # 列出所有时区
 
 timedatectl set-timezone Asia/Shanghai  # 设置时区
 
+systemctl stop systemd-timesyncd.service  # 关闭自动更新服务
+
 # 设置日期时间
-    date -s '2019-12-12 16:18:45'
+    date -s '2019-12-12 16:18:45'  # 只设置系统时间，重启后失效, hwclock -w 写入系统时间
 # 或
     timedatectl set-ntp 0 # 关闭自动同步时间
     timedatectl set-time '2019-12-12 16:18:45'  # 设置日期和时间
     timedatectl set-time 2019-12-12  # 设置日期
     timedatectl set-time 16:18:45  # 设置时间
+```
+
+```bash
+# 硬件时间
+
+hwclock     # 显示硬件时间
+hwclock -r  # RTC (Real-Time Clock)
+hwclock -s  # 硬件时间写入系统时间
+hwclock -w  # 系统时间写入硬件时间
 ```
 
 ## 磁盘
