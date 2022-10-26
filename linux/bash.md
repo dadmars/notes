@@ -1,64 +1,89 @@
 # bash
 
-<!-- TOC -->
-
 - [bash](#bash)
-    - [shell 种类](#shell-%E7%A7%8D%E7%B1%BB)
-        - [log shell登录系统后运行的 shell 启动时读取的配置文件](#log-shell%E7%99%BB%E5%BD%95%E7%B3%BB%E7%BB%9F%E5%90%8E%E8%BF%90%E8%A1%8C%E7%9A%84-shell-%E5%90%AF%E5%8A%A8%E6%97%B6%E8%AF%BB%E5%8F%96%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6)
-        - [non_log shell启动一个 shell终端 启动时读取的配置文件](#non_log-shell%E5%90%AF%E5%8A%A8%E4%B8%80%E4%B8%AA-shell%E7%BB%88%E7%AB%AF-%E5%90%AF%E5%8A%A8%E6%97%B6%E8%AF%BB%E5%8F%96%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6)
-    - [设置时间](#%E8%AE%BE%E7%BD%AE%E6%97%B6%E9%97%B4)
-    - [磁盘](#%E7%A3%81%E7%9B%98)
-    - [内存](#%E5%86%85%E5%AD%98)
-    - [文件系统](#%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F)
-        - [通配符](#%E9%80%9A%E9%85%8D%E7%AC%A6)
-    - [shell 种类](#shell-%E7%A7%8D%E7%B1%BB)
-    - [启动 bash 时读取的配置文件](#%E5%90%AF%E5%8A%A8-bash-%E6%97%B6%E8%AF%BB%E5%8F%96%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6)
-        - [login shell](#login-shell)
-        - [no-login shell](#no-login-shell)
-    - [sha-bang  #!](#sha-bang--)
-    - [debug](#debug)
-    - [运行](#%E8%BF%90%E8%A1%8C)
-    - [别名](#%E5%88%AB%E5%90%8D)
-    - [变量](#%E5%8F%98%E9%87%8F)
-        - [位置变量](#%E4%BD%8D%E7%BD%AE%E5%8F%98%E9%87%8F)
-        - [全局变量](#%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F)
-        - [本地变量， 只针对当前 shell](#%E6%9C%AC%E5%9C%B0%E5%8F%98%E9%87%8F-%E5%8F%AA%E9%92%88%E5%AF%B9%E5%BD%93%E5%89%8D-shell)
-    - [特殊参数](#%E7%89%B9%E6%AE%8A%E5%8F%82%E6%95%B0)
-    - [数组](#%E6%95%B0%E7%BB%84)
-    - [转义](#%E8%BD%AC%E4%B9%89)
-    - [扩展](#%E6%89%A9%E5%B1%95)
-        - [{}](#)
-        - [~](#)
-        - [参数，命令，数学计算 $](#%E5%8F%82%E6%95%B0%E5%91%BD%E4%BB%A4%E6%95%B0%E5%AD%A6%E8%AE%A1%E7%AE%97-)
-    - [字符串查找](#%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%9F%A5%E6%89%BE)
-        - [expr](#expr)
-    - [预定义变量](#%E9%A2%84%E5%AE%9A%E4%B9%89%E5%8F%98%E9%87%8F)
-    - [函数](#%E5%87%BD%E6%95%B0)
-    - [条件判断](#%E6%9D%A1%E4%BB%B6%E5%88%A4%E6%96%AD)
-    - [if](#if)
-    - [case](#case)
-    - [until](#until)
-    - [for](#for)
-    - [while](#while)
-    - [命令行参数](#%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%82%E6%95%B0)
-    - [read 用户输入](#read-%E7%94%A8%E6%88%B7%E8%BE%93%E5%85%A5)
-    - [文件处理](#%E6%96%87%E4%BB%B6%E5%A4%84%E7%90%86)
-    - [文件 symbolic link](#%E6%96%87%E4%BB%B6-symbolic-link)
-    - [文件重定向](#%E6%96%87%E4%BB%B6%E9%87%8D%E5%AE%9A%E5%90%91)
-    - [/dev/null 文件系统](#devnull-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F)
-    - [/proc 文件系统](#proc-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F)
-    - [here 文档](#here-%E6%96%87%E6%A1%A3)
-    - [目录](#%E7%9B%AE%E5%BD%95)
-    - [echo](#echo)
-    - [sed 行编辑器](#sed-%E8%A1%8C%E7%BC%96%E8%BE%91%E5%99%A8)
-    - [awk 表格编辑器](#awk-%E8%A1%A8%E6%A0%BC%E7%BC%96%E8%BE%91%E5%99%A8)
-    - [sudo](#sudo)
-    - [ssh](#ssh)
-    - [计算秒级时间差](#%E8%AE%A1%E7%AE%97%E7%A7%92%E7%BA%A7%E6%97%B6%E9%97%B4%E5%B7%AE)
-    - [grep](#grep)
-    - [color](#color)
+  - [用户](#用户)
+  - [一行中多个命令](#一行中多个命令)
+  - [空操作](#空操作)
+  - [shell 种类](#shell-种类)
+    - [log shell(登录系统后运行的 shell) 启动时读取的配置文件](#log-shell登录系统后运行的-shell-启动时读取的配置文件)
+    - [non_log shell(启动一个 shell终端) 启动时读取的配置文件](#non_log-shell启动一个-shell终端-启动时读取的配置文件)
+  - [文件系统](#文件系统)
+    - [通配符](#通配符)
+  - [shell 种类](#shell-种类-1)
+  - [启动 bash 时读取的配置文件](#启动-bash-时读取的配置文件)
+    - [login shell](#login-shell)
+    - [no-login shell](#no-login-shell)
+  - [sha-bang ( #!)](#sha-bang--)
+  - [debug](#debug)
+  - [运行](#运行)
+  - [别名](#别名)
+  - [变量](#变量)
+    - [位置变量](#位置变量)
+    - [全局变量](#全局变量)
+    - [本地变量， 只针对当前 shell](#本地变量-只针对当前-shell)
+  - [特殊参数](#特殊参数)
+  - [数组](#数组)
+  - [转义](#转义)
+  - [扩展](#扩展)
+    - [{}](#)
+    - [~](#-1)
+    - [参数，命令，数学计算 $](#参数命令数学计算-)
+  - [字符串查找](#字符串查找)
+    - [expr](#expr)
+  - [预定义变量](#预定义变量)
+  - [函数](#函数)
+  - [条件判断](#条件判断)
+  - [if](#if)
+  - [case](#case)
+  - [until](#until)
+  - [for](#for)
+  - [while](#while)
+  - [命令行参数](#命令行参数)
+  - [read 用户输入](#read-用户输入)
+  - [文件处理](#文件处理)
+    - [清空文件内容](#清空文件内容)
+    - [文件 symbolic link](#文件-symbolic-link)
+    - [文件重定向](#文件重定向)
+  - [/dev/null 文件系统](#devnull-文件系统)
+  - [/proc 文件系统](#proc-文件系统)
+  - [here 文档](#here-文档)
+  - [目录](#目录)
+  - [echo](#echo)
+  - [sed 行编辑器](#sed-行编辑器)
+  - [awk 表格编辑器](#awk-表格编辑器)
+  - [sudo](#sudo)
+  - [ssh](#ssh)
+  - [计算秒级时间差](#计算秒级时间差)
+  - [grep](#grep)
+  - [color](#color)
 
-<!-- /TOC -->
+## 用户
+
+```bash
+if [ "$UID" -ne "0"]
+then
+    echo "must be root user"
+fi
+```
+
+## 一行中多个命令
+
+```bash
+echo hello; echo there
+
+if []; then
+fi
+```
+
+## 空操作
+
+```bash
+if []
+then :
+else
+   ...
+fi
+```
 
 ## shell 种类
 
@@ -85,56 +110,6 @@ cat /etc/shells
 
 ```bash
 ~/.bashrc
-```
-
-## 设置时间
-
-```bash
-date
-cal    # 日历
-```
-
-```bash
-timedatectl
-
-输出:
-    Local time: 三 2020-10-28 09:40:44 CST    # 本地当前时间
-    Time zone: Asia/Shanghai (CST, +0800)     # 时区
-
-timedatectl list-timezones    # 列出所有时区
-
-timedatectl set-timezone Asia/Shanghai  # 设置时区
-
-systemctl stop systemd-timesyncd.service  # 关闭自动更新服务
-
-# 设置日期时间
-    date -s '2019-12-12 16:18:45'  # 只设置系统时间，重启后失效, hwclock -w 写入系统时间
-# 或
-    timedatectl set-ntp 0 # 关闭自动同步时间
-    timedatectl set-time '2019-12-12 16:18:45'  # 设置日期和时间
-    timedatectl set-time 2019-12-12  # 设置日期
-    timedatectl set-time 16:18:45  # 设置时间
-```
-
-```bash
-# 硬件时间
-
-hwclock     # 显示硬件时间
-hwclock -r  # RTC (Real-Time Clock)
-hwclock -s  # 硬件时间写入系统时间
-hwclock -w  # 系统时间写入硬件时间
-```
-
-## 磁盘
-
-```bash
-df    # 磁盘空间
-```
-
-## 内存
-
-```bash
-free    # 内存空间
 ```
 
 ## 文件系统
@@ -310,6 +285,10 @@ ${VAR}
 
 # 简写
 $VAR
+
+VAR=3
+"#VAR"  # 变量的值，输出为 3
+'#VAR'  # 不引用变量的值，输出为 #VAR
 
 # 设置选项
 set -o noclobber
@@ -772,6 +751,11 @@ done
 * $OPTIND   下一个参数的索引
 
 ```bash
+if [ -n "$1" ]
+then
+    echo "the argument is empty"
+fi
+
 while getopts dc:lw option
 do
     echo $option
@@ -793,14 +777,22 @@ read -n v           输入 n 个字符就返回，而不是等回车
 
 ## 文件处理
 
-## 文件 symbolic link
+### 清空文件内容
+
+```bash
+cat /dev/null > tmp
+
+: > tmp
+```
+
+### 文件 symbolic link
 
 * /dev/fd/N 文件描述 N
 * /dev/stdin 文件描述 0
 * /dev/stdout 文件描述 1
 * /dev/stderr 文件描述 2
 
-## 文件重定向
+### 文件重定向
 
 每一个打开的文件都有一个描述符。stdin为０，stdout为1，stderr为2。
 
@@ -1057,4 +1049,80 @@ Blue=$'\e[1;34m'
 Normal=$'\e[0m'
 
 echo "$Blue I like chocolate cake "
+```
+
+```bash
+#!/bin/bash
+
+LINES=50
+E_NOTROOT=87
+ROOT_UID=0 # root 的 UID 为 0
+
+if [ "$UID" -ne "$ROOT_UID" ] # Run as root
+then
+    echo "Must be root to run this script."
+    exit $E_NOTROOT
+fi
+
+if [ -n "$1" ] # Test whether command-line argument is present (non-empty).
+then
+    lines=$1
+else
+    lines=$LINES # Default, if not specified on command-line.
+fi
+
+LOG_DIR=/var/log
+E_XCD=86
+
+cd $LOG_DIR
+
+if [ `pwd` != "$LOG_DIR" ] # Not in /var/log?
+then
+    echo "Can't change to $LOG_DIR."
+    exit $E_XCD
+fi 
+
+tail -n $lines messages > mesg.temp # Save last section of message log file.
+mv mesg.temp messages
+
+cat /dev/null > wtmp
+echo "Logs cleaned up."
+
+exit 0 # 运行成功，返回 0
+```
+
+```bash
+;   两条语句放在同一行
+    echo a; echo b
+
+    if []; then
+    fi
+
+,  数学运算，只有最后一个被返回
+    let "t2 = ((a = 9, 15 / 3))" # Set "a = 9" and "t2 = 15 / 3"
+
+   字符串
+   for file in /{,usr/}bin/*calc # 查找所有以 calc 结尾的可执行程序 /bin /usr/bin 
+   do
+      if [ -x "$file" ]
+      then
+         echo $file
+      fi
+   done
+
+:  空操作
+    :
+    echo $?  # 0
+
+    while : # while true
+    do
+    done
+
+    if xxx
+    then :
+    else
+      xxx
+    fi
+
+    : > a  # cat /dev/null > a
 ```

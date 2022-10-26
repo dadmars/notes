@@ -1,9 +1,12 @@
 # cmd
 
 - [cmd](#cmd)
-  - [cubic](#cubic)
+  - [vscode](#vscode)
+    - [加入目录](#加入目录)
+    - [设置](#设置)
+  - [检查网络](#检查网络)
+  - [firefox cros](#firefox-cros)
   - [文件](#文件)
-  - [ethtool](#ethtool)
   - [cache](#cache)
   - [tmux](#tmux)
     - [Tmux Plugin Manager](#tmux-plugin-manager)
@@ -26,10 +29,9 @@
   - [系统调用号](#系统调用号)
   - [node.js](#nodejs)
   - [vim](#vim)
+    - [改变颜色](#改变颜色)
     - [flod command](#flod-command)
     - [auto pair](#auto-pair)
-  - [vscode](#vscode)
-    - [setting font size](#setting-font-size)
   - [添加sudo用户](#添加sudo用户)
     - [ubuntu](#ubuntu)
     - [centos](#centos)
@@ -50,9 +52,45 @@
   - [ibm mq](#ibm-mq)
   - [安装 ubuntu](#安装-ubuntu)
     - [打开终端时全屏或最大化](#打开终端时全屏或最大化)
+  - [磁盘](#磁盘)
+  - [内存](#内存)
+  - [设置时间](#设置时间)
+  - [npm 设置镜像](#npm-设置镜像)
+  - [netcat](#netcat)
   - [other](#other)
+  - [cpu信息](#cpu信息)
+  - [系统版本](#系统版本)
+  - [查看端口](#查看端口)
+  - [系统服务](#系统服务)
+  - [dpkg](#dpkg)
+  - [查看进程](#查看进程)
+  - [安装中文语言](#安装中文语言)
   - [firefox](#firefox)
   - [opcua](#opcua)
+  - [性能分析](#性能分析)
+  - [分区](#分区)
+  - [监控系统](#监控系统)
+
+## vscode
+
+### 加入目录
+
+```bash
+ctrl + shift + P  选择 create table of contents
+```
+
+### 设置
+settings.json
+
+```json
+  {
+    "workbench.colorTheme": "Visual Studio Light",
+    "window.zoomLevel": 2,
+    "markdownlint.config": {
+     "MD024": false
+    },
+}
+```
 
 ## 检查网络
 
@@ -67,76 +105,6 @@ about:config
 
 security.fileuri.strict_origin_policy   false
 
-## cubic
-
-ubuntu20.04.2.0 LTS
-
-2G cpu
-4G mem
-25G hard drive space
-
-sudo apt-add-repository ppa:cubic-wizard/release
-sudo apt update
-sudo apt install cubic
-
-add-apt-repository --yes main
-add-apt-repository --yes restricted
-add-apt-repository --yes universe
-add-apt-repository --yes multiverse
-
-```bash
-rm -f /etc/resolv.conf
-ln -s ../run/resolvconf/resolv.conf resolv.conf
-
-seed
-default live
-label live
-    menu label ^Install Ubuntu
-    kernel /casper/vmlinuz
-    append  file=/cdrom/preseed/ks.seed auto=true priority=critical automatic-ubiquity keyboard-configuration/layoutcode=pl boot=casper initrd=/casper/initrd quiet splash ---
-
-得到安装时的选项
-debconf-get-selections --installer > alloptions.cfg
-
-得到所有选项
-debconf-get-selections >> alloptions.cfg
-
-检测文件是否正确
-debconf-set-selections -c preseed.cfg
-
-第一次启动时运行
-/etc/rc.local
-
-initrd
-
-preseed.cfg:
-
-ubiquity ubiquity/minimal_install boolean true
-d-i pkgsel/update-policy select none
-d-i pkgsel/upgrade select none
-
-d-i debian-installer/locale string zh_CN
-
-d-i console-setup/ask_detect boolean false
-d-i keyboard-configuration/layoutcode string us
-d-i keyboard-configuration/xkb-keymap select us
-
-d-i passwd/user-fullname string zs
-d-i passwd/username string zs
-d-i passwd/user-password password 123456789
-d-i passwd/user-password-again password 123456789
-d-i passwd/auto-login boolean true
-
-d-i time/zone string Asia/Shanghai
-
-d-i partman-auto/disk string /dev/sda
-
-d-i finish-install/reboot_in_progress note
-```
-
-[seed](https://help.ubuntu.com/lts/installation-guide/s390x/apbs05.html)
-
-
 ## 文件
 
 ```bash
@@ -146,8 +114,6 @@ exec 1>$LOGFILE 2>&1
 # 文件类型
 file
 ```
-
-## ethtool
 
 ## cache
 
@@ -586,232 +552,6 @@ max-line-length=150
 
 Plugin 'jiangmiao/auto-pairs'
 
-```bash
-    input: [
-    output: [|]
-
-    Delete in pair
-
-    input: foo[<BS>]
-    output: foo
-
-    Insert new indented line after Return
-
-    input: {|} (press <CR> at |)
-    output: {
-        |
-    }          (press } to close the pair)
-    output: {
-    }|         (the inserted blank line will be deleted)
-
-    Insert spaces before closing characters, only for [], (), {}
-
-    input: {|} (press <SPACE> at |)
-    output: { | }
-
-    input: {|} (press <SPACE>foo} at |)
-    output: { foo }|
-
-    input: '|' (press <SPACE> at |)
-    output: ' |'
-
-    Skip ' when inside a word
-
-    input: foo| (press ' at |)
-    output: foo'
-
-    Skip closed bracket.
-
-    input: []
-    output: []
-
-    Ignore auto pair when previous character is \
-
-    input: "\'
-    output: "\'"
-
-    Fast Wrap
-
-    input: |[foo, bar()] (press (<M-e> at |)
-    output: ([foo, bar()])
-
-    Quick move char to closed pair
-
-    input: (|){["foo"]} (press <M-}> at |)
-    output: ({["foo"]}|)
-
-    input: |[foo, bar()] (press (<M-]> at |)
-    output: ([foo, bar()]|)
-
-    Quick jump to closed pair.
-
-    input:
-    {
-        something;|
-    }
-
-    (press } at |)
-
-    output:
-    {
-
-    }|
-
-    Fly Mode
-
-     input: if(a[3)
-     output: if(a[3])| (In Fly Mode)
-     output: if(a[3)]) (Without Fly Mode)
-
-     input:
-     {
-         hello();|
-         world();
-     }
-
-     (press } at |)
-
-     output:
-     {
-         hello();
-         world();
-     }|
-
-     (then press <M-b> at | to do backinsert)
-     output:
-     {
-         hello();}|
-         world();
-     }
-
-     See Fly Mode section for details
-
-    Multibyte Pairs
-
-     Support any multibyte pairs such as <!-- -->, <% %>, """ """
-     See multibyte pairs section for details
-
-    <CR>  : Insert new indented line after return if cursor in blank brackets or quotes.
-    <BS>  : Delete brackets in pair
-    <M-p> : Toggle Autopairs (g:AutoPairsShortcutToggle)
-    <M-e> : Fast Wrap (g:AutoPairsShortcutFastWrap)
-    <M-n> : Jump to next closed pair (g:AutoPairsShortcutJump)
-    <M-b> : BackInsert (g:AutoPairsShortcutBackInsert)
-
-If <M-p> <M-e> or <M-n> conflict with another keys or want to bind to another keys, add
-
-    let g:AutoPairsShortcutToggle = '<another key>'
-
-to .vimrc, if the key is empty string '', then the shortcut will be disabled.
-
-Options
-
-    g:AutoPairs
-
-    Default: {'(':')', '[':']', '{':'}',"'":"'",'"':'"', "`":"`", '```':'```', '"""':'"""', "'''":"'''"}
-
-    b:AutoPairs
-
-    Default: g:AutoPairs
-
-    Buffer level pairs set.
-
-    g:AutoPairsShortcutToggle
-
-    Default: '<M-p>'
-
-    The shortcut to toggle autopairs.
-
-    g:AutoPairsShortcutFastWrap
-
-    Default: '<M-e>'
-
-    Fast wrap the word. all pairs will be consider as a block (include <>).
-    (|)'hello' after fast wrap at |, the word will be ('hello')
-    (|)<hello> after fast wrap at |, the word will be (<hello>)
-
-    g:AutoPairsShortcutJump
-
-    Default: '<M-n>'
-
-    Jump to the next closed pair
-
-    g:AutoPairsMapBS
-
-    Default : 1
-
-    Map <BS> to delete brackets, quotes in pair
-    execute 'inoremap <buffer> <silent> <BS> <C-R>=AutoPairsDelete()<CR>'
-
-    g:AutoPairsMapCh
-
-    Default : 1
-
-    Map <C-h> to delete brackets, quotes in pair
-
-    g:AutoPairsMapCR
-
-    Default : 1
-
-    Map <CR> to insert a new indented line if cursor in (|), {|} [|], '|', "|"
-    execute 'inoremap <buffer> <silent> <CR> <C-R>=AutoPairsReturn()<CR>'
-
-    g:AutoPairsCenterLine
-
-    Default : 1
-
-    When g:AutoPairsMapCR is on, center current line after return if the line is at the bottom 1/3 of the window.
-
-    g:AutoPairsMapSpace
-
-    Default : 1
-
-    Map <space> to insert a space after the opening character and before the closing one.
-    execute 'inoremap <buffer> <silent> <CR> <C-R>=AutoPairsSpace()<CR>'
-
-    g:AutoPairsFlyMode
-
-    Default : 0
-
-    set it to 1 to enable FlyMode.
-    see FlyMode section for details.
-
-    g:AutoPairsMultilineClose
-
-    Default : 1
-
-    When you press the key for the closing pair (e.g. `)`) it jumps past it.
-    If set to 1, then it'll jump to the next line, if there is only whitespace.
-    If set to 0, then it'll only jump to a closing pair on the same line.
-
-    g:AutoPairsShortcutBackInsert
-
-    Default : <M-b>
-
-    Work with FlyMode, insert the key at the Fly Mode jumped postion
-
-    g:AutoPairsMoveCharacter
-
-    Default: "()[]{}\"'"
-
-    Map <M-(> <M-)> <M-[> <M-]> <M-{> <M-}> <M-"> <M-'> to
-    move character under the cursor to the pair.
-```
-
-## vscode
-
-settings.json
-
-```json
-  {
-    "workbench.colorTheme": "Visual Studio Light",
-    "window.zoomLevel": 2,
-    "markdownlint.config": {
-     "MD024": false
-    },
-}
-```
-
 ## 添加sudo用户
 
 ### ubuntu
@@ -1002,53 +742,95 @@ b)Max Terminal
 
 命令：gnome-terminal  --maximize
 
-## other
+## 磁盘
 
 ```bash
-dspmqaut -m SVR　-n SVR.LQ -t q -p guest
-setmqaut -m SVR　-n SVR.LQ -t q -p guest +put
+df    # 磁盘空间
 ```
 
+## 内存
+
+```bash
+free    # 内存空间
+```
+
+## 设置时间
+
+```bash
+date
+cal    # 日历
+```
+
+```bash
+timedatectl
+
+输出:
+    Local time: 三 2020-10-28 09:40:44 CST    # 本地当前时间
+    Time zone: Asia/Shanghai (CST, +0800)     # 时区
+
+timedatectl list-timezones    # 列出所有时区
+
+timedatectl set-timezone Asia/Shanghai  # 设置时区
+
+systemctl stop systemd-timesyncd.service  # 关闭自动更新服务
+
+# 设置日期时间
+    date -s '2019-12-12 16:18:45'  # 只设置系统时间，重启后失效, hwclock -w 写入系统时间
+# 或
+    timedatectl set-ntp 0 # 关闭自动同步时间
+    timedatectl set-time '2019-12-12 16:18:45'  # 设置日期和时间
+    timedatectl set-time 2019-12-12  # 设置日期
+    timedatectl set-time 16:18:45  # 设置时间
+```
+
+```bash
+# 硬件时间
+
+hwclock     # 显示硬件时间
+hwclock -r  # RTC (Real-Time Clock)
+hwclock -s  # 硬件时间写入系统时间
+hwclock -w  # 系统时间写入硬件时间
+```
+
+## npm 设置镜像
+
+```bash
 npm config set registry https://registry.npm.taobao.org
 npm config get registry
+```
 
-./manage.py oscar_fork_app order yourappsfolder/
-git clone https://github.com/django-oscar/django-oscar.git
-cd django-oscar
-sudo make install
-make sandbox
-sandbox/manage.py runserver
-
-sudo update-alternatives --config vim
-apt-cache search py2
-
-./manage.py oscar_fork_app dashboard.reports gmapp/
-./manage.py oscar_fork_statics
-
-mysqldump -ugmshop -pgmshop -d gmshop >db.sql
-from oscar.core.loading import get_class
->>> get_class('shipping.repository', 'Repository')
+## netcat
 
 Netcat is a tool for quickly creating TCP sockets from the command line. The following command starts a listening TCP socket on the previously specified port.
 
-$ nc -l 6142
+nc -l 6142
 
-cpu信息
-    不为0，支持虚拟化  
-    egrep -c '(vmx|svm)' /proc/cpuinfo 
-    为0，不是64位      
-    egrep -c ' lm ' /proc/cpuinfo  
+## other
 
-内核是否为64位
+## cpu信息
+
+```bash
+# 不为0，支持虚拟化  
+egrep -c '(vmx|svm)' /proc/cpuinfo 
+
+# 为0，不是64位      
+egrep -c ' lm ' /proc/cpuinfo  
+
+# 内核是否为64位
 uname -m
+```
 
-版本
+## 系统版本
+
 cat /etc/issue
 lsb_release -a
 
-查看端口
+## 查看端口
+
 lsof -i:80
 netstat -tunlp |grep 80 
+
+## 系统服务
 
 systemctl
 systemctl list-units            ##列出当前系统服务的状态
@@ -1066,7 +848,7 @@ systemctl unmask sshd           ##启用服务
 systemctl set-default multi-user.target ##开机不开启图形
 systemctl set-default graphical.target  ##开机启动图形
 
-Gnome Tweaks 优化工具
+## dpkg 
 
 查看已经安装了哪些包
 
@@ -1088,7 +870,6 @@ dpkg -L xxx
 dpkg -l |grep ^rc|awk '{print $2}' |sudo xargs dpkg -P
 
 可以清除一些残留无用的配置。
-
 
 显示系统安装包的统计信息
 
@@ -1129,22 +910,16 @@ sudo dpkg --get-selections | more
 
 sudo dpkg --get-selections | grep hold
 
-sudo apt-get remove libreoffice-common  
-sudo apt-get remove unity-webapps-common  
-sudo apt-get -y purge rhythmbox*
+## 查看进程
 
-lock
-/var/lib/dpkg/lock-frontend
+pidof   后面跟进程名称，显示此进程的进程号。可以得知此程序有多少个实例在运行。
 
-查看进程
+## 安装中文语言
 
-   pidof   后面跟进程名称，显示此进程的进程号。可以得知此程序有多少个实例在运行。
-
-   打开终端时全屏或最大化：
-
-language support安装中文语言
 text entry 加入中文
+
 下载sogou输入法并安装，如果有依赖错误：sudo apt-get -f install
+
 language support->keyboard input method system: fcitx
 
 ## firefox
@@ -1175,3 +950,22 @@ gprof
 curl -o profiles.tar.gz "http://localhost:8086/debug/pprof/all?cpu=true"
 curl -o vars.txt "http://localhost:8086/debug/vars"
 iostat -xd 1 30 > iostat.txt
+
+## 分区
+
+```bash
+lsblk
+sudo umount /dev/sdc1
+sudo fdis /dev/sdc
+d
+n
+w
+
+sudo mkfs.vfat /dev/sdc1
+```
+
+## 监控系统
+
+```bash
+nohup vmstat -w -S M -n -t 10 8000 > a &    # 第隔10秒，运行 8000 次
+```

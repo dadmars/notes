@@ -7,7 +7,7 @@
 [book](https://doc.rust-lang.org/book/ch19-01-unsafe-rust.html)
 [std](https://doc.rust-lang.org/std/index.html)
 [rust](https://www.rust-lang.org/)
-[crates](https:/ worksheet_range_at/crates.io/)
+[crates](https://crates.io/)
 [hyper](https://crates.io/crates/hyper)
 [time chrono](https://crates.io/crates/chrono)
 [warp](https://docs.rs/warp/0.2.1/warp/)
@@ -70,7 +70,7 @@
 
 # react
 
-[react](https://reactjs.org/docs/codebase-overview.html)
+[react](https://reactjs.create-react-libraryorg/docs/codebase-overview.html)
 [roboto-fonts](https://www.fontsquirrel.com/fonts/roboto)
 [material-ui](https://material-ui.com/getting-started/installation/)
 [icons-mui](https://material-ui.com/components/material-icons/)

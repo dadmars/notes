@@ -1,5 +1,14 @@
 # centos
 
+- [centos](#centos)
+  - [自定义安装 (kickstart)](#自定义安装-kickstart)
+  - [查看版本号](#查看版本号)
+  - [yum 缓存](#yum-缓存)
+  - [修改成阿里云镜像源](#修改成阿里云镜像源)
+  - [docker 安装](#docker-安装)
+  - [python2 安装](#python2-安装)
+  - [设置ip](#设置ip)
+
 ## 自定义安装 (kickstart)
 
 ```bash
@@ -192,6 +201,8 @@ firewall --enabled|--disabled device [options]
 
 ```bash
 cat /etc/centos-release
+7.9.2009
+7.5.1004
 ```
 
 ## yum 缓存
@@ -200,6 +211,11 @@ cat /etc/centos-release
 # 保留已下载的文件而不是删除
 # 设置 /etc/yum.conf 中的 keepcache 选项为 1
 /var/cache/yum/
+
+yum check-update
+yum update
+
+yum install -y net-tools bzip2 zip unzip vim tcpdump nmap
 ```
 
 ## 修改成阿里云镜像源
@@ -229,4 +245,11 @@ sudo systemctl start docker
 ```bash
 sudo yum install epel-release
 sudo yum install python-pip
+```
+
+## 设置ip
+
+```bash
+nmtui
+systemctl start network.service
 ```

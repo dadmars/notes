@@ -1,25 +1,26 @@
 # tokio 源码分析
 
-<!-- TOC -->
+- [tokio 源码分析](#tokio-源码分析)
+  - [ABA](#aba)
+  - [PhantomData](#phantomdata)
+  - [内存结构 repr](#内存结构-repr)
+  - [Atomics 内存序](#atomics-内存序)
+    - [Sequentially Consistent (SeqCst)](#sequentially-consistent-seqcst)
+    - [Acquire-Release](#acquire-release)
+    - [Relaxed](#relaxed)
+  - [条件变量 std::sync::Condvar](#条件变量-stdsynccondvar)
+  - [Mutex](#mutex)
+  - [运行时](#运行时)
+    - [任务队列](#任务队列)
+    - [多线程运行时](#多线程运行时)
+    - [运行时 handle](#运行时-handle)
+    - [运行时内容](#运行时内容)
+  - [主线程的管理](#主线程的管理)
+  - [工作线程的管理](#工作线程的管理)
 
-- [tokio 源码分析](#tokio-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90)
-    - [PhantomData](#phantomdata)
-    - [内存结构 repr](#%E5%86%85%E5%AD%98%E7%BB%93%E6%9E%84-repr)
-    - [Atomics 内存序](#atomics-%E5%86%85%E5%AD%98%E5%BA%8F)
-        - [Sequentially Consistent SeqCst](#sequentially-consistent-seqcst)
-        - [Acquire-Release](#acquire-release)
-        - [Relaxed](#relaxed)
-    - [条件变量 std::sync::Condvar](#%E6%9D%A1%E4%BB%B6%E5%8F%98%E9%87%8F-stdsynccondvar)
-    - [Mutex](#mutex)
-    - [运行时](#%E8%BF%90%E8%A1%8C%E6%97%B6)
-        - [任务队列](#%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97)
-        - [多线程运行时](#%E5%A4%9A%E7%BA%BF%E7%A8%8B%E8%BF%90%E8%A1%8C%E6%97%B6)
-        - [运行时 handle](#%E8%BF%90%E8%A1%8C%E6%97%B6-handle)
-        - [运行时内容](#%E8%BF%90%E8%A1%8C%E6%97%B6%E5%86%85%E5%AE%B9)
-    - [主线程的管理](#%E4%B8%BB%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%AE%A1%E7%90%86)
-    - [工作线程的管理](#%E5%B7%A5%E4%BD%9C%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%AE%A1%E7%90%86)
+## ABA
 
-<!-- /TOC -->
+多线程环境下，对一个本地变量的读取，两次读取值相同。但是在这间隔，值被改变，又改变回原值。
 
 ## PhantomData
 

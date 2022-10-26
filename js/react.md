@@ -73,3 +73,14 @@ npm install package-a --workspace package-b
 # Install `eslint` in all packages
 npm install eslint --workspaces
 ```
+
+## create library
+
+```bash
+npm install -g create-react-library
+
+create-react-library
+
+npm start # at the root of your project to start the library compilation.
+npm start # inside the example folder to see the library in action
+```
