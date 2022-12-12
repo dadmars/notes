@@ -61,6 +61,7 @@
   - [cpu信息](#cpu信息)
   - [系统版本](#系统版本)
   - [查看端口](#查看端口)
+  - [查看tcp连接数](#查看tcp连接数)
   - [系统服务](#系统服务)
   - [dpkg](#dpkg)
   - [查看进程](#查看进程)
@@ -829,6 +830,10 @@ lsb_release -a
 
 lsof -i:80
 netstat -tunlp |grep 80 
+
+## 查看tcp连接数
+
+netstat -nat |grep -i 80 | wc -l
 
 ## 系统服务
 
