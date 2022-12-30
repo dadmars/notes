@@ -84,3 +84,26 @@ create-react-library
 npm start # at the root of your project to start the library compilation.
 npm start # inside the example folder to see the library in action
 ```
+
+## nginx
+
+```bash
+sudo npm run build
+sudo mkdir /var/www/
+sudo scp -r ./build/* /var/www/build/
+
+server {
+    listen 0.0.0.0:80;
+    server_name mydomainname.com;
+    access_log /var/log/nginx/app.log;
+    root /var/www/build;
+    index index.html index.htm;
+    try_files $uri /index.html;
+    location / {
+        try_files $uri $uri/ = 404;
+    }
+}
+
+sudo service nginx stop
+sudo service nginx start
+```

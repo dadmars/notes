@@ -2094,3 +2094,18 @@ rustdoc --verbose --version
 /// let x = 5;
 /// ```
 ```
+
+# Seed
+
+```bash
+    cargo make watch
+    localhost:8000
+
+deploy
+    cargo make verify
+    cargo make build_release
+
+    index.html
+    pkg
+    your server's public folder.
+```
