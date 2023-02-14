@@ -71,6 +71,7 @@
   - [性能分析](#性能分析)
   - [分区](#分区)
   - [监控系统](#监控系统)
+  - [nginx](#nginx)
 
 ## vscode
 
@@ -973,4 +974,12 @@ sudo mkfs.vfat /dev/sdc1
 
 ```bash
 nohup vmstat -w -S M -n -t 10 8000 > a &    # 第隔10秒，运行 8000 次
+```
+
+## nginx
+
+```bash
+start nginx 
+nginx -s reload
+nginx -s quit
 ```

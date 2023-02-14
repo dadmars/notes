@@ -20,6 +20,9 @@ registry = "https://mirrors.sjtug.sjtu.edu.cn/git/crates.io-index"
 
 [source.rustcc]
 registry = "git://crates.rustcc.cn/crates.io-index"
+
+[source.rsproxy]
+registry = "https://rsproxy.cn/crates.io-index"
 ```
 
 ## 安装
